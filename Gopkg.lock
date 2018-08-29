@@ -109,14 +109,6 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:b31bfc43638f7855f6b67cbbc0f1ff68153697552ee894bff06deef8acc145c5"
-  name = "github.com/sorcix/irc"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "3ea169d06a23de0625c1afedfcbb5f6180876ea0"
-  version = "v1.1.3"
-
-[[projects]]
   digest = "1:bd1ae00087d17c5a748660b8e89e1043e1e5479d0fea743352cda2f8dd8c4f84"
   name = "github.com/spf13/afero"
   packages = [
@@ -168,12 +160,13 @@
   version = "v1.1.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:69dc0328bb15501c9b5b9b217c9c4c490bf9f77ce630e74d3bbbfb504d1ba3e8"
+  branch = "hijack"
+  digest = "1:b63867dcb3f05e6d097e653be9a25fad5c398bbd08e775cd39dd014cada92903"
   name = "github.com/whyrusleeping/hellabot"
   packages = ["."]
   pruneopts = "UT"
-  revision = "99a9139f7669eeddf2a0d9ae656df8231b643690"
+  revision = "c41fbcf51e0e1f3b91cb3f265cb2a0c3d57ca691"
+  source = "github.com/bbriggs/hellabot"
 
 [[projects]]
   branch = "master"
@@ -208,14 +201,6 @@
   pruneopts = "UT"
   revision = "67afb5ed74ec82fd7ac8f49d27c509ac6f991970"
   version = "v2.14"
-
-[[projects]]
-  digest = "1:332d7ffffc16e44f20c683c9a1bf4b7a87dcc1157a879f09861a2bd478541db9"
-  name = "gopkg.in/sorcix/irc.v1"
-  packages = ["internal"]
-  pruneopts = "UT"
-  revision = "3ea169d06a23de0625c1afedfcbb5f6180876ea0"
-  version = "v1.1.3"
 
 [[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"

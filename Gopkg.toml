@@ -24,6 +24,7 @@
 #   go-tests = true
 #   unused-packages = true
 
+ignored = ["github.com/sorcix/irc"]
 
 [[constraint]]
   name = "github.com/mitchellh/go-homedir"
@@ -38,9 +39,11 @@
   version = "1.1.0"
 
 [[constraint]]
-  branch = "master"
+  branch = "hijack"
   name = "github.com/whyrusleeping/hellabot"
-
+  source = "github.com/bbriggs/hellabot"
 [prune]
   go-tests = true
   unused-packages = true
+
+
