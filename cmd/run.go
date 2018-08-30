@@ -21,7 +21,7 @@
 package cmd
 
 import (
-	"github.com/bbriggs/bitbot/bitbot"
+	"github.com/bbriggs/bitbot/core"
 	"github.com/spf13/cobra"
 	"fmt"
 )
@@ -38,7 +38,8 @@ var runCmd = &cobra.Command{
 		fmt.Println(server)
 		fmt.Println(channels)
 		fmt.Println(nick)
-		bitbot.Run(server, nick, channels, ssl)
+		fmt.Println(ssl)
+		core.Run(server, nick, channels, ssl)
 	},
 }
 
@@ -49,6 +50,6 @@ func init() {
 	runCmd.Flags().StringVarP(&server, "server", "s", server, "target server")
 	runCmd.Flags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
 	runCmd.Flags().StringVarP(&nick, "nick", "n", nick, "nickname")
-	runCmd.Flags().BoolP("ssl", "", ssl, "enable ssl")
+	runCmd.Flags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
 
 }
