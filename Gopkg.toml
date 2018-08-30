@@ -39,9 +39,9 @@ ignored = ["github.com/sorcix/irc"]
   version = "1.1.0"
 
 [[constraint]]
-  branch = "hijack"
+  branch = "master"
   name = "github.com/whyrusleeping/hellabot"
-  source = "github.com/bbriggs/hellabot"
+
 [prune]
   go-tests = true
   unused-packages = true
