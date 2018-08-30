@@ -29,7 +29,7 @@ import (
 var server string
 var channels []string
 var nick string
-var ssl bool = true
+var ssl bool = false
 
 var runCmd = &cobra.Command{
 	Use:   "run",
