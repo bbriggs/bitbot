@@ -1,4 +1,4 @@
-package triggers
+package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"

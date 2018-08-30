@@ -1,8 +1,7 @@
-package core
+package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
-	"github.com/bbriggs/bitbot/triggers"
 	log "gopkg.in/inconshreveable/log15.v2"
 	"os"
 )
@@ -22,8 +21,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	}
 
 	// Triggers to run
-	//irc.AddTrigger(triggers.EchoTrigger)
-	irc.AddTrigger(triggers.InfoTrigger)
+	irc.AddTrigger(InfoTrigger)
 	irc.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 	irc.Run()
 }
