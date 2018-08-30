@@ -160,13 +160,20 @@
   version = "v1.1.0"
 
 [[projects]]
-  branch = "hijack"
-  digest = "1:b63867dcb3f05e6d097e653be9a25fad5c398bbd08e775cd39dd014cada92903"
+  branch = "master"
+  digest = "1:0740dcbd284bb5f452e8826f7c94ab91ef681b7910443f5f661717ee257d87f7"
   name = "github.com/whyrusleeping/hellabot"
   packages = ["."]
   pruneopts = "UT"
-  revision = "c41fbcf51e0e1f3b91cb3f265cb2a0c3d57ca691"
-  source = "github.com/bbriggs/hellabot"
+  revision = "dc093530e48d0c51577faa7381e9d5bbcfcae1b4"
+
+[[projects]]
+  digest = "1:2a890e7debf4e44a43e999e9ebe121385347ef6e36f0efe2199b46b7b2d3dbc7"
+  name = "go.etcd.io/bbolt"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "acbc2c426a444a65e0cbfdcbb3573857bf18b465"
+  version = "v1.3.1-etcd.7"
 
 [[projects]]
   branch = "master"
@@ -218,6 +225,8 @@
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/whyrusleeping/hellabot",
+    "go.etcd.io/bbolt",
+    "gopkg.in/inconshreveable/log15.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
