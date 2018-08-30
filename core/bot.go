@@ -1,8 +1,7 @@
-package bitbot
+package core
 
 import (
 	"os"
-	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -23,5 +22,4 @@ func Run(server string, nick string, channels []string, ssl bool) {
 
 	irc.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 	irc.Run()
-	fmt.Println("Bot shutting down.")
 }

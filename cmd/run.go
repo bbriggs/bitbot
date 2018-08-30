@@ -23,7 +23,6 @@ package cmd
 import (
 	"github.com/bbriggs/bitbot/core"
 	"github.com/spf13/cobra"
-	"fmt"
 )
 
 var server string
@@ -35,10 +34,6 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run bitbot",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(server)
-		fmt.Println(channels)
-		fmt.Println(nick)
-		fmt.Println(ssl)
 		core.Run(server, nick, channels, ssl)
 	},
 }
