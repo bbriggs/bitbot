@@ -13,6 +13,8 @@ type Bot struct {
 	DB  *bolt.DB
 }
 
+var b Bot = Bot{}
+
 func Run(server string, nick string, channels []string, ssl bool) {
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = channels
@@ -33,17 +35,15 @@ func Run(server string, nick string, channels []string, ssl bool) {
 		os.Exit(1)
 	}
 
-	bot := Bot{
-		Bot: irc,
-		DB:  db,
-	}
-
+	b.Bot = irc
+	b.DB = db
 	// Triggers to run
-	bot.Bot.AddTrigger(InfoTrigger)
-	bot.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
+	b.Bot.AddTrigger(InfoTrigger)
+	b.Bot.AddTrigger(TrackIdleUsers)
+	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
-	defer bot.DB.Close()
-	irc.Run()
+	defer b.DB.Close()
+	b.Bot.Run()
 }
 
