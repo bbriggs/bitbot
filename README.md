@@ -13,3 +13,9 @@ Assuming that `$GOPATH/bin` is in your `$PATH`:
 ```
 bitbot --server=irc.someserver.com:6697 --channels="#foo,#bar" --nick=bitbot --ssl
 ```
+
+Or with Docker:
+
+```
+docker run -d -it bbriggs/bitbot --server=irc.someserver.com:6697 --channels="#foo,#bar" --nick=bitbot --ssl
+```
