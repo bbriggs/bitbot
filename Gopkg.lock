@@ -177,6 +177,17 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:a367927017e67fb73acff1959106cb512b13fcec1a1f394a4dbf9dfb9a78b5b6"
+  name = "golang.org/x/net"
+  packages = [
+    "html",
+    "html/atom",
+  ]
+  pruneopts = "UT"
+  revision = "f04abc6bdfa7a0171a8a0c9fd2ada9391044d056"
+
+[[projects]]
+  branch = "master"
   digest = "1:4b487c782bc804d994e91adbd3d2a8a77a482671efd87b2fde0805adb01a39c0"
   name = "golang.org/x/sys"
   packages = ["unix"]
@@ -217,6 +228,14 @@
   revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
   version = "v2.2.1"
 
+[[projects]]
+  digest = "1:a7c01f7cf3aa0cfb633ed91d781fca7bf6a9c95d9ccec4d2ec3fb7deee872967"
+  name = "mvdan.cc/xurls"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d315b61cf6727664f310fa87b3197e9faf2a8513"
+  version = "v1.1.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -226,7 +245,9 @@
     "github.com/spf13/viper",
     "github.com/whyrusleeping/hellabot",
     "go.etcd.io/bbolt",
+    "golang.org/x/net/html",
     "gopkg.in/inconshreveable/log15.v2",
+    "mvdan.cc/xurls",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

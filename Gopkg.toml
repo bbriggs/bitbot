@@ -51,3 +51,7 @@ ignored = ["github.com/sorcix/irc"]
   unused-packages = true
 
 
+
+[[constraint]]
+  name = "github.com/mvdan/xurls"
+  version = "1.1.0"
