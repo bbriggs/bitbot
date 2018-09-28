@@ -37,7 +37,7 @@ func lookupPageTitle(message string) string {
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		return(title)
 	} else {
-		fmt.Println("Unagle to lookup page")
+		fmt.Println("Unable to lookup page")
 		return("")
 	}
 }
