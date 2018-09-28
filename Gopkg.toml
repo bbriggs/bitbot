@@ -44,8 +44,7 @@
 
 [[constraint]]
   name = "github.com/whyrusleeping/hellabot"
-  source = "github.com/bbriggs/hellabot"
-  branch = "imports"
+  branch = "master"
 
 [prune]
   go-tests = true
