@@ -29,10 +29,10 @@ func isURL(message string) bool {
 func lookupPageTitle(message string) string {
 	url := xurls.Strict.FindString(message)
 	resp, err := http.Get(url)
-	defer resp.Body.Close()
 	if err != nil {
 		return ""
 	}
+	defer resp.Body.Close()
 	fmt.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		return(title)
