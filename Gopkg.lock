@@ -160,12 +160,13 @@
   version = "v1.1.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:0740dcbd284bb5f452e8826f7c94ab91ef681b7910443f5f661717ee257d87f7"
+  branch = "imports"
+  digest = "1:3ff21101c0dea48f26f17530f897baa215830a7a57da69242a753fc15dc84ea1"
   name = "github.com/whyrusleeping/hellabot"
   packages = ["."]
   pruneopts = "UT"
-  revision = "dc093530e48d0c51577faa7381e9d5bbcfcae1b4"
+  revision = "d5036faa0aa2b7c9a738dd1b969f698e7be6f481"
+  source = "github.com/bbriggs/hellabot"
 
 [[projects]]
   digest = "1:2a890e7debf4e44a43e999e9ebe121385347ef6e36f0efe2199b46b7b2d3dbc7"
@@ -219,6 +220,17 @@
   pruneopts = "UT"
   revision = "67afb5ed74ec82fd7ac8f49d27c509ac6f991970"
   version = "v2.14"
+
+[[projects]]
+  digest = "1:21917aa24a8ed2a62108737c7748e015a30841f2699f39ea499f3eb7ddb91b85"
+  name = "gopkg.in/sorcix/irc.v1"
+  packages = [
+    ".",
+    "internal",
+  ]
+  pruneopts = "UT"
+  revision = "3ea169d06a23de0625c1afedfcbb5f6180876ea0"
+  version = "v1.1.3"
 
 [[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
