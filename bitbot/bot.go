@@ -8,6 +8,7 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+const SourceRepo string = "https://github.com/bbriggs/bitbot"
 const Version string = "0.1.1"
 var GitCommit string
 
