@@ -20,7 +20,6 @@ jobs:
 
   build_and_push_to_repository:
     executor: gcloud
-
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
