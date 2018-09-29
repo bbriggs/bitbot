@@ -15,6 +15,7 @@ jobs:
     steps:
      - checkout
      - run:
+        name: Run unit tests
         command: |
             go test -v ./...
 
@@ -30,6 +31,7 @@ jobs:
     - checkout
     - setup_remote_docker
     - run:
+       name: Build and push to repository
        command: |
            echo $SA > key.json
            gcloud auth activate-service-account --key-file=key.json
