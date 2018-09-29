@@ -26,7 +26,7 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Bitbot version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Bitbot version %s (%s)\n", bitbot.Version, bitbot.GitCommit)
+		fmt.Printf("Bitbot version %s (%s/%s)\n", bitbot.GitVersion, bitbot.GitBranch, bitbot.GitCommit)
 	},
 }
 
