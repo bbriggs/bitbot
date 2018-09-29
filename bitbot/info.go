@@ -2,6 +2,7 @@ package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
+	"fmt"
 )
 
 var InfoTrigger = hbot.Trigger{
@@ -9,7 +10,8 @@ var InfoTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.Content == "!info"
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, "https://github.com/bbriggs/bitbot")
+		resp := fmt.Sprintf("Bitbot version (%s/%s) | %s", GitVersion, GitBranch, GitCommit, SourceRepo)
+		irc.Reply(m, resp)
 		return true
 	},
 }
