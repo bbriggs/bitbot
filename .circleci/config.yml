@@ -35,7 +35,7 @@ jobs:
            gcloud auth activate-service-account --key-file=key.json
            gcloud auth configure-docker --quiet
            docker build --tag $REPO/$NAME:$CIRCLE_SHA1 . #Build image and tag it with the HEAD commit SHA
-           docker tag $REPO/$IMAGE:$CIRCLE_SHA1 $REPO/$NAME:$TAG # Tag image as latest for convenience
+           docker tag $REPO/$NAME:$CIRCLE_SHA1 $REPO/$NAME:$TAG # Tag image as latest for convenience
            docker push $REPO/$NAME:$TAG
            docker push $REPO/$NAME:$CIRCLE_SHA1
 workflows:
