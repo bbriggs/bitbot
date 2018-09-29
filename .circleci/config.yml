@@ -20,15 +20,12 @@ jobs:
 
   build_and_push_to_repository:
     executor: gcloud
-    branches:
-      only:
-        - master # Only build branches we consider to be stable
-
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-working_directory: /go/src/github.com/bbriggs/bitbot
+
+    working_directory: /go/src/github.com/bbriggs/bitbot
     steps:
     - checkout
     - setup_remote_docker
@@ -48,4 +45,7 @@ workflows:
         - run_unit_tests
         - build_and_push_to_repository:
             requires:
-                run_unit_tests
+              - run_unit_tests
+            filters:
+              branches:
+                  only: master
