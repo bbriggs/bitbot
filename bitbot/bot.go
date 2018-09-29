@@ -8,6 +8,9 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
+const Version string = "0.1.1"
+var GitCommit string
+
 type Bot struct {
 	Bot *hbot.Bot
 	DB  *bolt.DB
