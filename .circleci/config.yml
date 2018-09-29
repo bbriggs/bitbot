@@ -1,25 +1,51 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  gcloud:
     docker:
-      # specify the version
-      - image: circleci/golang:1.9
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+    - image: google/cloud-sdk:latest
+    environment:
+        NAME: bitbot # The name that docker will use when tagging the image
+        TAG: latest # The tag that docker will use to tag the image
+        REPO: gcr.io/infra-b553c506 #The repository that docker will push the image to
+jobs:
+  run_unit_tests:
+    docker:
+        - image: golang:latest
+    working_directory: /go/src/github.com/bbriggs/bitbot
+    steps:
+     - checkout
+     - run:
+        command: |
+            go test -v ./...
+
+  build_and_push_to_repository:
+    executor: gcloud
+    branches:
+      only:
+        - master # Only build branches we consider to be stable
 
     #### TEMPLATE_NOTE: go expects specific checkout path representing url
     #### expecting it in the form of
     ####   /go/src/github.com/circleci/go-tool
     ####   /go/src/bitbucket.org/circleci/go-tool
-    working_directory: /go/src/github.com/bbriggs/bitbot
+working_directory: /go/src/github.com/bbriggs/bitbot
     steps:
-      - checkout
-
-      # specify any bash command here prefixed with `run: `
-      - run: go test -v ./...
+    - checkout
+    - setup_remote_docker
+    - run:
+       command: |
+           echo $SA > key.json
+           gcloud auth activate-service-account --key-file=key.json
+           gcloud auth configure-docker --quiet
+           docker build --tag $REPO/$NAME:$CIRCLE_SHA1 . #Build image and tag it with the HEAD commit SHA
+           docker tag $REPO/$IMAGE:$CIRCLE_SHA1 $REPO/$NAME:$TAG # Tag image as latest for convenience
+           docker push $REPO/$NAME:$TAG
+           docker push $REPO/$NAME:$CIRCLE_SHA1
+workflows:
+  version: 2
+  default:
+    jobs:
+        - run_unit_tests
+        - build_and_push_to_repository:
+            requires:
+                run_unit_tests
