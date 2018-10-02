@@ -9,7 +9,7 @@ var ShrugTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && m.Content == "!shrug"
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, "¯\_(ツ)_/¯")
+		irc.Reply(m, `¯\_(ツ)_/¯`)
 		return true
 	},
 }
