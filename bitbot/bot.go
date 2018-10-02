@@ -3,8 +3,8 @@ package bitbot
 import (
 	"os"
 
-	bolt "go.etcd.io/bbolt"
 	"github.com/whyrusleeping/hellabot"
+	bolt "go.etcd.io/bbolt"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
@@ -39,6 +39,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	b.DB = db
 	// Triggers to run
 	b.Bot.AddTrigger(InfoTrigger)
+	b.Bot.AddTrigger(ShrugTrigger)
 	b.Bot.AddTrigger(TrackIdleUsers)
 	b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
@@ -48,4 +49,3 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	defer b.DB.Close()
 	b.Bot.Run()
 }
-
