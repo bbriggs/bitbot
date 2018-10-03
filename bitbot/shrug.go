@@ -2,11 +2,12 @@ package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
+	"string"
 )
 
 var ShrugTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && m.Content == "!shrug"
+		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!shrug"
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, `¯\_(ツ)_/¯`)
