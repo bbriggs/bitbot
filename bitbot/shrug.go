@@ -2,7 +2,7 @@ package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
-	"string"
+	"strings"
 )
 
 var ShrugTrigger = hbot.Trigger{
