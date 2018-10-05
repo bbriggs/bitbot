@@ -43,6 +43,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	b.Bot.AddTrigger(TrackIdleUsers)
 	b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
+	b.Bot.AddTrigger(RollTrigger)
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
