@@ -26,3 +26,22 @@ func TestGetHTMLTitle(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestGetHTMLTitleWithSmallTitle(t *testing.T) {
+	r, w := io.Pipe()
+	go func() {
+		io.WriteString(w, "<html><head><title>")
+		io.WriteString(w, "aaa")
+		io.WriteString(w, "</title></head></html>")
+		w.Close()
+	}()
+	title, found := GetHtmlTitle(r)
+	if found != true {
+		t.Log("could not parse huge title")
+		t.Fail()
+	}
+	if !strings.HasPrefix(title, "aaa") {
+		t.Log("unexpected title")
+		t.Fail()
+	}
+}
