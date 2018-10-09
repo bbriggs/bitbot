@@ -43,7 +43,7 @@ func lookupPageTitle(message string) string {
 }
 
 func isTitleElement(n *html.Node) bool {
-	return n.Type == html.ElementNode && n.Data == "title" 
+	return n.Type == html.ElementNode && n.Data == "title"
 }
 
 func traverse(n *html.Node) (string, bool) {
