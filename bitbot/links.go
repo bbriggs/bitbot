@@ -41,7 +41,7 @@ func wasLookedUpInTheLastMintues(url string, irc *hbot.Bot) bool {
 		return nil
 	})
 
-	if (!wasLooked) {
+	if !wasLooked {
 		cacheUrl(url, irc)
 	}
 
@@ -65,6 +65,11 @@ func cacheUrl(url string, irc *hbot.Bot) {
 
 func lookupPageTitle(message string, irc *hbot.Bot) string {
 	url := xurls.Strict.FindString(message)
+
+	if wasLookedUpInTheLastMintues() {
+		return ""
+	}
+
 	resp, err := http.Get(url)
 	if err != nil {
 		return ""
