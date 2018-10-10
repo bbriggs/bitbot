@@ -48,7 +48,10 @@ func isTitleElement(n *html.Node) bool {
 
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		return n.FirstChild.Data[:120], true
+		if (len(n.FirstChild.Data) > 120) {
+			return n.FirstChild.Data[:120], true
+		}
+		return n.FirstChild.Data, true	
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
