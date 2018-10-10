@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"golang.org/x/net/html"
 	"io"
+	"time"
 )
 
 var URLReaderTrigger = hbot.Trigger{
@@ -14,7 +15,7 @@ var URLReaderTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := lookupPageTitle(m.Content)
+		resp := lookupPageTitle(m.Content, irc)
 		if resp != "" {
 			irc.Reply(m, lookupPageTitle(m.Content))
 		}
@@ -26,7 +27,43 @@ func isURL(message string) bool {
 	return xurls.Strict.MatchString(message)
 }
 
-func lookupPageTitle(message string) string {
+func wasLookedUpInTheLastMintues(url string, irc *hbot.Bot) bool {
+	wasLooked := false
+
+	db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(url)).Cursor()
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			duration := time.Since(v)
+			if (duration.Minutes() <= 2) {
+				wasLooked = true
+			}
+		}
+		return nil
+	})
+
+	if (!wasLooked) {
+		cacheUrl(url, irc)
+	}
+
+	return wasLooked
+}
+
+func cacheUrl(url string, irc *hbot.Bot) {
+	err = irc.DB.Update(func(tx *bolt.Tx) error {
+		log.Println("caching URL in bbolt")
+
+		if err := tx.Bucket([]byte(url)).Put(url, []byte(time.Now().Format(time.RFC3339))); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		log.Fatal("caching: ", err)
+	}
+}
+
+func lookupPageTitle(message string, irc *hbot.Bot) string {
 	url := xurls.Strict.FindString(message)
 	resp, err := http.Get(url)
 	if err != nil {
