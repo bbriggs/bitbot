@@ -8,6 +8,10 @@ import (
 	"golang.org/x/net/html"
 	"io"
 	"time"
+	bolt "go.etcd.io/bbolt"
+	"encoding/binary"
+	log "gopkg.in/inconshreveable/log15.v2"
+	"os"
 )
 
 var URLReaderTrigger = hbot.Trigger{
@@ -15,7 +19,7 @@ var URLReaderTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := lookupPageTitle(m.Content, irc)
+		resp := lookupPageTitle(m.Content)
 		if resp != "" {
 			irc.Reply(m, lookupPageTitle(m.Content))
 		}
@@ -27,13 +31,20 @@ func isURL(message string) bool {
 	return xurls.Strict.MatchString(message)
 }
 
-func wasLookedUpInTheLastMintues(url string, irc *hbot.Bot) bool {
+func wasLookedUpInTheLastMintues(url string) bool {
+	db, err := newDB()
+	if err != nil {
+		log.Error(err.Error())
+		os.Exit(1)
+	}
+
 	wasLooked := false
 
 	db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte(url)).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-			duration := time.Since(v)
+			t := time.Unix(int64(binary.BigEndian.Uint64(v)), 0).UTC()
+			duration := time.Since(t)
 			if (duration.Minutes() <= 2) {
 				wasLooked = true
 			}
@@ -42,31 +53,31 @@ func wasLookedUpInTheLastMintues(url string, irc *hbot.Bot) bool {
 	})
 
 	if !wasLooked {
-		cacheUrl(url, irc)
+		cacheUrl(url, db)
 	}
 
+	db.Close()
 	return wasLooked
 }
 
-func cacheUrl(url string, irc *hbot.Bot) {
-	err = irc.DB.Update(func(tx *bolt.Tx) error {
-		log.Println("caching URL in bbolt")
+func cacheUrl(url string, db *bolt.DB) {
+	err := db.Update(func(tx *bolt.Tx) error {
 
-		if err := tx.Bucket([]byte(url)).Put(url, []byte(time.Now().Format(time.RFC3339))); err != nil {
+		if err := tx.Bucket([]byte(url)).Put([]byte(url), []byte(time.Now().Format(time.RFC3339))); err != nil {
 			return err
 		}
 
 		return nil
 	})
 	if err != nil {
-		log.Fatal("caching: ", err)
+		fmt.Println("caching: ", err)
 	}
 }
 
-func lookupPageTitle(message string, irc *hbot.Bot) string {
+func lookupPageTitle(message string) string {
 	url := xurls.Strict.FindString(message)
 
-	if wasLookedUpInTheLastMintues() {
+	if wasLookedUpInTheLastMintues(url) {
 		return ""
 	}
 
