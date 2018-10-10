@@ -1,17 +1,18 @@
 package bitbot
 
 import (
-	"github.com/whyrusleeping/hellabot"
 	"mvdan.cc/xurls"
 	"fmt"
 	"net/http"
 	"golang.org/x/net/html"
 	"io"
 	"time"
-	bolt "go.etcd.io/bbolt"
-	"encoding/binary"
-	log "gopkg.in/inconshreveable/log15.v2"
 	"os"
+	"encoding/binary"
+	bolt "go.etcd.io/bbolt"
+	log "gopkg.in/inconshreveable/log15.v2"
+
+	"github.com/whyrusleeping/hellabot"
 )
 
 var URLReaderTrigger = hbot.Trigger{
