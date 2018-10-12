@@ -1,16 +1,15 @@
 package bitbot
 
 import (
-	"mvdan.cc/xurls"
-	"fmt"
-	"net/http"
-	"golang.org/x/net/html"
-	"io"
-	"time"
-	"os"
 	"encoding/binary"
+	"fmt"
+	"io"
+	"net/http"
+	"time"
+
 	bolt "go.etcd.io/bbolt"
-	log "gopkg.in/inconshreveable/log15.v2"
+	"golang.org/x/net/html"
+	"mvdan.cc/xurls"
 
 	"github.com/whyrusleeping/hellabot"
 )
@@ -20,9 +19,9 @@ var URLReaderTrigger = hbot.Trigger{
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := lookupPageTitle(m.Content)
+		resp := b.lookupPageTitle(m.Content)
 		if resp != "" {
-			irc.Reply(m, lookupPageTitle(m.Content))
+			irc.Reply(m, b.lookupPageTitle(m.Content))
 		}
 		return true
 	},
@@ -32,21 +31,15 @@ func isURL(message string) bool {
 	return xurls.Strict.MatchString(message)
 }
 
-func wasLookedUpInTheLastMintues(url string) bool {
-	db, err := newDB()
-	if err != nil {
-		log.Error(err.Error())
-		os.Exit(1)
-	}
-
+func (b Bot) wasLookedUpInTheLastMintues(url string) bool {
 	wasLooked := false
 
-	db.View(func(tx *bolt.Tx) error {
+	b.DB.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte(url)).Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			t := time.Unix(int64(binary.BigEndian.Uint64(v)), 0).UTC()
 			duration := time.Since(t)
-			if (duration.Minutes() <= 2) {
+			if duration.Minutes() <= 2 {
 				wasLooked = true
 			}
 		}
@@ -54,15 +47,14 @@ func wasLookedUpInTheLastMintues(url string) bool {
 	})
 
 	if !wasLooked {
-		cacheUrl(url, db)
+		b.cacheUrl(url)
 	}
 
-	db.Close()
 	return wasLooked
 }
 
-func cacheUrl(url string, db *bolt.DB) {
-	err := db.Update(func(tx *bolt.Tx) error {
+func (b Bot) cacheUrl(url string) {
+	err := b.DB.Update(func(tx *bolt.Tx) error {
 
 		if err := tx.Bucket([]byte(url)).Put([]byte(url), []byte(time.Now().Format(time.RFC3339))); err != nil {
 			return err
@@ -75,10 +67,10 @@ func cacheUrl(url string, db *bolt.DB) {
 	}
 }
 
-func lookupPageTitle(message string) string {
+func (b Bot) lookupPageTitle(message string) string {
 	url := xurls.Strict.FindString(message)
 
-	if wasLookedUpInTheLastMintues(url) {
+	if b.wasLookedUpInTheLastMintues(url) {
 		return ""
 	}
 
@@ -89,10 +81,10 @@ func lookupPageTitle(message string) string {
 	defer resp.Body.Close()
 	fmt.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		return(title)
+		return (title)
 	} else {
 		fmt.Println("Unable to lookup page")
-		return("")
+		return ("")
 	}
 }
 
@@ -102,10 +94,10 @@ func isTitleElement(n *html.Node) bool {
 
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		if (len(n.FirstChild.Data) > 120) {
+		if len(n.FirstChild.Data) > 120 {
 			return n.FirstChild.Data[:120], true
 		}
-		return n.FirstChild.Data, true	
+		return n.FirstChild.Data, true
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
