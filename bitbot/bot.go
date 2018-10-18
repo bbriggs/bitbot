@@ -37,10 +37,15 @@ func Run(server string, nick string, channels []string, ssl bool) {
 
 	b.Bot = irc
 	b.DB = db
+
 	// Triggers to run
+	// Passive triggers. Unskippable.
+	b.Bot.AddTrigger(TrackIdleUsers)
+
+	// Begin with skip prefix (!skip)
+	b.Bot.AddTrigger(SkipTrigger)
 	b.Bot.AddTrigger(InfoTrigger)
 	b.Bot.AddTrigger(ShrugTrigger)
-	b.Bot.AddTrigger(TrackIdleUsers)
 	b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
