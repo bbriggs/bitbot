@@ -67,7 +67,7 @@ func traverse(n *html.Node) (string, bool) {
 func GetHtmlTitle(r io.Reader) (string, bool) {
 	doc, err := html.Parse(&io.LimitedReader{R: r, N: 4096})
 	if err != nil {
-		panic("Fail to parse html")
+		return "", false
 	}
 
 	return traverse(doc)
