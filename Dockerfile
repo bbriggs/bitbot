@@ -4,7 +4,6 @@ RUN apk update && apk add git build-base ca-certificates
 RUN adduser -D -g 'bitbot' bitbot
 WORKDIR /usr/local/go/src/github.com/bbriggs/bitbot
 COPY . .
-#RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags "-w -extldflags '-static' -X github.com/bbriggs/bitbot/bitbot.GitCommit=$COMMIT -X github.com/bbriggs/bitbot/bitbot.GitBranch=$BRANCH -X github.com/bbriggs/bitbot/bitbot.GitVersion=$TAG" -o /go/bin/bitbot
 RUN ./docker-build.sh
 RUN touch .bolt.db
 
