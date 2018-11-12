@@ -1,7 +1,9 @@
 package bitbot
 
 import (
+	"math/rand"
 	"os"
+	"time"
 
 	"github.com/whyrusleeping/hellabot"
 	bolt "go.etcd.io/bbolt"
@@ -9,8 +11,9 @@ import (
 )
 
 type Bot struct {
-	Bot *hbot.Bot
-	DB  *bolt.DB
+	Bot    *hbot.Bot
+	DB     *bolt.DB
+	Random *rand.Rand // Initialized PRNG
 }
 
 var b Bot = Bot{}
@@ -37,6 +40,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 
 	b.Bot = irc
 	b.DB = db
+	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	// Triggers to run
 	// Passive triggers. Unskippable.
@@ -48,6 +52,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	b.Bot.AddTrigger(ShrugTrigger)
 	b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
+	b.Bot.AddTrigger(AbyssTrigger)
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
