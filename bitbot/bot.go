@@ -50,7 +50,7 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	b.Bot.AddTrigger(SkipTrigger)
 	b.Bot.AddTrigger(InfoTrigger)
 	b.Bot.AddTrigger(ShrugTrigger)
-	b.Bot.AddTrigger(ReportIdleUsers)
+	//b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.AddTrigger(AbyssTrigger)
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
