@@ -14,38 +14,53 @@ type Bot struct {
 	Bot    *hbot.Bot
 	DB     *bolt.DB
 	Random *rand.Rand // Initialized PRNG
+	Config Config
+}
+
+type Config struct {
+	NickservPass string   // Nickserv password
+	OperUser     string   // Username for server oper
+	OperPass     string   // Password for server oper
+	Channels     []string // slice of channels to connect to (must include #)
+	Nick         string   // nick to use
+	Server       string   // server:port for connections
+	SSL          bool     // Enable SSL for the connection
+	Admins       []string // slice of masks representing administrators
 }
 
 var b Bot = Bot{}
 
-func Run(server string, nick string, channels []string, ssl bool) {
-	chans := func(bot *hbot.Bot) {
-		bot.Channels = channels
-	}
-	sslOptions := func(bot *hbot.Bot) {
-		bot.SSL = ssl
-	}
-
-	irc, err := hbot.NewBot(server, nick, chans, sslOptions)
-	if err != nil {
-		log.Error(err.Error())
-		os.Exit(1)
-	}
-
+func Run(config Config) {
 	db, err := newDB()
 	if err != nil {
 		log.Error(err.Error())
 		os.Exit(1)
 	}
 
-	b.Bot = irc
 	b.DB = db
 	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
+	b.Config = config
+
+	chans := func(bot *hbot.Bot) {
+		bot.Channels = b.Config.Channels
+	}
+	sslOptions := func(bot *hbot.Bot) {
+		bot.SSL = b.Config.SSL
+	}
+
+	irc, err := hbot.NewBot(b.Config.Server, b.Config.Nick, chans, sslOptions)
+	if err != nil {
+		log.Error(err.Error())
+		os.Exit(1)
+	}
+
+	b.Bot = irc
+	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// Triggers to run
 	// Passive triggers. Unskippable.
 	b.Bot.AddTrigger(TrackIdleUsers)
-
+	b.Bot.AddTrigger(OperLogin)
 	// Begin with skip prefix (!skip)
 	b.Bot.AddTrigger(SkipTrigger)
 	b.Bot.AddTrigger(InfoTrigger)
@@ -53,7 +68,6 @@ func Run(server string, nick string, channels []string, ssl bool) {
 	//b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.AddTrigger(AbyssTrigger)
-	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
 	defer b.DB.Close()
