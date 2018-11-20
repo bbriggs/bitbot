@@ -61,6 +61,8 @@ func Run(config Config) {
 	// Passive triggers. Unskippable.
 	b.Bot.AddTrigger(TrackIdleUsers)
 	b.Bot.AddTrigger(OperLogin)
+	b.Bot.AddTrigger(loadTrigger)
+	b.Bot.AddTrigger(unloadTrigger)
 	// Begin with skip prefix (!skip)
 	b.Bot.AddTrigger(SkipTrigger)
 	b.Bot.AddTrigger(InfoTrigger)

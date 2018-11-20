@@ -1,9 +1,9 @@
 package bitbot
 
 import (
+	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"strings"
-	"fmt"
 )
 
 var InfoTrigger = hbot.Trigger{
@@ -15,4 +15,5 @@ var InfoTrigger = hbot.Trigger{
 		irc.Reply(m, resp)
 		return true
 	},
+	"infoTrigger",
 }

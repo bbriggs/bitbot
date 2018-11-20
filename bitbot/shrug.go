@@ -13,4 +13,5 @@ var ShrugTrigger = hbot.Trigger{
 		irc.Reply(m, `¯\_(ツ)_/¯`)
 		return true
 	},
+	"ShrugTrigger",
 }

@@ -9,9 +9,10 @@ import (
 // Should be set before any "skippable" triggers and after any triggers that run on all messages (unskippable)
 var SkipTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content,"!skip")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!skip")
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return true  // Do nothing and stop processing any more triggers
+		return true // Do nothing and stop processing any more triggers
 	},
+	"SkipTrigger",
 }

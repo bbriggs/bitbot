@@ -1,12 +1,12 @@
 package bitbot
 
 import (
-	"github.com/whyrusleeping/hellabot"
-	"mvdan.cc/xurls"
 	"fmt"
-	"net/http"
+	"github.com/whyrusleeping/hellabot"
 	"golang.org/x/net/html"
 	"io"
+	"mvdan.cc/xurls"
+	"net/http"
 )
 
 var URLReaderTrigger = hbot.Trigger{
@@ -20,6 +20,7 @@ var URLReaderTrigger = hbot.Trigger{
 		}
 		return true
 	},
+	"URLReaderTrigger",
 }
 
 func isURL(message string) bool {
@@ -35,10 +36,10 @@ func lookupPageTitle(message string) string {
 	defer resp.Body.Close()
 	fmt.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		return(title)
+		return (title)
 	} else {
 		fmt.Println("Unable to lookup page")
-		return("")
+		return ("")
 	}
 }
 
@@ -48,10 +49,10 @@ func isTitleElement(n *html.Node) bool {
 
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		if (len(n.FirstChild.Data) > 120) {
+		if len(n.FirstChild.Data) > 120 {
 			return n.FirstChild.Data[:120], true
 		}
-		return n.FirstChild.Data, true	
+		return n.FirstChild.Data, true
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
