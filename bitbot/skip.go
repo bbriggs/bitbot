@@ -14,5 +14,4 @@ var SkipTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
 		return true // Do nothing and stop processing any more triggers
 	},
-	"SkipTrigger",
 }

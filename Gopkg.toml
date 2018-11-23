@@ -44,7 +44,8 @@
 
 [[constraint]]
   name = "github.com/whyrusleeping/hellabot"
-  source = "https://github.com/bbriggs/hellabot"
+  source = "https://github.com/icholy/hellabot"
+  #source = "https://github.com/bbriggs/hellabot"
   branch = "drop-trigger"
 
 [prune]

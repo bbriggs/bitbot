@@ -15,5 +15,4 @@ var InfoTrigger = hbot.Trigger{
 		irc.Reply(m, resp)
 		return true
 	},
-	"infoTrigger",
 }

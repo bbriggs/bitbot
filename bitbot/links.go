@@ -20,7 +20,6 @@ var URLReaderTrigger = hbot.Trigger{
 		}
 		return true
 	},
-	"URLReaderTrigger",
 }
 
 func isURL(message string) bool {

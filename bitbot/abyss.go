@@ -12,5 +12,4 @@ var AbyssTrigger = hbot.Trigger{
 		irc.Reply(m, "0.0")
 		return true
 	},
-	"AbyssTrigger",
 }

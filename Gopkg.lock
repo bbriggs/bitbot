@@ -161,12 +161,12 @@
 
 [[projects]]
   branch = "drop-trigger"
-  digest = "1:60c5aa9b6f7d9afe2d4ca03e42af0416d002f1c105ec83a73907ca09d28a2086"
+  digest = "1:eb039f6ca515f85c890515c836a8df0279964dcc22c14ee91180c48cad67960c"
   name = "github.com/whyrusleeping/hellabot"
   packages = ["."]
   pruneopts = "UT"
-  revision = "cbdfc96cf036c86315b354ab6fda4acfe7ca41b5"
-  source = "https://github.com/bbriggs/hellabot"
+  revision = "df304ed525d07e9621c8105f962bd00d67e56d00"
+  source = "https://github.com/icholy/hellabot"
 
 [[projects]]
   digest = "1:2a890e7debf4e44a43e999e9ebe121385347ef6e36f0efe2199b46b7b2d3dbc7"

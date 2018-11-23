@@ -26,7 +26,9 @@ type Bot struct {
 	Incoming chan *Message
 	con      net.Conn
 	outgoing chan string
-	triggers []Trigger
+	handlers []Handler
+	// For thread-safe access to handlers slice
+	handlersMu sync.Mutex
 	// When did we start? Used for uptime
 	started time.Time
 	// Unix domain socket address for reconnects (linux only)
@@ -66,6 +68,7 @@ func NewBot(host, nick string, options ...func(*Bot)) (*Bot, error) {
 		outgoing:      make(chan string, 16),
 		started:       time.Now(),
 		unixastr:      fmt.Sprintf("@%s-%s/bot", host, nick),
+		handlersMu:    sync.Mutex{},
 		Host:          host,
 		Nick:          nick,
 		ThrottleDelay: 200 * time.Millisecond,
@@ -115,9 +118,14 @@ func (bot *Bot) handleIncomingMessages() {
 		bot.con.SetDeadline(time.Now().Add(bot.PingTimeout))
 		msg := ParseMessage(scan.Text())
 		bot.Debug("Incoming", "raw", scan.Text(), "msg.To", msg.To, "msg.From", msg.From, "msg.Params", msg.Params, "msg.Trailing", msg.Trailing)
+		// Otherwise this is mutable by DropTrigger and AddTrigger
+		bot.handlersMu.Lock()
+		handlers := make([]Handler, len(bot.handlers))
+		copy(handlers, bot.handlers)
+		bot.handlersMu.Unlock()
 		go func() {
-			for _, t := range bot.triggers {
-				if t.Condition(bot, msg) && t.Action(bot, msg) {
+			for _, h := range handlers {
+				if h.Handle(bot, msg) {
 					break
 				}
 			}
@@ -310,30 +318,35 @@ func (bot *Bot) Close() error {
 	return nil
 }
 
-// AddTrigger adds a given trigger to the bot's handlers
-func (bot *Bot) AddTrigger(t Trigger) {
-	bot.triggers = append(bot.triggers, t)
+// AddTrigger adds a trigger to the bot's handlers
+func (bot *Bot) AddTrigger(h Handler) {
+	bot.handlersMu.Lock()
+	bot.handlers = append(bot.handlers, h)
+	bot.handlersMu.Unlock()
 }
 
 // DropTrigger removes a trigger from the bot's handlers
-func (bot *Bot) DropTrigger(t Trigger) {
-	log.Info("Attempting to unload a trigger...")
-	var i = -1
-	for k, v := range bot.triggers {
-		log.Info("Comparing t and v:\n" + fmt.Sprintf("%+v\n", t) + fmt.Sprintf("%+v\n", v))
-		if t.Name != "" && t.Name == v.Name {
-			log.Info("found trigger at index position " + fmt.Sprintf("%d", k))
-			i = k
+// Note: this depends on the handler's Name method
+func (bot *Bot) DropTrigger(h Handler) bool {
+	bot.handlersMu.Lock()
+	defer bot.handlersMu.Unlock()
+	name := h.Name()
+	for i, tt := range bot.handlers {
+		if name != "" && name == tt.Name() {
+			bot.handlers = append(bot.handlers[:i], bot.handlers[i+1:]...)
+			return true
 		}
 	}
-	log.Info(fmt.Sprintf("Trigger index value: %d", i))
-
-	if i > -1 {
-		bot.triggers = append(bot.triggers[:i], bot.triggers[i+1:]...)
-	}
+	return false
 }
 
-// Trigger is used to subscribe and react to events on the bot Server
+// Handler is used to subscribe and react to events on the bot Server
+type Handler interface {
+	Name() string
+	Handle(*Bot, *Message) bool
+}
+
+// Trigger is a handler which is guarded by a condition
 type Trigger struct {
 	// Returns true if this trigger applies to the passed in message
 	Condition func(*Bot, *Message) bool
@@ -341,9 +354,17 @@ type Trigger struct {
 	// The action to perform if Condition is true
 	// return true if the message was 'consumed'
 	Action func(*Bot, *Message) bool
+}
 
-	// Optional unique name to assign to the trigger. Allows for hot loading/unloading of triggers.
-	Name string
+// Name always returns an empty string
+func (t Trigger) Name() string { return "" }
+
+// Handle executes the trigger action if the condition is satisfied
+func (t Trigger) Handle(b *Bot, m *Message) bool {
+	if !t.Condition(b, m) {
+		return false
+	}
+	return t.Action(b, m)
 }
 
 // A trigger to respond to the servers ping pong messages
@@ -351,21 +372,20 @@ type Trigger struct {
 // client has timed out and will close the connection.
 // Note: this is automatically added in the IrcCon constructor
 var pingPong = Trigger{
-	func(bot *Bot, m *Message) bool {
+	Condition: func(bot *Bot, m *Message) bool {
 		return m.Command == "PING"
 	},
-	func(bot *Bot, m *Message) bool {
+	Action: func(bot *Bot, m *Message) bool {
 		bot.Send("PONG :" + m.Content)
 		return true
 	},
-	"pingPong",
 }
 
 var joinChannels = Trigger{
-	func(bot *Bot, m *Message) bool {
+	Condition: func(bot *Bot, m *Message) bool {
 		return m.Command == irc.RPL_WELCOME || m.Command == irc.RPL_ENDOFMOTD // 001 or 372
 	},
-	func(bot *Bot, m *Message) bool {
+	Action: func(bot *Bot, m *Message) bool {
 		bot.didJoinChannels.Do(func() {
 			for _, channel := range bot.Channels {
 				splitchan := strings.SplitN(channel, ":", 2)
@@ -381,7 +401,6 @@ var joinChannels = Trigger{
 		})
 		return true
 	},
-	"joinChannels",
 }
 
 func SaslAuth(pass string) func(*Bot) {

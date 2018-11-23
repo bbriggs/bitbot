@@ -21,7 +21,6 @@ var TrackIdleUsers = hbot.Trigger{
 		}
 		return false // keep processing triggers
 	},
-	"TrackIdleUsers",
 }
 
 func (b Bot) TrackIdleUsers(m *hbot.Message) error {
@@ -60,7 +59,6 @@ var ReportIdleUsers = hbot.Trigger{
 		irc.Reply(m, fmt.Sprintf("%s has been idle for %s", args[1], report))
 		return true
 	},
-	"ReportIdleUsers",
 }
 
 func (b Bot) GetUserIdleTime(nick string) (string, error) {

@@ -28,7 +28,6 @@ var OperLogin = hbot.Trigger{
 
 		return true
 	},
-	"OperLogin",
 }
 
 func (b Bot) OperLogin() (string, bool) {
