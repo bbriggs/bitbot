@@ -6,6 +6,24 @@ import (
 	"strings"
 )
 
+type NamedTrigger struct {
+	ID        string
+	Condition func(*hbot.Bot, *hbot.Message) bool
+	Action    func(*hbot.Bot, *hbot.Message) bool
+}
+
+func (t NamedTrigger) Name() string {
+	return t.ID
+}
+
+// Handle executes the trigger action if the condition is satisfied
+func (t NamedTrigger) Handle(b *hbot.Bot, m *hbot.Message) bool {
+	if !t.Condition(b, m) {
+		return false
+	}
+	return t.Action(b, m)
+}
+
 var loadTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!load"
@@ -15,7 +33,6 @@ var loadTrigger = hbot.Trigger{
 		b.Bot.AddTrigger(testTrigger)
 		return true
 	},
-	"loadTrigger",
 }
 
 var unloadTrigger = hbot.Trigger{
@@ -27,16 +44,15 @@ var unloadTrigger = hbot.Trigger{
 		b.Bot.DropTrigger(testTrigger)
 		return true
 	},
-	"unloadTrigger",
 }
 
-var testTrigger = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var testTrigger = NamedTrigger{
+	ID: "testTrigger",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!test"
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, fmt.Sprintf("Hello, %s", m.From))
 		return false
 	},
-	"testTrigger",
 }
