@@ -48,7 +48,7 @@ var runCmd = &cobra.Command{
 			Server:       server,
 			SSL:          ssl,
 			Admins: bitbot.ACL{
-				Permitted: []string{"fraq@admin.0x00sec.org"},
+				Permitted: admins,
 			},
 		}
 		log.Println("Starting bitbot...")
@@ -65,7 +65,7 @@ func init() {
 	runCmd.Flags().StringVarP(&operUser, "operUser", "", operUser, "oper username")
 	runCmd.Flags().StringVarP(&operPass, "operPass", "", operPass, "oper password")
 	runCmd.Flags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
-	runCmd.Flags().StringSliceVarP(&channels, "admins", "", channels, "Hostmask of administrators")
+	runCmd.Flags().StringSliceVarP(&admins, "admins", "", admins, "Hostmasks of administrators")
 	runCmd.Flags().StringVarP(&nick, "nick", "n", nick, "nickname")
 	runCmd.Flags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
 
