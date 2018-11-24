@@ -8,14 +8,20 @@ import (
 
 var loadTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!load" && b.isAdmin(m)
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!load") && b.isAdmin(m)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
 		split := strings.Split(m.Content, " ")
 		if len(split) < 2 {
 			irc.Reply(m, "Load what?")
 		} else {
-			b.Bot.AddTrigger(split[1])
+			t, ok := b.FetchTrigger(split[1])
+			if !ok {
+				irc.Reply(m, "Looks like this trigger was never registered. Can't load it.")
+			} else {
+				b.Bot.AddTrigger(t)
+				irc.Reply(m, "Trigger loaded.")
+			}
 		}
 		return true
 	},
@@ -23,31 +29,43 @@ var loadTrigger = hbot.Trigger{
 
 var unloadTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!unload" && b.isAdmin(m)
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!unload") && b.isAdmin(m)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
 		split := strings.Split(m.Content, " ")
 		if len(split) < 2 {
 			irc.Reply(m, "Unload what?")
 		} else {
-			if b.Bot.DropTrigger(split[1]) {
-				irc.Reply(m, fmt.Sprintf("%s unloaded", split[1]))
+			t, ok := b.FetchTrigger(split[1])
+			if ok {
+				dropped := b.Bot.DropTrigger(t)
+				if dropped {
+					irc.Reply(m, fmt.Sprintf("Trigger %s dropped", t.Name()))
+				} else {
+					irc.Reply(m, fmt.Sprintf("Unable to drop %s for some reason...", t.Name()))
+				}
 			} else {
-				irc.Reply(m, fmt.Sprintf("I don't think %s is loaded...", split[1]))
+				irc.Reply(m, fmt.Sprintf("I don't think you registered the %s trigger...", split[1]))
 			}
 		}
+
 		return true
 	},
 }
 
-var testTrigger = NamedTrigger{
-	ID: "testTrigger",
+var listTriggers = NamedTrigger{
+	ID: "listTriggers",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!test"
+		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!triggers" && b.isAdmin(m)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		fullname := fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host)
-		irc.Reply(m, fullname)
-		return false
+		var triggers []string
+		irc.Reply(m, "Listing registered triggers...")
+		b.triggers.Range(func(k interface{}, v interface{}) bool {
+			triggers = append(triggers, k.(string))
+			return true
+		})
+		irc.Reply(m, strings.Join(triggers[:], ", "))
+		return true
 	},
 }

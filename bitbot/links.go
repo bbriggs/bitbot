@@ -9,11 +9,12 @@ import (
 	"net/http"
 )
 
-var URLReaderTrigger = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var URLReaderTrigger = NamedTrigger{
+	ID: "urls",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		resp := lookupPageTitle(m.Content)
 		if resp != "" {
 			irc.Reply(m, lookupPageTitle(m.Content))

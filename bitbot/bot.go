@@ -3,6 +3,7 @@ package bitbot
 import (
 	"math/rand"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/whyrusleeping/hellabot"
@@ -15,6 +16,9 @@ type Bot struct {
 	DB     *bolt.DB
 	Random *rand.Rand // Initialized PRNG
 	Config Config
+
+	// private map of triggers
+	triggers sync.Map
 }
 
 type Config struct {
@@ -29,6 +33,18 @@ type Config struct {
 }
 
 var b Bot = Bot{}
+
+func (b *Bot) RegisterTrigger(t NamedTrigger) {
+	b.triggers.Store(t.Name(), t)
+}
+
+func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
+	res, ok := b.triggers.Load(name)
+	if !ok {
+		return NamedTrigger{}, false
+	}
+	return res.(NamedTrigger), true
+}
 
 func Run(config Config) {
 	db, err := newDB()
@@ -70,6 +86,12 @@ func Run(config Config) {
 	//b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.AddTrigger(AbyssTrigger)
+	b.Bot.AddTrigger(listTriggers)
+	// Register the triggers you want to load and unload
+	b.RegisterTrigger(InfoTrigger)
+	b.RegisterTrigger(ShrugTrigger)
+	b.RegisterTrigger(URLReaderTrigger)
+	b.RegisterTrigger(AbyssTrigger)
 
 	// GOOOOOOO
 	defer b.DB.Close()
