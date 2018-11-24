@@ -1,9 +1,9 @@
 package bitbot
 
 import (
-	"time"
-	"strings"
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/whyrusleeping/hellabot"
 	bolt "go.etcd.io/bbolt"
@@ -11,29 +11,29 @@ import (
 )
 
 var TrackIdleUsers = hbot.Trigger{
-        func(irc *hbot.Bot, m *hbot.Message) bool {
-                return m.Command == "PRIVMSG"
-        },
-        func(irc *hbot.Bot, m *hbot.Message) bool {
-                err := b.TrackIdleUsers(m)
-                if err != nil {
-                        log.Error(err.Error())
-                }
-                return false  // keep processing triggers
-        },
+	func(irc *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG"
+	},
+	func(irc *hbot.Bot, m *hbot.Message) bool {
+		err := b.TrackIdleUsers(m)
+		if err != nil {
+			log.Error(err.Error())
+		}
+		return false // keep processing triggers
+	},
 }
 
 func (b Bot) TrackIdleUsers(m *hbot.Message) error {
-        err := b.DB.Update(func(tx *bolt.Tx) error {
-                now := int64ToByte(time.Now().Unix())
-                bucket, err := tx.CreateBucketIfNotExists([]byte(m.From))
-                if err != nil {
-                        return err
-                }
-                err = bucket.Put([]byte("last_message_time"), []byte(now))
-                return err
-        })
-        return err
+	err := b.DB.Update(func(tx *bolt.Tx) error {
+		now := int64ToByte(time.Now().Unix())
+		bucket, err := tx.CreateBucketIfNotExists([]byte(m.From))
+		if err != nil {
+			return err
+		}
+		err = bucket.Put([]byte("last_message_time"), []byte(now))
+		return err
+	})
+	return err
 }
 
 var ReportIdleUsers = hbot.Trigger{
@@ -64,22 +64,22 @@ var ReportIdleUsers = hbot.Trigger{
 func (b Bot) GetUserIdleTime(nick string) (string, error) {
 	var val []byte
 	err := b.DB.View(func(tx *bolt.Tx) error {
-                bucket := tx.Bucket([]byte(nick))
+		bucket := tx.Bucket([]byte(nick))
 		c := bucket.Cursor()
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			log.Info(fmt.Sprintf("key=%s, value=%s\n", k, v))
 		}
 		val = bucket.Get([]byte("last_message_time"))
-                return nil
-        })
+		return nil
+	})
 	if err != nil {
 		return "", err
 	}
-	if val == nil {  // bbolt returns nil on nonexistent keys
+	if val == nil { // bbolt returns nil on nonexistent keys
 		return "", err
 	}
 	i := byteToInt64(val)
 	ts := time.Unix(i, 0)
 	elapsed := fmtDuration(time.Since(ts))
-        return elapsed, err
+	return elapsed, err
 }

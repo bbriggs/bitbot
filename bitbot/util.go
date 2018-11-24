@@ -2,30 +2,59 @@ package bitbot
 
 import (
 	"encoding/binary"
-	"time"
 	"fmt"
+	"github.com/whyrusleeping/hellabot"
+	"time"
 )
 
-func int64ToByte(i int64) []byte{
+// NamedTrigger is a local re-implementation of hbot.Trigger to support unique names
+type NamedTrigger struct {
+	ID        string
+	Condition func(*hbot.Bot, *hbot.Message) bool
+	Action    func(*hbot.Bot, *hbot.Message) bool
+}
+
+// Name satisfies the hbot.Handler interface
+func (t NamedTrigger) Name() string {
+	return t.ID
+}
+
+// Handle executes the trigger action if the condition is satisfied
+func (t NamedTrigger) Handle(b *hbot.Bot, m *hbot.Message) bool {
+	if !t.Condition(b, m) {
+		return false
+	}
+	return t.Action(b, m)
+}
+
+// ACL defines access lists the bot may use to check Authorization to use a trigger
+type ACL struct {
+	// Defines users explicitly allowed in this ACL
+	Permitted []string
+	// Defines users explicitly rejected by this ACL
+	Rejected []string
+}
+
+func int64ToByte(i int64) []byte {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(i))
 	return b
 }
 
-func byteToInt64(b []byte) int64{
+func byteToInt64(b []byte) int64 {
 	i := int64(binary.LittleEndian.Uint64(b))
 	return i
 }
 
 func fmtDuration(d time.Duration) string {
-    day := d / time.Hour * 24
-    d -= day * time.Hour * 24
+	day := d / time.Hour * 24
+	d -= day * time.Hour * 24
 
-    h := d / time.Hour
-    d -= h * time.Hour
+	h := d / time.Hour
+	d -= h * time.Hour
 
-    m := d / time.Minute
-    d -= m * time.Minute
+	m := d / time.Minute
+	d -= m * time.Minute
 
-    return fmt.Sprintf("%02d days, %02d hours, %02d minutes", day, h, m)
+	return fmt.Sprintf("%02d days, %02d hours, %02d minutes", day, h, m)
 }

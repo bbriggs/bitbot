@@ -3,6 +3,7 @@ package bitbot
 import (
 	"math/rand"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/whyrusleeping/hellabot"
@@ -15,6 +16,9 @@ type Bot struct {
 	DB     *bolt.DB
 	Random *rand.Rand // Initialized PRNG
 	Config Config
+
+	// private map of triggers
+	triggers sync.Map
 }
 
 type Config struct {
@@ -25,10 +29,22 @@ type Config struct {
 	Nick         string   // nick to use
 	Server       string   // server:port for connections
 	SSL          bool     // Enable SSL for the connection
-	Admins       []string // slice of masks representing administrators
+	Admins       ACL      // slice of masks representing administrators
 }
 
 var b Bot = Bot{}
+
+func (b *Bot) RegisterTrigger(t NamedTrigger) {
+	b.triggers.Store(t.Name(), t)
+}
+
+func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
+	res, ok := b.triggers.Load(name)
+	if !ok {
+		return NamedTrigger{}, false
+	}
+	return res.(NamedTrigger), true
+}
 
 func Run(config Config) {
 	db, err := newDB()
@@ -61,6 +77,8 @@ func Run(config Config) {
 	// Passive triggers. Unskippable.
 	b.Bot.AddTrigger(TrackIdleUsers)
 	b.Bot.AddTrigger(OperLogin)
+	b.Bot.AddTrigger(loadTrigger)
+	b.Bot.AddTrigger(unloadTrigger)
 	// Begin with skip prefix (!skip)
 	b.Bot.AddTrigger(SkipTrigger)
 	b.Bot.AddTrigger(InfoTrigger)
@@ -68,6 +86,12 @@ func Run(config Config) {
 	//b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.AddTrigger(AbyssTrigger)
+	b.Bot.AddTrigger(listTriggers)
+	// Register the triggers you want to load and unload
+	b.RegisterTrigger(InfoTrigger)
+	b.RegisterTrigger(ShrugTrigger)
+	b.RegisterTrigger(URLReaderTrigger)
+	b.RegisterTrigger(AbyssTrigger)
 
 	// GOOOOOOO
 	defer b.DB.Close()

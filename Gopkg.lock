@@ -160,12 +160,13 @@
   version = "v1.1.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:3ff21101c0dea48f26f17530f897baa215830a7a57da69242a753fc15dc84ea1"
+  branch = "drop-trigger"
+  digest = "1:eb039f6ca515f85c890515c836a8df0279964dcc22c14ee91180c48cad67960c"
   name = "github.com/whyrusleeping/hellabot"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2e7ba8bc2730f795856a8ce87c800d88ae3ebd80"
+  revision = "df304ed525d07e9621c8105f962bd00d67e56d00"
+  source = "https://github.com/bbriggs/hellabot"
 
 [[projects]]
   digest = "1:2a890e7debf4e44a43e999e9ebe121385347ef6e36f0efe2199b46b7b2d3dbc7"
@@ -258,6 +259,7 @@
     "go.etcd.io/bbolt",
     "golang.org/x/net/html",
     "gopkg.in/inconshreveable/log15.v2",
+    "gopkg.in/sorcix/irc.v1",
     "mvdan.cc/xurls",
   ]
   solver-name = "gps-cdcl"
