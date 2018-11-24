@@ -6,42 +6,36 @@ import (
 	"strings"
 )
 
-type NamedTrigger struct {
-	ID        string
-	Condition func(*hbot.Bot, *hbot.Message) bool
-	Action    func(*hbot.Bot, *hbot.Message) bool
-}
-
-func (t NamedTrigger) Name() string {
-	return t.ID
-}
-
-// Handle executes the trigger action if the condition is satisfied
-func (t NamedTrigger) Handle(b *hbot.Bot, m *hbot.Message) bool {
-	if !t.Condition(b, m) {
-		return false
-	}
-	return t.Action(b, m)
-}
-
 var loadTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!load"
+		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!load" && b.isAdmin(m)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, "Loading testTrigger")
-		b.Bot.AddTrigger(testTrigger)
+		split := strings.Split(m.Content, " ")
+		if len(split) < 2 {
+			irc.Reply(m, "Load what?")
+		} else {
+			b.Bot.AddTrigger(split[1])
+		}
 		return true
 	},
 }
 
 var unloadTrigger = hbot.Trigger{
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!unload"
+		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!unload" && b.isAdmin(m)
 	},
 	func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, "Unloading testTrigger")
-		b.Bot.DropTrigger(testTrigger)
+		split := strings.Split(m.Content, " ")
+		if len(split) < 2 {
+			irc.Reply(m, "Unload what?")
+		} else {
+			if b.Bot.DropTrigger(split[1]) {
+				irc.Reply(m, fmt.Sprintf("%s unloaded", split[1]))
+			} else {
+				irc.Reply(m, fmt.Sprintf("I don't think %s is loaded...", split[1]))
+			}
+		}
 		return true
 	},
 }
@@ -52,7 +46,8 @@ var testTrigger = NamedTrigger{
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!test"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, fmt.Sprintf("Hello, %s", m.From))
+		fullname := fmt.Sprintf("%s!%s@%s", m.Name, m.User, m.Host)
+		irc.Reply(m, fullname)
 		return false
 	},
 }

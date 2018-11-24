@@ -47,6 +47,9 @@ var runCmd = &cobra.Command{
 			Nick:         nick,
 			Server:       server,
 			SSL:          ssl,
+			Admins: bitbot.ACL{
+				Permitted: []string{"fraq@admin.0x00sec.org"},
+			},
 		}
 		log.Println("Starting bitbot...")
 		bitbot.Run(c)

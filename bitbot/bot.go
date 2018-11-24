@@ -25,7 +25,7 @@ type Config struct {
 	Nick         string   // nick to use
 	Server       string   // server:port for connections
 	SSL          bool     // Enable SSL for the connection
-	Admins       []string // slice of masks representing administrators
+	Admins       ACL      // slice of masks representing administrators
 }
 
 var b Bot = Bot{}

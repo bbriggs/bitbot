@@ -166,7 +166,7 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "df304ed525d07e9621c8105f962bd00d67e56d00"
-  source = "https://github.com/icholy/hellabot"
+  source = "https://github.com/bbriggs/hellabot"
 
 [[projects]]
   digest = "1:2a890e7debf4e44a43e999e9ebe121385347ef6e36f0efe2199b46b7b2d3dbc7"
