@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] - 2018-11-24
+### Added
+   - ACL type to manage allowed and rejected users
+   - Admins list (using ACL type) and `--admins` flag
+   - Dynamic loading and unloading of modules (guarded by admins list)
+       - Modules that are loadable must be registered with the local triggers `sync.Map`
+   - `!triggers` command to list registered modules
+   - NamedTrigger type that extends the new interface used for bitbot handlers
+
+###Changed
+   - Running on fork of bitbot until work around new style of triggers/interfaces is resolved
 
 ## [1.0.0] - 2018-11-18
 ### Added
