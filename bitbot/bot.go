@@ -87,10 +87,13 @@ func Run(config Config) {
 	b.Bot.AddTrigger(URLReaderTrigger)
 	b.Bot.AddTrigger(AbyssTrigger)
 	b.Bot.AddTrigger(listTriggers)
+	b.Bot.AddTrigger(DecisionsTrigger)
+
 	// Register the triggers you want to load and unload
 	b.RegisterTrigger(InfoTrigger)
 	b.RegisterTrigger(ShrugTrigger)
 	b.RegisterTrigger(URLReaderTrigger)
+	b.RegisterTrigger(DecisionsTrigger)
 	b.RegisterTrigger(AbyssTrigger)
 
 	// GOOOOOOO
