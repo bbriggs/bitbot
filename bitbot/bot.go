@@ -95,6 +95,7 @@ func Run(config Config) {
 	b.RegisterTrigger(URLReaderTrigger)
 	b.RegisterTrigger(DecisionsTrigger)
 	b.RegisterTrigger(AbyssTrigger)
+	b.RegisterTrigger(raiderQuote)
 
 	// GOOOOOOO
 	defer b.DB.Close()
