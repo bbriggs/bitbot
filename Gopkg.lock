@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:b55e05cdb2500e5d15d60156c515fadf4f01fe6ecf65c3ef8499794efdd10206"
+  name = "github.com/bbriggs/quotes"
+  packages = ["model"]
+  pruneopts = "UT"
+  revision = "1ec60676b04f2f4edbc33233e6b840413a4d3b2c"
+
+[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -252,6 +260,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/bbriggs/quotes/model",
     "github.com/mitchellh/go-homedir",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
