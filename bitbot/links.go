@@ -49,10 +49,14 @@ func isTitleElement(n *html.Node) bool {
 
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		if len(n.FirstChild.Data) > 120 {
-			return n.FirstChild.Data[:120], true
+		if n.FirstChild != nil {
+			if len(n.FirstChild.Data) > 120 {
+				return n.FirstChild.Data[:120], true
+			}
+			return n.FirstChild.Data, true
+		} else {
+			return "", false
 		}
-		return n.FirstChild.Data, true
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -66,10 +70,16 @@ func traverse(n *html.Node) (string, bool) {
 }
 
 func GetHtmlTitle(r io.Reader) (string, bool) {
-	doc, err := html.Parse(&io.LimitedReader{R: r, N: 4096})
+	doc, err := html.Parse(&io.LimitedReader{R: r, N: 65535})
 	if err != nil {
 		return "", false
 	}
-
-	return traverse(doc)
+	title, ok := traverse(doc)
+	if !ok {
+		return "", false
+	}
+	if len(title) == 0 {
+		return " ", false
+	}
+	return title, ok
 }
