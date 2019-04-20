@@ -23,18 +23,36 @@ package cmd
 import (
 	"github.com/bbriggs/bitbot/bitbot"
 	"github.com/spf13/cobra"
+	"log"
 )
 
 var server string
 var channels []string
 var nick string
 var ssl bool = false
+var nickservPass string
+var operUser string
+var operPass string
+var admins []string
 
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run bitbot",
 	Run: func(cmd *cobra.Command, args []string) {
-		bitbot.Run(server, nick, channels, ssl)
+		c := bitbot.Config{
+			NickservPass: nickservPass,
+			OperUser:     operUser,
+			OperPass:     operPass,
+			Channels:     channels,
+			Nick:         nick,
+			Server:       server,
+			SSL:          ssl,
+			Admins: bitbot.ACL{
+				Permitted: admins,
+			},
+		}
+		log.Println("Starting bitbot...")
+		bitbot.Run(c)
 	},
 }
 
@@ -43,7 +61,11 @@ func init() {
 
 	rootCmd.AddCommand(runCmd)
 	runCmd.Flags().StringVarP(&server, "server", "s", server, "target server")
+	runCmd.Flags().StringVarP(&nickservPass, "nickserv", "", nickservPass, "nickserv password")
+	runCmd.Flags().StringVarP(&operUser, "operUser", "", operUser, "oper username")
+	runCmd.Flags().StringVarP(&operPass, "operPass", "", operPass, "oper password")
 	runCmd.Flags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
+	runCmd.Flags().StringSliceVarP(&admins, "admins", "", admins, "Hostmasks of administrators")
 	runCmd.Flags().StringVarP(&nick, "nick", "n", nick, "nickname")
 	runCmd.Flags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
 

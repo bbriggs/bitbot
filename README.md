@@ -11,11 +11,11 @@ A minimal IRC bot that was built for me, not you.
 Assuming that `$GOPATH/bin` is in your `$PATH`: 
 
 ```
-bitbot run --server=irc.someserver.com:6697 --channels="#foo,#bar" --nick=bitbot --ssl
+bitbot run --server=irc.someserver.com:6697 --channels="#foo,bar" --nick=bitbot --nickserv='th15ism3' --operUser=bbriggs --operPass='s0upers3cr3t' --ssl
 ```
 
 Or with Docker:
 
 ```
-docker run -d -it bbriggs/bitbot run --server=irc.someserver.com:6697 --channels="#foo,#bar" --nick=bitbot --ssl
+docker run -d -it bbriggs/bitbot run --server=irc.someserver.com:6697 --channels="#foo,bar" --nick=bitbot --nickserv='th15ism3' --operUser=bbriggs --operPass='s0upers3cr3t' --ssl
 ```

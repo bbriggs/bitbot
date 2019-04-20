@@ -44,7 +44,9 @@
 
 [[constraint]]
   name = "github.com/whyrusleeping/hellabot"
-  branch = "master"
+  #source = "https://github.com/icholy/hellabot"
+  source = "https://github.com/bbriggs/hellabot"
+  branch = "drop-trigger"
 
 [prune]
   go-tests = true
