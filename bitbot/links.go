@@ -24,11 +24,11 @@ var URLReaderTrigger = NamedTrigger{
 }
 
 func isURL(message string) bool {
-	return xurls.Strict.MatchString(message)
+	return xurls.Strict().MatchString(message)
 }
 
 func lookupPageTitle(message string) string {
-	url := xurls.Strict.FindString(message)
+	url := xurls.Strict().FindString(message)
 	resp, err := http.Get(url)
 	if err != nil {
 		return ""
