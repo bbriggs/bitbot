@@ -85,17 +85,8 @@ func Run(config Config) {
 	b.Bot.AddTrigger(ShrugTrigger)
 	//b.Bot.AddTrigger(ReportIdleUsers)
 	b.Bot.AddTrigger(URLReaderTrigger)
-	b.Bot.AddTrigger(AbyssTrigger)
-	b.Bot.AddTrigger(listTriggers)
-	//b.Bot.AddTrigger(DecisionsTrigger)
-
-	// Register the triggers you want to load and unload
-	b.RegisterTrigger(InfoTrigger)
-	b.RegisterTrigger(ShrugTrigger)
-	b.RegisterTrigger(URLReaderTrigger)
-	b.RegisterTrigger(DecisionsTrigger)
-	b.RegisterTrigger(AbyssTrigger)
-	b.RegisterTrigger(raiderQuote)
+	b.Bot.AddTrigger(RollTrigger)
+	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
 	defer b.DB.Close()
