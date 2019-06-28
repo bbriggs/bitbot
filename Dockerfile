@@ -1,10 +1,9 @@
-FROM golang:1.11-alpine as builder
+FROM golang:1.12-alpine as builder
 
-RUN apk update && apk add git build-base ca-certificates dep
+RUN apk update && apk add git build-base ca-certificates
 RUN adduser -D -g 'bitbot' bitbot
 WORKDIR /go/src/github.com/bbriggs/bitbot
 COPY . .
-RUN dep ensure
 RUN ./docker-build.sh
 RUN touch .bolt.db
 
