@@ -7,15 +7,13 @@ RUN apk add --no-cache git
 RUN ./docker-build.sh
 RUN touch .bolt.db
 
-ENTRYPOINT ["/bin/sh"]
-
-#FROM scratch
-#COPY --from=builder /etc/passwd /etc/passwd
-#COPY --from=builder /etc/group /etc/group
-#COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-#COPY --from=builder /app/opt/bitbot /opt/bitbot
-#COPY --from=builder --chown=bitbot:bitbot /app/.bolt.db .
-#USER bitbot
-#ENTRYPOINT ["/opt/bitbot"]
+FROM scratch
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/opt/bitbot /opt/bitbot
+COPY --from=builder --chown=bitbot:bitbot /app/.bolt.db .
+USER bitbot
+ENTRYPOINT ["/opt/bitbot"]
 
 
