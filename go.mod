@@ -9,6 +9,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec
 	github.com/inconshreveable/mousetrap v1.0.0
+	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
 	github.com/magiconair/properties v1.8.0
 	github.com/mattn/go-colorable v0.1.1
 	github.com/mattn/go-isatty v0.0.7
@@ -30,5 +31,5 @@ require (
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20180818164646-67afb5ed74ec
 	gopkg.in/sorcix/irc.v1 v1.1.4
 	gopkg.in/yaml.v2 v2.2.2
-	mvdan.cc/xurls v0.0.0-20181021210231-e52e821cbfe8
+	mvdan.cc/xurls/v2 v2.0.0
 )

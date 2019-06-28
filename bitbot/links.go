@@ -5,7 +5,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 	"golang.org/x/net/html"
 	"io"
-	"mvdan.cc/xurls"
+	"mvdan.cc/xurls/v2"
 	"net/http"
 )
 
