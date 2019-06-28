@@ -22,21 +22,48 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/bbriggs/bitbot/bitbot"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+const VERSION = ""
+
+var (
+	cfgFile  string
+	server   string
+	channels []string
+	nick     string
+	ssl      bool
+	nickserv string
+	operUser string
+	operPass string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:     "bitbot",
-	Short:   "A brief description of your application",
-	Version: fmt.Sprintf("%s (%s/%s)", bitbot.GitVersion, bitbot.GitBranch, bitbot.GitCommit),
+	Version: VERSION,
+	Use:     "bitbot [flags]",
+	Short:   "A Golang IRC bot powered by Hellabot",
+	Run: func(cmd *cobra.Command, args []string) {
+		config := bitbot.Config{
+			NickservPass: viper.GetString("nickservPass"),
+			OperUser:     viper.GetString("operUser"),
+			OperPass:     viper.GetString("operPass"),
+			Channels:     viper.GetStringSlice("channels"),
+			Nick:         viper.GetString("nick"),
+			Server:       viper.GetString("server"),
+			SSL:          viper.GetBool("ssl"),
+			Admins: bitbot.ACL{
+				Permitted: viper.GetStringSlice("admins"),
+			},
+		}
+		log.Println("Starting bitbot...")
+		bitbot.Run(config)
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -54,7 +81,25 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.bitbot.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is ./config.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&server, "server", "s", server, "target server")
+	rootCmd.PersistentFlags().StringVarP(&operUser, "operUser", "", server, "oper username")
+	rootCmd.PersistentFlags().StringVarP(&server, "operPass", "", server, "oper password")
+	rootCmd.PersistentFlags().StringVarP(&nickserv, "nickserv", "", nickserv, "nickserv password")
+	rootCmd.PersistentFlags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
+	rootCmd.PersistentFlags().StringVarP(&nick, "nick", "n", nick, "nickname")
+	rootCmd.PersistentFlags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
+
+	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
+	viper.BindPFlag("nickserv", rootCmd.PersistentFlags().Lookup("nickserv"))
+	viper.BindPFlag("operUser", rootCmd.PersistentFlags().Lookup("operUser"))
+	viper.BindPFlag("operPass", rootCmd.PersistentFlags().Lookup("operPass"))
+	viper.BindPFlag("channels", rootCmd.PersistentFlags().Lookup("channels"))
+	viper.BindPFlag("nick", rootCmd.PersistentFlags().Lookup("nick"))
+	viper.BindPFlag("ssl", rootCmd.PersistentFlags().Lookup("ssl"))
+
+	viper.SetDefault("nick", "bitbot")
+
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -63,16 +108,8 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".bitbot" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".bitbot")
+		viper.AddConfigPath(".")
+		viper.SetConfigName("config")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
