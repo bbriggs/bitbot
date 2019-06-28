@@ -7,11 +7,12 @@ export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # We don't want empty tags overriding the default value
 if [ ! -z $GIT_TAG ]; then
-	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.GitCommit=$GIT_COMMIT -X github.com/bbriggs/bitbot/bitbot.GitVersion=$GIT_TAG -X github.com/bbriggs/bitbot/bitbot.GitBranch=$GIT_BRANCH"
+	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSIOM=$GIT_TAG"
 else
-	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.GitCommit=$GIT_COMMIT -X github.com/bbriggs/bitbot/bitbot.GitBranch=$GIT_BRANCH"
+	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSION=$GIT_COMMIT"
 fi
 
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags "-s -w -extldflags '-static' ${XFLAGS}" -o /go/bin/bitbot
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags "-s -w -extldflags '-static' ${XFLAGS}" -o ./opt/bitbot
 
 echo "Compiled bitbot:\n\tGit tag: $GIT_TAG\n\tGit commit: $GIT_COMMIT\n\tGit branch: $GIT_BRANCH\n"
+
