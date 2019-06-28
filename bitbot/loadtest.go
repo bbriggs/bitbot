@@ -38,7 +38,7 @@ var unloadTrigger = hbot.Trigger{
 		} else {
 			t, ok := b.FetchTrigger(split[1])
 			if ok {
-				dropped := b.Bot.DropTrigger(t)
+				dropped := b.DropTrigger(t)
 				if dropped {
 					irc.Reply(m, fmt.Sprintf("Trigger %s dropped", t.Name()))
 				} else {

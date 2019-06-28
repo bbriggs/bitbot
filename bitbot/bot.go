@@ -46,6 +46,11 @@ func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
 	return res.(NamedTrigger), true
 }
 
+func (b *Bot) DropTrigger(t NamedTrigger) bool {
+	b.triggers.Delete(t.Name())
+	return true
+}
+
 func Run(config Config) {
 	db, err := newDB()
 	if err != nil {
