@@ -7,7 +7,7 @@ export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 # We don't want empty tags overriding the default value
 if [ ! -z $GIT_TAG ]; then
-	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSIOM=$GIT_TAG"
+	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSION=$GIT_TAG"
 else
 	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSION=$GIT_COMMIT"
 fi
