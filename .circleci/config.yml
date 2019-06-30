@@ -17,7 +17,7 @@ jobs:
      - run:
         name: Run unit tests
         command: |
-            go run main.go
+            github.com/bbriggs/quotes/model
             go test -v ./...
 
   build_and_push_to_repository:
