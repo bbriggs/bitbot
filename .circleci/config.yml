@@ -25,7 +25,7 @@ jobs:
             go get "go.etcd.io/bbolt"
             go get "golang.org/x/net/html"
             go get "gopkg.in/inconshreveable/log15.v2"
-            go get "gokpg.in/sorcix/irc.v1"
+            go get "gopkg.in/sorcix/irc.v1"
             go get "mvdan.cc/xurls/v2"
      - run:
         name: Run unit tests
