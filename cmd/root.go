@@ -28,6 +28,7 @@ import (
 	"github.com/bbriggs/bitbot/bitbot"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/whyrusleeping/hellabot"
 )
 
 const VERSION = ""
@@ -42,6 +43,14 @@ var (
 	operUser string
 	operPass string
 )
+
+var plugins = []hbot.Handler{
+	bitbot.SkipTrigger,
+	bitbot.InfoTrigger,
+	bitbot.ShrugTrigger,
+	bitbot.URLReaderTrigger,
+	bitbot.RollTrigger,
+}
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -60,6 +69,7 @@ var rootCmd = &cobra.Command{
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
+			Plugins: plugins,
 		}
 		log.Println("Starting bitbot...")
 		bitbot.Run(config)
