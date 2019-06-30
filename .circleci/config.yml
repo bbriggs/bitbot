@@ -17,7 +17,7 @@ jobs:
      - run:
         name: Run unit tests
         command: |
-            go build
+            go run main.go
             go test -v ./...
 
   build_and_push_to_repository:
