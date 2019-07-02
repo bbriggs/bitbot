@@ -21,11 +21,10 @@ func TestGetHTMLTitle(t *testing.T) {
 		t.Log("could not parse huge title")
 		t.Fail()
 	}
-	if len(title) > 120 || !strings.HasPrefix(title, "aaaa") {
-		t.Log("unexpected title")
+	if len(title) > 353 || !strings.HasPrefix(title, "aaaa") {
+		t.Errorf("The title is too long. Expected 353 chars at most, got %d", len(title))
 		t.Fail()
 	}
-
 }
 
 func TestGetHTMLTitleWithSmallTitle(t *testing.T) {
