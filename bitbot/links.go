@@ -50,8 +50,8 @@ func isTitleElement(n *html.Node) bool {
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
 		if n.FirstChild != nil {
-			if len(n.FirstChild.Data) > 120 {
-				return (n.FirstChild.Data[:117] + "..."), true
+			if len(n.FirstChild.Data) > 350 {
+				return (n.FirstChild.Data[:350] + "..."), true
 			}
 			return n.FirstChild.Data, true
 		} else {
