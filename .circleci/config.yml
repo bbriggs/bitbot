@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   run_unit_tests:
     docker:
-        - image: golang:1.-12-alpine
+        - image: golang:1.12-alpine
     steps:
      - checkout
      - run:
