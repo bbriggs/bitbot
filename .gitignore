@@ -1,2 +1,6 @@
+*.yaml
+*.yml
+*.json
+bitbot_* 
 .bolt.db
 vendor/*

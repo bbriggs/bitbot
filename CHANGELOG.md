@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED] 
 ### Added
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
+   - Specify plugins to load using the config file instead of modifying the source code. Whodathunkit.
+
+### Changed
+   - Config struct updated to include plugins
 
 ## [1.1.0] - 2018-11-24
 ### Added
