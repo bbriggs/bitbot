@@ -2,7 +2,6 @@ package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
-	"random"
 	"regexp"
 )
 
@@ -19,7 +18,7 @@ var BeefyTrigger = NamedTrigger{
 			"https://i.imgur.com/VbC5GLl.jpg",
 			"mmmmmm",
 		}
-		irc.Reply(m, responses[random.Intn(len(responses))])
+		irc.Reply(m, responses[b.Random.Intn(len(responses))])
 		return true
 	},
 }
