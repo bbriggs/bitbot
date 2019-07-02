@@ -22,14 +22,15 @@ type Bot struct {
 }
 
 type Config struct {
-	NickservPass string   // Nickserv password
-	OperUser     string   // Username for server oper
-	OperPass     string   // Password for server oper
-	Channels     []string // slice of channels to connect to (must include #)
-	Nick         string   // nick to use
-	Server       string   // server:port for connections
-	SSL          bool     // Enable SSL for the connection
-	Admins       ACL      // slice of masks representing administrators
+	NickservPass string         // Nickserv password
+	OperUser     string         // Username for server oper
+	OperPass     string         // Password for server oper
+	Channels     []string       // slice of channels to connect to (must include #)
+	Nick         string         // nick to use
+	Server       string         // server:port for connections
+	SSL          bool           // Enable SSL for the connection
+	Admins       ACL            // slice of masks representing administrators
+	Plugins      []hbot.Handler // Plugins to start with
 }
 
 var b Bot = Bot{}
@@ -84,13 +85,9 @@ func Run(config Config) {
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
-	// Begin with skip prefix (!skip)
-	b.Bot.AddTrigger(SkipTrigger)
-	b.Bot.AddTrigger(InfoTrigger)
-	b.Bot.AddTrigger(ShrugTrigger)
-	//b.Bot.AddTrigger(ReportIdleUsers)
-	b.Bot.AddTrigger(URLReaderTrigger)
-	b.Bot.AddTrigger(RollTrigger)
+	for _, trigger := range config.Plugins {
+		b.Bot.AddTrigger(trigger)
+	}
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
