@@ -1,6 +1,19 @@
-FROM golang:latest 
-ADD . /usr/local/go/src/github.com/bbriggs/bitbot
-WORKDIR /usr/local/go/src/github.com/bbriggs/bitbot
-RUN ./build.sh
-ENTRYPOINT ["/usr/local/go/bin/bitbot"]
+FROM golang:1.12-alpine as builder
+
+RUN adduser -D -g 'bitbot' bitbot
+WORKDIR /app
+COPY . .
+RUN apk add --no-cache git
+RUN ./docker-build.sh
+RUN touch .bolt.db
+
+FROM scratch
+COPY --from=builder /etc/passwd /etc/passwd
+COPY --from=builder /etc/group /etc/group
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=builder /app/opt/bitbot /opt/bitbot
+COPY --from=builder --chown=bitbot:bitbot /app/.bolt.db .
+USER bitbot
+ENTRYPOINT ["/opt/bitbot"]
+
 

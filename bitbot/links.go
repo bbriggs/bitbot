@@ -6,20 +6,21 @@ import (
 	"io"
 	"net/http"
 	"time"
-
+  
+ 	"mvdan.cc/xurls/v2"
 	bolt "go.etcd.io/bbolt"
 	"golang.org/x/net/html"
-	"mvdan.cc/xurls"
 
 	"github.com/whyrusleeping/hellabot"
 )
 
-var URLReaderTrigger = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var URLReaderTrigger = NamedTrigger{
+	ID: "urls",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := b.lookupPageTitle(m.Content)
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		resp := lookupPageTitle(m.Content)
 		if resp != "" {
 			irc.Reply(m, b.lookupPageTitle(m.Content))
 		}
@@ -28,10 +29,10 @@ var URLReaderTrigger = hbot.Trigger{
 }
 
 func isURL(message string) bool {
-	return xurls.Strict.MatchString(message)
+	return xurls.Strict().MatchString(message)
 }
 
-func (b Bot) wasLookedUpInTheLastMintues(url string) bool {
+func (b Bot) wasLookedUpInTheLastMinutes(url string) bool {
 	wasLooked := false
 
 	b.DB.View(func(tx *bolt.Tx) error {
@@ -70,8 +71,8 @@ func (b Bot) cacheUrl(url string) {
 func (b Bot) lookupPageTitle(message string) string {
 	url := xurls.Strict.FindString(message)
 
-	if b.wasLookedUpInTheLastMintues(url) {
-		return ""
+	if b.wasLookedUpInTheLastMinutes(url) {
+    return "" # TODO : get the title 
 	}
 
 	resp, err := http.Get(url)
@@ -94,10 +95,14 @@ func isTitleElement(n *html.Node) bool {
 
 func traverse(n *html.Node) (string, bool) {
 	if isTitleElement(n) {
-		if len(n.FirstChild.Data) > 120 {
-			return n.FirstChild.Data[:120], true
+		if n.FirstChild != nil {
+			if len(n.FirstChild.Data) > 350 {
+				return n.FirstChild.Data[:350], true
+			}
+			return n.FirstChild.Data, true
+		} else {
+			return "", false
 		}
-		return n.FirstChild.Data, true
 	}
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -111,10 +116,16 @@ func traverse(n *html.Node) (string, bool) {
 }
 
 func GetHtmlTitle(r io.Reader) (string, bool) {
-	doc, err := html.Parse(&io.LimitedReader{R: r, N: 4096})
+	doc, err := html.Parse(&io.LimitedReader{R: r, N: 65535})
 	if err != nil {
-		panic("Fail to parse html")
+		return "", false
 	}
-
-	return traverse(doc)
+	title, ok := traverse(doc)
+	if !ok {
+		return "", false
+	}
+	if len(title) == 0 {
+		return " ", false
+	}
+	return title, ok
 }

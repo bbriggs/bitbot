@@ -25,6 +25,7 @@ func TestGetHTMLTitle(t *testing.T) {
 		t.Log("unexpected title")
 		t.Fail()
 	}
+
 }
 
 func TestGetHTMLTitleWithSmallTitle(t *testing.T) {
@@ -42,6 +43,21 @@ func TestGetHTMLTitleWithSmallTitle(t *testing.T) {
 	}
 	if !strings.HasPrefix(title, "aaa") {
 		t.Log("unexpected title")
+		t.Fail()
+	}
+}
+
+func TestGetHTMLTitleWithEmptyTitle(t *testing.T) {
+
+	r, w := io.Pipe()
+	go func() {
+		io.WriteString(w, "<html><head><title>")
+		io.WriteString(w, "</title></head></html>")
+		w.Close()
+	}()
+	_, found := GetHtmlTitle(r)
+	if found {
+		t.Log("Returned true on an empty title")
 		t.Fail()
 	}
 }
