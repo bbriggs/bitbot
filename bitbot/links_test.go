@@ -25,7 +25,6 @@ func TestGetHTMLTitle(t *testing.T) {
 		t.Log("unexpected title")
 		t.Fail()
 	}
-
 }
 
 func TestGetHTMLTitleWithSmallTitle(t *testing.T) {
