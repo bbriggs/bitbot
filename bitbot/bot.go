@@ -74,9 +74,7 @@ func Run(config Config) {
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
-	// Triggers to run
-	// Passive triggers. Unskippable.
-	b.Bot.AddTrigger(TrackIdleUsers)
+	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
@@ -84,15 +82,6 @@ func Run(config Config) {
 		b.Bot.AddTrigger(trigger)
 	}
 
-	// Begin with skip prefix (!skip)
-	/*
-		b.Bot.AddTrigger(SkipTrigger)
-		b.Bot.AddTrigger(InfoTrigger)
-		b.Bot.AddTrigger(ShrugTrigger)
-		//b.Bot.AddTrigger(ReportIdleUsers)
-		b.Bot.AddTrigger(URLReaderTrigger)
-		b.Bot.AddTrigger(RollTrigger)
-	*/
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
