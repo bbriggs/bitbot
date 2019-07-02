@@ -22,7 +22,7 @@ func TestGetHTMLTitle(t *testing.T) {
 		t.Fail()
 	}
 	if len(title) > 353 || !strings.HasPrefix(title, "aaaa") {
-		t.Log("unexpected title")
+		t.Errorf("The title is too long. Expected 353 chars at most, got %d", len(title))
 		t.Fail()
 	}
 }

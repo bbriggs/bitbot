@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED] 
 ### Added
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
+### Fixed
+   - Fixed the plugin links's tests
 
 ## [1.1.0] - 2018-11-24
 ### Added
