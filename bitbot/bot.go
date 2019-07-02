@@ -83,16 +83,6 @@ func Run(config Config) {
 	for _, trigger := range config.Plugins {
 		b.Bot.AddTrigger(trigger)
 	}
-
-	// Begin with skip prefix (!skip)
-	/*
-		b.Bot.AddTrigger(SkipTrigger)
-		b.Bot.AddTrigger(InfoTrigger)
-		b.Bot.AddTrigger(ShrugTrigger)
-		//b.Bot.AddTrigger(ReportIdleUsers)
-		b.Bot.AddTrigger(URLReaderTrigger)
-		b.Bot.AddTrigger(RollTrigger)
-	*/
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO
