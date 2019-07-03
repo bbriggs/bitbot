@@ -1,53 +1,15 @@
 version: 2.1
-executors:
-  gcloud:
-    docker:
-    - image: google/cloud-sdk:latest
-    environment:
-        NAME: bitbot # The name that docker will use when tagging the image
-        TAG: latest # The tag that docker will use to tag the image
-        REPO: gcr.io/infra-b553c506 #The repository that docker will push the image to
 jobs:
   run_unit_tests:
     docker:
-        - image: golang:latest
-    working_directory: /go/src/github.com/bbriggs/bitbot
+        - image: circleci/golang:1.12
     steps:
      - checkout
      - run:
         name: Run unit tests
-        command: |
-            go test -v ./...
-
-  build_and_push_to_repository:
-    executor: gcloud
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
-
-    working_directory: /go/src/github.com/bbriggs/bitbot
-    steps:
-    - checkout
-    - setup_remote_docker
-    - run:
-       name: Build and push to repository
-       command: |
-           echo $SA > key.json
-           gcloud auth activate-service-account --key-file=key.json
-           gcloud auth configure-docker --quiet
-           docker build --tag $REPO/$NAME:$CIRCLE_SHA1 . #Build image and tag it with the HEAD commit SHA
-           docker tag $REPO/$NAME:$CIRCLE_SHA1 $REPO/$NAME:$TAG # Tag image as latest for convenience
-           docker push $REPO/$NAME:$TAG
-           docker push $REPO/$NAME:$CIRCLE_SHA1
+        command: go test -v ./...
 workflows:
   version: 2
   default:
     jobs:
         - run_unit_tests
-        - build_and_push_to_repository:
-            requires:
-              - run_unit_tests
-            filters:
-              branches:
-                  only: master

@@ -1,0 +1,20 @@
+---
+server: "irc.secops.space:6697"
+nickServ: "hunter2"
+operUser: "your-oper-username"
+operPass: "correct-horse-battery-staple"
+channels:
+  - "#main"
+  - "#bots"
+  - "#bitbot"
+nick: "bitbot"
+ssl: "true"
+admins:
+  "foo@your.irc.hostmask"
+# Plugins available to load are defined in cmd/bot.go
+plugins:
+  - "roll"
+  - "skip"
+  - "info"
+  - "shrug"
+  - "urlReader"
