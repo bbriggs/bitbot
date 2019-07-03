@@ -11,11 +11,12 @@ import (
 
 const DICE_USAGE = "Usage: [num dice]d[sides](+/-num) (opt: if fudging)"
 
-var RollTrigger = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var RollTrigger = NamedTrigger{
+	ID: "roll",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!roll")
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var resp string
 		cmd := strings.Split(m.Content, " ")
 		if len(cmd) > 1 {
