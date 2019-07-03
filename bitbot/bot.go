@@ -79,15 +79,14 @@ func Run(config Config) {
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
-	// Triggers to run
-	// Passive triggers. Unskippable.
-	b.Bot.AddTrigger(TrackIdleUsers)
+	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
 	for _, trigger := range config.Plugins {
 		b.Bot.AddTrigger(trigger)
 	}
+
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// GOOOOOOO

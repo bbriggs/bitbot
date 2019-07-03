@@ -44,12 +44,13 @@ var (
 	operPass string
 )
 
-var plugins = []hbot.Handler{
-	bitbot.SkipTrigger,
-	bitbot.InfoTrigger,
-	bitbot.ShrugTrigger,
-	bitbot.URLReaderTrigger,
-	bitbot.RollTrigger,
+var pluginMap = map[string]hbot.Handler{
+	"trackIdleUsers": bitbot.TrackIdleUsers,
+	"skip":           bitbot.SkipTrigger,
+	"info":           bitbot.InfoTrigger,
+	"shrug":          bitbot.ShrugTrigger,
+	"urlReader":      bitbot.URLReaderTrigger,
+	"roll":           bitbot.RollTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -58,6 +59,12 @@ var rootCmd = &cobra.Command{
 	Use:     "bitbot [flags]",
 	Short:   "A Golang IRC bot powered by Hellabot",
 	Run: func(cmd *cobra.Command, args []string) {
+		var plugins []hbot.Handler
+		for _, plugin := range viper.GetStringSlice("plugins") {
+			if p, ok := pluginMap[plugin]; ok {
+				plugins = append(plugins, p)
+			}
+		}
 		config := bitbot.Config{
 			NickservPass: viper.GetString("nickservPass"),
 			OperUser:     viper.GetString("operUser"),
