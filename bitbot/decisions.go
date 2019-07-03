@@ -10,11 +10,11 @@ import (
 var DecisionsTrigger = NamedTrigger{
 	ID: "decisions",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		prefix := fmt.Sprintf("%s choose", b.Bot.Nick)
+		prefix := fmt.Sprintf("%s choose", irc.Nick)
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, prefix)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		prefix := fmt.Sprintf("%s choose", b.Bot.Nick)
+		prefix := fmt.Sprintf("%s choose", irc.Nick)
 		msg := strings.TrimPrefix(m.Content, prefix)
 		splitMsg := strings.Split(msg, " or ")
 		if len(splitMsg) < 2 {
