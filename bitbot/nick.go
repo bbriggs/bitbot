@@ -19,6 +19,6 @@ var NickTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		nick := irc.Nick + "_"
 		irc.SetNick(nick)
-		return true
+		return false
 	},
 }
