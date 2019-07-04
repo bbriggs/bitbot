@@ -8,6 +8,7 @@ require (
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
+	github.com/leanovate/gopter v0.2.4
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mudler/sendfd v0.0.0-20150620134918-f0fc74c13877 // indirect

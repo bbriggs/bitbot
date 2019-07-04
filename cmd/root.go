@@ -51,6 +51,7 @@ var pluginMap = map[string]hbot.Handler{
 	"shrug":          bitbot.ShrugTrigger,
 	"urlReader":      bitbot.URLReaderTrigger,
 	"roll":           bitbot.RollTrigger,
+	"decisions":      bitbot.DecisionsTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands

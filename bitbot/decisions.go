@@ -2,6 +2,7 @@ package bitbot
 
 import (
 	"fmt"
+	"math/rand"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
@@ -10,19 +11,25 @@ import (
 var DecisionsTrigger = NamedTrigger{
 	ID: "decisions",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		prefix := fmt.Sprintf("%s choose", b.Bot.Nick)
+		prefix := fmt.Sprintf("%s choose", irc.Nick)
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, prefix)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		prefix := fmt.Sprintf("%s choose", b.Bot.Nick)
+		prefix := fmt.Sprintf("%s choose", irc.Nick)
 		msg := strings.TrimPrefix(m.Content, prefix)
-		splitMsg := strings.Split(msg, " or ")
-		if len(splitMsg) < 2 {
-			irc.Reply(m, "What am I supposed to be deciding here?")
-			return false
+		r := choose(msg)
+		if r == "" {
+			r = "Choose what?"
 		}
-		r := strings.TrimSpace(splitMsg[b.Random.Intn(len(splitMsg))])
 		irc.Reply(m, r)
 		return false
 	},
+}
+
+func choose(m string) string {
+	s := strings.Split(m, " or ")
+	if len(s) < 2 {
+		return ""
+	}
+	return strings.TrimSpace(s[rand.Intn(len(s))])
 }

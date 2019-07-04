@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
+	"gopkg.in/sorcix/irc.v1"
 	"time"
 )
 
@@ -57,4 +58,30 @@ func fmtDuration(d time.Duration) string {
 	d -= m * time.Minute
 
 	return fmt.Sprintf("%02d days, %02d hours, %02d minutes", day, h, m)
+}
+
+func makeMockMessage(nick, message string) *hbot.Message {
+	return &hbot.Message{
+		&irc.Message{
+			&irc.Prefix{
+				nick,
+				"",
+				"",
+			},
+			"PRIVMSG",
+			[]string{},
+			message,
+			true,
+		},
+		message,
+		time.Now(),
+		"",
+		nick,
+	}
+}
+
+func makeMockBot(nick string) *hbot.Bot {
+	return &hbot.Bot{
+		Nick: nick,
+	}
 }
