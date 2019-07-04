@@ -4,3 +4,4 @@
 bitbot_* 
 .bolt.db
 vendor/*
+opt/
