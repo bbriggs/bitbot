@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
    - Specify plugins to load using the config file instead of modifying the source code. Whodathunkit.
+     - When running as a bot (and not a library), all plugins are loaded by default.
 
 ### Changed
    - Config struct updated to include plugins
