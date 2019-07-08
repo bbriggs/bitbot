@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED] 
 ### Added
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
+   - Bitbot now adds an underscore to his nick when needed (#60, m-242)
 
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)

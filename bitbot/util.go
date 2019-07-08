@@ -83,5 +83,6 @@ func makeMockMessage(nick, message string) *hbot.Message {
 func makeMockBot(nick string) *hbot.Bot {
 	return &hbot.Bot{
 		Nick: nick,
+		Host: "foo",
 	}
 }

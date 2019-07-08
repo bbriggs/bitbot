@@ -78,11 +78,12 @@ func Run(config Config) {
 
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
-
+	//b.Bot.Log("Loading triggers")
 	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
+	b.Bot.AddTrigger(NickTakenTrigger)
 	for _, trigger := range config.Plugins {
 		b.Bot.AddTrigger(trigger)
 	}
