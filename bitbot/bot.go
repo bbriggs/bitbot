@@ -83,7 +83,7 @@ func Run(config Config) {
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
-	b.Bot.AddTrigger(NickTrigger)
+	b.Bot.AddTrigger(NickTakenTrigger)
 	for _, trigger := range config.Plugins {
 		b.Bot.AddTrigger(trigger)
 	}

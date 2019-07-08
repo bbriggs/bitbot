@@ -6,13 +6,13 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var NickTrigger = NamedTrigger{
+var NickTakenTrigger = NamedTrigger{
 	ID: "nick",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		/* get the host's name by cutting the port number, and making sure that the message comes from host */
 		var comesFromHost = (m.From == strings.Split(irc.Host, ":")[0])
 
-		var nickTaken = strings.Contains(m.Content,
-			"Nickname is already in use")
+		var nickTaken = strings.Contains(m.Content, "Nickname is already in use")
 
 		return comesFromHost && nickTaken
 	},
