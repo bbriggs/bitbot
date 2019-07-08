@@ -116,7 +116,13 @@ func init() {
 	viper.BindPFlag("nick", rootCmd.PersistentFlags().Lookup("nick"))
 	viper.BindPFlag("ssl", rootCmd.PersistentFlags().Lookup("ssl"))
 
+	// All plugins enabled by default
+	var defaultPlugins []string
+	for plugin, _ := range pluginMap {
+		defaultPlugins = append(defaultPlugins, plugin)
+	}
 	viper.SetDefault("nick", "bitbot")
+	viper.SetDefault("plugins", defaultPlugins)
 
 }
 
