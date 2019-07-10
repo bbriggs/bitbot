@@ -7,6 +7,7 @@ import (
 	"io"
 	"mvdan.cc/xurls/v2"
 	"net/http"
+	"time"
 )
 
 var URLReaderTrigger = NamedTrigger{
@@ -17,25 +18,33 @@ var URLReaderTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		resp := lookupPageTitle(m.Content)
 		if resp != "" {
-			irc.Reply(m, lookupPageTitle(m.Content))
+			irc.Reply(m, resp)
 		}
 		return true
 	},
 }
+
+var lastTimeTitleLookup = time.Date(
+        1970, 1, 1, 0, 0, 0, 0, time.UTC)
 
 func isURL(message string) bool {
 	return xurls.Strict().MatchString(message)
 }
 
 func lookupPageTitle(message string) string {
+	if time.Now().Sub(lastTimeTitleLookup).Minutes() < 2 {
+		fmt.Println("Anti-url flood activated")
+		return ""
+	}
+	fmt.Println("mabite !")
 	url := xurls.Strict().FindString(message)
 	resp, err := http.Get(url)
 	if err != nil {
 		return ""
 	}
 	defer resp.Body.Close()
-	fmt.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
+		lastTimeTitleLookup = time.Now()
 		return (title)
 	} else {
 		fmt.Println("Unable to lookup page")
@@ -70,6 +79,7 @@ func traverse(n *html.Node) (string, bool) {
 }
 
 func GetHtmlTitle(r io.Reader) (string, bool) {
+
 	doc, err := html.Parse(&io.LimitedReader{R: r, N: 65535})
 	if err != nil {
 		return "", false
@@ -81,5 +91,6 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 	if len(title) == 0 {
 		return " ", false
 	}
+
 	return title, ok
 }
