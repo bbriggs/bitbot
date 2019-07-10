@@ -36,7 +36,6 @@ func lookupPageTitle(message string) string {
 		fmt.Println("Anti-url flood activated")
 		return ""
 	}
-	fmt.Println("mabite !")
 	url := xurls.Strict().FindString(message)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -79,7 +78,6 @@ func traverse(n *html.Node) (string, bool) {
 }
 
 func GetHtmlTitle(r io.Reader) (string, bool) {
-
 	doc, err := html.Parse(&io.LimitedReader{R: r, N: 65535})
 	if err != nil {
 		return "", false
@@ -91,6 +89,5 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 	if len(title) == 0 {
 		return " ", false
 	}
-
 	return title, ok
 }
