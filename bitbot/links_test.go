@@ -60,3 +60,19 @@ func TestGetHTMLTitleWithEmptyTitle(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestAntiUrlFlood(t *testing.T) {
+	t.Log("Note : If the previous test failed, this one will hang indefinitely")
+
+	message := "https://secops.space/"
+
+	lookupPageTitle(message) // We make sure that the title musn't be looked for
+
+	title := lookupPageTitle(message)
+	if title != "" {
+		t.Log(lastTimeTitleLookup)
+		t.Log(title)
+		t.Log("Doesn't avoid title flooding")
+		t.Fail()
+	}
+}

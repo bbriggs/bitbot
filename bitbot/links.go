@@ -33,7 +33,6 @@ func isURL(message string) bool {
 
 func lookupPageTitle(message string) string {
 	if time.Now().Sub(lastTimeTitleLookup).Minutes() < 2 {
-		fmt.Println("Anti-url flood activated")
 		return ""
 	}
 	url := xurls.Strict().FindString(message)
