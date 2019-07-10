@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
    - Bitbot now adds an underscore to his nick when needed (#60, m-242)
-
+   - Bitbot now ignores URLs when needed to avoid Title flood (#65, m-242)
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
    - Specify plugins to load using the config file instead of modifying the source code. Whodathunkit.
