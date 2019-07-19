@@ -8,6 +8,7 @@ import (
 	"mvdan.cc/xurls/v2"
 	"net/http"
 	"time"
+	bbolt "go.etcd.io/bbolt"
 )
 
 var URLReaderTrigger = NamedTrigger{
@@ -24,30 +25,47 @@ var URLReaderTrigger = NamedTrigger{
 	},
 }
 
-var lastTimeTitleLookup = time.Date(
-        1970, 1, 1, 0, 0, 0, 0, time.UTC)
-
 func isURL(message string) bool {
 	return xurls.Strict().MatchString(message)
 }
 
 func lookupPageTitle(message string) string {
-	if time.Now().Sub(lastTimeTitleLookup).Minutes() < 2 {
-		return ""
-	}
 	url := xurls.Strict().FindString(message)
-	resp, err := http.Get(url)
-	if err != nil {
-		return ""
-	}
-	defer resp.Body.Close()
-	if title, ok := GetHtmlTitle(resp.Body); ok {
-		lastTimeTitleLookup = time.Now()
-		return (title)
+	if cached(url) {
+		return cacheGetTitle(url)
 	} else {
-		fmt.Println("Unable to lookup page")
-		return ("")
+		resp, err := http.Get(url)
+		if err != nil {
+			return ""
+		}
+		defer resp.Body.Close()
+		if title, ok := GetHtmlTitle(resp.Body); ok {
+			lastTimeTitleLookup = time.Now()
+			cacheUrl(url, title)
+			return (title)
+		} else {
+			fmt.Println("Unable to lookup page")
+			return ("")
+		}
 	}
+}
+
+func cached(string url) bool {
+	/* Return true if the url is cached 
+	for less than 2 minutes. 
+	If it has been for more than 2 mins,
+	it deletes the row.*/
+	return false
+}
+
+func cacheURL(string url, string title) {
+	/* Puts the url, title and time in a pair
+	like url => title:time */
+}
+
+func cacheGetTitle(string url) string {
+	/* Gets the cached title and updates the lookup time */
+	return ""
 }
 
 func isTitleElement(n *html.Node) bool {
@@ -90,3 +108,5 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 	}
 	return title, ok
 }
+
+
