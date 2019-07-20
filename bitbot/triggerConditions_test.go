@@ -13,6 +13,8 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"!roll":                       RollTrigger,
 		"bitbot choose foo, bar":      DecisionsTrigger,
 		"Nickname is already in use.": NickTakenTrigger,
+		"!tableflip":                  TableFlipTrigger,
+		"!unflip":                     TableUnflipTrigger,
 	}
 	b := makeMockBot("bitbot")
 
