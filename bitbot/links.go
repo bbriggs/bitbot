@@ -3,12 +3,14 @@ package bitbot
 import (
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
+	bbolt "go.etcd.io/bbolt"
 	"golang.org/x/net/html"
 	"io"
 	"mvdan.cc/xurls/v2"
 	"net/http"
 	"time"
-	bbolt "go.etcd.io/bbolt"
+	"strings"
+	"reflect"
 )
 
 var URLReaderTrigger = NamedTrigger{
@@ -40,8 +42,7 @@ func lookupPageTitle(message string) string {
 		}
 		defer resp.Body.Close()
 		if title, ok := GetHtmlTitle(resp.Body); ok {
-			lastTimeTitleLookup = time.Now()
-			cacheUrl(url, title)
+			cacheURL(url, title)
 			return (title)
 		} else {
 			fmt.Println("Unable to lookup page")
@@ -50,20 +51,55 @@ func lookupPageTitle(message string) string {
 	}
 }
 
-func cached(string url) bool {
-	/* Return true if the url is cached 
-	for less than 2 minutes. 
+func cached(url string) bool {
+	/* Return true if the url is cached
+	for less than 2 minutes, else false.
 	If it has been for more than 2 mins,
 	it deletes the row.*/
-	return false
+
+	//create the bucket if needed
+	b.DB.Update(func(tx *bbolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("urls"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
+	urlInCache := false
+
+	b.DB.Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("urls"))
+		value := string(b.Get([]byte(url)))
+		if reflect.TypeOf(value) != nil {
+			// If the url was already passed, we check for how long
+			lastLookup, _ := time.Parse(time.RFC850,
+				strings.Split(value, ":")[1])
+				if time.Now().Sub(lastLookup).Minutes() < 2 {
+				urlInCache = true
+			} else {
+				b.Delete([]byte(url))
+			}
+		}
+		return nil
+	})
+
+	return urlInCache
 }
 
-func cacheURL(string url, string title) {
+func cacheURL(url string, title string) {
 	/* Puts the url, title and time in a pair
 	like url => title:time */
+	data := title + ":" + time.Now().Format(time.RFC850)
+
+	b.DB.Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("urls"))
+		err := b.Put([]byte(url), []byte(data))
+		return err
+	})
 }
 
-func cacheGetTitle(string url) string {
+func cacheGetTitle(url string) string {
 	/* Gets the cached title and updates the lookup time */
 	return ""
 }
@@ -108,5 +144,3 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 	}
 	return title, ok
 }
-
-
