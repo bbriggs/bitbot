@@ -2,10 +2,13 @@ package bitbot
 
 import (
 	"math/rand"
+	"net/http"
 	"os"
 	"sync"
 	"time"
 
+	//"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/whyrusleeping/hellabot"
 	bolt "go.etcd.io/bbolt"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -97,7 +100,11 @@ func Run(config Config) {
 
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
+	http.Handle("/metrics", promhttp.Handler())
+	go http.ListenAndServe("127.0.0.1:8080", nil)
+
 	// GOOOOOOO
 	defer b.DB.Close()
 	b.Bot.Run()
+
 }
