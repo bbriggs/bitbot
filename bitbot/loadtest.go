@@ -59,13 +59,8 @@ var listTriggers = NamedTrigger{
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!triggers" && b.isAdmin(m)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		var triggers []string
-		irc.Reply(m, "Listing registered triggers...")
-		b.triggers.Range(func(k interface{}, v interface{}) bool {
-			triggers = append(triggers, k.(string))
-			return true
-		})
-		irc.Reply(m, strings.Join(triggers[:], ", "))
+		triggers := b.ListTriggers()
+		irc.Reply(m, strings.Join(triggers, ", "))
 		return true
 	},
 }

@@ -36,6 +36,18 @@ type ACL struct {
 	Rejected []string
 }
 
+// ListTriggers gets all trigger IDs currently registered to the bot
+func (b *Bot) ListTriggers() []string {
+	var triggers []string
+	b.triggerMutex.RLock()
+	defer b.triggerMutex.RUnlock()
+
+	for k, _ := range b.triggers {
+		triggers = append(triggers, k)
+	}
+	return triggers
+}
+
 func int64ToByte(i int64) []byte {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(i))
