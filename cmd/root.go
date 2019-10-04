@@ -28,7 +28,6 @@ import (
 	"github.com/bbriggs/bitbot/bitbot"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/whyrusleeping/hellabot"
 )
 
 const VERSION = ""
@@ -44,7 +43,7 @@ var (
 	operPass string
 )
 
-var pluginMap = map[string]hbot.Handler{
+var pluginMap = map[string]bitbot.NamedTrigger{
 	"trackIdleUsers": bitbot.TrackIdleUsers,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
@@ -61,7 +60,7 @@ var rootCmd = &cobra.Command{
 	Use:     "bitbot [flags]",
 	Short:   "A Golang IRC bot powered by Hellabot",
 	Run: func(cmd *cobra.Command, args []string) {
-		var plugins []hbot.Handler
+		var plugins []bitbot.NamedTrigger
 		for _, plugin := range viper.GetStringSlice("plugins") {
 			if p, ok := pluginMap[plugin]; ok {
 				plugins = append(plugins, p)

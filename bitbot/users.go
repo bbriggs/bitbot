@@ -10,11 +10,12 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var TrackIdleUsers = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var TrackIdleUsers = NamedTrigger{
+	ID: "trackIdleUsers",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG"
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		err := b.TrackIdleUsers(m)
 		if err != nil {
 			log.Error(err.Error())
@@ -36,11 +37,12 @@ func (b Bot) TrackIdleUsers(m *hbot.Message) error {
 	return err
 }
 
-var ReportIdleUsers = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var ReportIdleUsers = NamedTrigger{
+	ID: "reportIdleUsers",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!idle")
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		args := strings.Split(m.Content, " ")
 		if len(args) < 2 {
 			irc.Reply(m, "Please specify a nick to lookup")
