@@ -91,7 +91,8 @@ func Run(config Config) {
 	b.Bot.AddTrigger(unloadTrigger)
 	b.Bot.AddTrigger(NickTakenTrigger)
 	for _, trigger := range config.Plugins {
-		b.Bot.AddTrigger(trigger)
+		log.Info(trigger.Name() + " loaded")
+		b.RegisterTrigger(trigger)
 	}
 
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
