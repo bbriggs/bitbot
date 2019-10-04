@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	//"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/whyrusleeping/hellabot"
 	bolt "go.etcd.io/bbolt"
@@ -22,6 +22,7 @@ type Bot struct {
 
 	triggers     map[string]NamedTrigger // For "registered" triggers
 	triggerMutex *sync.RWMutex
+	counters     map[string]prometheus.Counter
 }
 
 type Config struct {
@@ -71,6 +72,7 @@ func Run(config Config) {
 	b.Config = config
 	b.triggerMutex = &sync.RWMutex{}
 	b.triggers = make(map[string]NamedTrigger)
+	b.counters = make(map[string]prometheus.Counter)
 
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
@@ -93,6 +95,7 @@ func Run(config Config) {
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
 	b.Bot.AddTrigger(NickTakenTrigger)
+	b.Bot.AddTrigger(MessageCounterTrigger)
 	for _, trigger := range config.Plugins {
 		log.Info(trigger.Name() + " loaded")
 		b.RegisterTrigger(trigger)
@@ -100,8 +103,10 @@ func Run(config Config) {
 
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
+	// Prometheus stuff
+	b.createCounters()
 	http.Handle("/metrics", promhttp.Handler())
-	go http.ListenAndServe("127.0.0.1:8080", nil)
+	go http.ListenAndServe("0.0.0.0:8080", nil)
 
 	// GOOOOOOO
 	defer b.DB.Close()
