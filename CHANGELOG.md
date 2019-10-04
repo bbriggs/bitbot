@@ -6,16 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED] 
 ### Added
+   - New !help command lists all registered triggers (#69, bbriggs)
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
    - Bitbot now adds an underscore to his nick when needed (#60, m-242)
    - Bitbot can now flip and unflip the table for you ! (#68, m-242)
+   - Better tests for all triggers with conditions based on inbound messages
+
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
    - Specify plugins to load using the config file instead of modifying the source code. Whodathunkit.
      - When running as a bot (and not a library), all plugins are loaded by default.
+     - Plugins must be of `bitbot.NamedTrigger` type. Sorry not sorry. (#69, bbriggs)
+       - We depend on NamedTrigger for loading and unloading and and some other metadata about plugins
 
 ### Changed
-   - Config struct updated to include plugins
+   - Config struct updated to include plugins and a mutex
+   - Plugin map type is now `map[string]NamedTrigger` instead of `sync.Map` and guarded with a `sync.RWMutexv`
 
 ## [1.1.0] - 2018-11-24
 ### Added
