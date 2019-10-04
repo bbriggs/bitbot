@@ -17,8 +17,8 @@ type Bot struct {
 	Random *rand.Rand // Initialized PRNG
 	Config Config
 
-	// private map of triggers
-	triggers sync.Map
+	triggers     map[string]NamedTrigger // For "registered" triggers
+	triggerMutex *sync.RWMutex
 }
 
 type Config struct {
@@ -30,25 +30,29 @@ type Config struct {
 	Server       string         // server:port for connections
 	SSL          bool           // Enable SSL for the connection
 	Admins       ACL            // slice of masks representing administrators
-	Plugins      []hbot.Handler // Plugins to start with
+	Plugins      []NamedTrigger // Plugins to start with
 }
 
 var b Bot = Bot{}
 
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
-	b.triggers.Store(t.Name(), t)
+	b.triggerMutex.Lock()
+	b.triggers[t.Name()] = t
+	b.triggerMutex.Unlock()
+	b.Bot.AddTrigger(t)
 }
 
 func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
-	res, ok := b.triggers.Load(name)
-	if !ok {
-		return NamedTrigger{}, false
-	}
-	return res.(NamedTrigger), true
+	b.triggerMutex.RLock()
+	defer b.triggerMutex.RUnlock()
+	t, ok := b.triggers[name]
+	return t, ok
 }
 
 func (b *Bot) DropTrigger(t NamedTrigger) bool {
-	b.triggers.Delete(t.Name())
+	b.triggerMutex.Lock()
+	delete(b.triggers, t.Name())
+	b.triggerMutex.Unlock()
 	return true
 }
 
@@ -62,6 +66,8 @@ func Run(config Config) {
 	b.DB = db
 	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
 	b.Config = config
+	b.triggerMutex = &sync.RWMutex{}
+	b.triggers = make(map[string]NamedTrigger)
 
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
