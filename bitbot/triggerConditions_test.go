@@ -15,6 +15,7 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"Nickname is already in use.": NickTakenTrigger,
 		"!tableflip":                  TableFlipTrigger,
 		"!unflip":                     TableUnflipTrigger,
+		"!help":                       HelpTrigger,
 	}
 	b := makeMockBot("bitbot")
 
