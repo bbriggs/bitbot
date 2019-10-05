@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED] 
 ### Added
+   - Prometheus endpoint and metrics (#70, bbriggs)
    - New !help command lists all registered triggers (#69, bbriggs)
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
    - Bitbot now adds an underscore to his nick when needed (#60, m-242)
