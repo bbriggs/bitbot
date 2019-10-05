@@ -41,6 +41,8 @@ var (
 	nickserv string
 	operUser string
 	operPass string
+	promAddr string
+	prom     bool
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
@@ -75,6 +77,8 @@ var rootCmd = &cobra.Command{
 			Nick:         viper.GetString("nick"),
 			Server:       viper.GetString("server"),
 			SSL:          viper.GetBool("ssl"),
+			Prometheus:   viper.GetBool("prom"),
+			PromAddr:     viper.GetString("promAddr"),
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
@@ -108,6 +112,8 @@ func init() {
 	rootCmd.PersistentFlags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
 	rootCmd.PersistentFlags().StringVarP(&nick, "nick", "n", nick, "nickname")
 	rootCmd.PersistentFlags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
+	rootCmd.PersistentFlags().BoolVarP(&prom, "prom", "", prom, "enable prometheus")
+	rootCmd.PersistentFlags().StringVarP(&promAddr, "promAddr", "", promAddr, "Prometheus metrics address and port")
 
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("nickserv", rootCmd.PersistentFlags().Lookup("nickserv"))
@@ -116,6 +122,7 @@ func init() {
 	viper.BindPFlag("channels", rootCmd.PersistentFlags().Lookup("channels"))
 	viper.BindPFlag("nick", rootCmd.PersistentFlags().Lookup("nick"))
 	viper.BindPFlag("ssl", rootCmd.PersistentFlags().Lookup("ssl"))
+	viper.BindPFlag("promAddr", rootCmd.PersistentFlags().Lookup("promAddr"))
 
 	// All plugins enabled by default
 	var defaultPlugins []string
@@ -123,6 +130,8 @@ func init() {
 		defaultPlugins = append(defaultPlugins, plugin)
 	}
 	viper.SetDefault("nick", "bitbot")
+	viper.SetDefault("prom", false)
+	viper.SetDefault("promAddr", "127.0.0.1:8080")
 	viper.SetDefault("plugins", defaultPlugins)
 
 }

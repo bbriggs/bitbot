@@ -22,6 +22,8 @@ Flags:
       --nickserv string    nickserv password
       --operPass string    oper password
       --operUser string    oper username
+      --prom               enable prometheus
+      --promAddr string    Prometheus metrics address and port
   -s, --server string      target server
       --ssl                enable ssl
 ```
@@ -39,6 +41,8 @@ channels:
   - "#bitbot"
 nick: "bitbot"
 ssl: "true"
+prom: "true"
+promAddr: "127.0.0.0.1:8080"
 admins:
   "foo@your.irc.hostmask"
 # Plugins available to load are defined in cmd/bot.go
@@ -54,5 +58,7 @@ plugins:
 
 Assuming a config file named `config.yaml` in your local directory:
 ```
-docker run -d -it -v $(pwd):/some/directory bbriggs/bitbot --config /some/directory/config.yaml
+docker run --rm -it -v `pwd`/config.yaml:/app/config.yaml bbriggs/bitbot --config /app/config.yaml
 ```
+
+Remember that if you're running in Docker, your Prometheus bind address must be 0.0.0.0 + some port and you must publish that port using `-p`
