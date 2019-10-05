@@ -35,6 +35,8 @@ type Config struct {
 	SSL          bool           // Enable SSL for the connection
 	Admins       ACL            // slice of masks representing administrators
 	Plugins      []NamedTrigger // Plugins to start with
+	Prometheus   bool           // Enable Prometheus
+	PromAddr     string         // Listen address for prometheus endpoint
 }
 
 var b Bot = Bot{}
@@ -104,9 +106,11 @@ func Run(config Config) {
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	// Prometheus stuff
-	b.createCounters()
-	http.Handle("/metrics", promhttp.Handler())
-	go http.ListenAndServe("0.0.0.0:8080", nil)
+	if b.Config.Prometheus {
+		b.createCounters()
+		http.Handle("/metrics", promhttp.Handler())
+		go http.ListenAndServe(b.Config.PromAddr, nil)
+	}
 
 	// GOOOOOOO
 	defer b.DB.Close()

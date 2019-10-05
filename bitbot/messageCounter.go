@@ -4,7 +4,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var HelpTrigger = NamedTrigger{
+var MessageCounterTrigger = NamedTrigger{
 	ID: "messageCounter",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG"
