@@ -13,6 +13,7 @@ COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/opt/bitbot /opt/bitbot
 COPY --from=builder --chown=bitbot:bitbot /app/.bolt.db .
+EXPOSE 8080  # Our chosen default for Prometheus
 USER bitbot
 ENTRYPOINT ["/opt/bitbot"]
 
