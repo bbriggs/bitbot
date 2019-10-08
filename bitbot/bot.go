@@ -97,7 +97,6 @@ func Run(config Config) {
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
 	b.Bot.AddTrigger(NickTakenTrigger)
-	b.Bot.AddTrigger(MessageCounterTrigger)
 	for _, trigger := range config.Plugins {
 		log.Info(trigger.Name() + " loaded")
 		b.RegisterTrigger(trigger)
@@ -108,6 +107,7 @@ func Run(config Config) {
 	// Prometheus stuff
 	if b.Config.Prometheus {
 		b.createCounters()
+		b.Bot.AddTrigger(MessageCounterTrigger)
 		http.Handle("/metrics", promhttp.Handler())
 		go http.ListenAndServe(b.Config.PromAddr, nil)
 	}
