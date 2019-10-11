@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [UNRELEASED] 
 ### Added
    - Prometheus endpoint and metrics (#70, bbriggs)
-   - Help field added to NamedTriggers
+   - Help field added to NamedTriggers (#71)
    - New !help command lists all registered triggers (#69, bbriggs)
-   - !help command also supports positional arguments and returns contents of Help field
+   - !help command also supports positional arguments and returns contents of Help field (#71)
    - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
    - Bitbot now adds an underscore to his nick when needed (#60, m-242)
    - Bitbot can now flip and unflip the table for you ! (#68, m-242)
