@@ -29,6 +29,11 @@ func (t NamedTrigger) Handle(b *hbot.Bot, m *hbot.Message) bool {
 	return t.Action(b, m)
 }
 
+// Help returns the Help text of its trigger
+func (t NamedTrigger) Help() string {
+	return t.Help
+}
+
 // ACL defines access lists the bot may use to check Authorization to use a trigger
 type ACL struct {
 	// Defines users explicitly allowed in this ACL
