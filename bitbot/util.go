@@ -10,7 +10,8 @@ import (
 
 // NamedTrigger is a local re-implementation of hbot.Trigger to support unique names
 type NamedTrigger struct {
-	ID        string
+	ID        string // Name of trigger, to use used to registering, searching, and deregistering
+	Help      string // Help text
 	Condition func(*hbot.Bot, *hbot.Message) bool
 	Action    func(*hbot.Bot, *hbot.Message) bool
 }
