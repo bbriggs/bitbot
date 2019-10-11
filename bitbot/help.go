@@ -6,7 +6,8 @@ import (
 )
 
 var HelpTrigger = NamedTrigger{
-	ID: "help",
+	ID:   "help",
+	Help: "Usage: !help [trigger name]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!help"
 
