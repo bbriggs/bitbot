@@ -7,7 +7,8 @@ import (
 )
 
 var InfoTrigger = NamedTrigger{
-	ID: "info",
+	ID:   "info",
+	Help: "Get version and repo information about this bot. Usage: !info",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!info"
 	},

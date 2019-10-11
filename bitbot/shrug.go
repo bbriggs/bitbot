@@ -6,7 +6,8 @@ import (
 )
 
 var ShrugTrigger = NamedTrigger{
-	ID: "shrug",
+	ID:   "shrug",
+	Help: "Usage: !shrug",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!shrug"
 	},

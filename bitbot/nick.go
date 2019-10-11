@@ -7,7 +7,8 @@ import (
 )
 
 var NickTakenTrigger = NamedTrigger{
-	ID: "nick",
+	ID:   "nick",
+	Help: "Avoids nick collisions by renaming the bot if the nick is already taken.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		/* get the host's name by cutting the port number, and making sure that the message comes from host */
 		var comesFromHost = (m.From == strings.Split(irc.Host, ":")[0])

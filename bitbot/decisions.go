@@ -9,7 +9,8 @@ import (
 )
 
 var DecisionsTrigger = NamedTrigger{
-	ID: "decisions",
+	ID:   "decisions",
+	Help: "Let the bot decide something for you. Usage: ${bot_name} choose option option [option...]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		prefix := fmt.Sprintf("%s choose", irc.Nick)
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, prefix)
