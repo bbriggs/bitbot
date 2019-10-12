@@ -10,7 +10,8 @@ import (
 )
 
 var URLReaderTrigger = NamedTrigger{
-	ID: "urls",
+	ID:   "urls",
+	Help: "Looks up URLs in chat and returns the page title as a message.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},

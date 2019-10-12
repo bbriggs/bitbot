@@ -5,7 +5,8 @@ import (
 )
 
 var TableFlipTrigger = NamedTrigger{
-	ID: "tableflip",
+	ID:   "tableflip",
+	Help: "Flip a table. Usage: !tableflip",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		match := ("!tableflip" == m.Content)
 		return m.Command == "PRIVMSG" && match

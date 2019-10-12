@@ -10,11 +10,11 @@ import (
 )
 
 var raiderQuote = NamedTrigger{
-	"raider",
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	ID: "raider",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && b.Random.Intn(1000) == 1
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		r, ok := getQuote("/fallout/raider")
 		if ok {
 			irc.Reply(m, r.Quote)

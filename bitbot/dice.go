@@ -12,7 +12,8 @@ import (
 const DICE_USAGE = "Usage: [num dice]d[sides](+/-num) (opt: if fudging)"
 
 var RollTrigger = NamedTrigger{
-	ID: "roll",
+	ID:   "roll",
+	Help: "!roll " + DICE_USAGE,
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!roll")
 	},

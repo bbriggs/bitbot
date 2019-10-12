@@ -11,7 +11,8 @@ import (
 )
 
 var TrackIdleUsers = NamedTrigger{
-	ID: "trackIdleUsers",
+	ID:   "trackIdleUsers",
+	Help: "Passive, non-interactive, experimental trigger. Monitors time since last activity for all users in channel. Works like /whois.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG"
 	},
