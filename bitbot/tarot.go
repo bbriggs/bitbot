@@ -25,7 +25,7 @@ var TarotTrigger = NamedTrigger{
 			num = 1
 		}
 		deck := rand.Perm(77)
-        var card
+        card := 0
         for i := 0; i < num; i++ {
 			card, deck = deck[0], deck[1:]
 			resp := tarotCards[card]
