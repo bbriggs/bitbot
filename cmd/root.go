@@ -55,6 +55,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"decisions":      bitbot.DecisionsTrigger,
 	"beef":           bitbot.BeefyTrigger,
 	"help":           bitbot.HelpTrigger,
+	"8ball":          bitbot.Magic8BallTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
