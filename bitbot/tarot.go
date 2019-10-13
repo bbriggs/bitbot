@@ -15,20 +15,18 @@ var TarotTrigger = NamedTrigger{
     },
     Action: func(irc *hbot.Bot, m *hbot.Message) bool {
         if (len(m.Content) < 7) {
-            resp := tarotCards[rand.Intn(len(magic8responses)-1)]
+            resp := tarotCards[rand.Intn(len(tarotCards)-1)]
             irc.Reply(m, resp)
         } else {
+            // Random permutation of indexes for drawing tarotCards
+            deck := rand.Perm(len(tarotCards))
             msg := strings.TrimPrefix(m.Content, "!tarot ")
             if num, err := strconv.Atoi(msg); err == nil {
                 if (num < 1 || num > len(tarotCards)) {
                     num = 1
                 }
-                deck := rand.Perm(77)
-                card := 0
                 for i := 0; i < num; i++ {
-                    card, deck = deck[0], deck[1:]
-                    resp := tarotCards[card]
-                    irc.Reply(m, resp)
+                    irc.Reply(m, tarotCards[deck[i]])
                 }
             } else {
                 irc.Reply(m, "Try again..")
