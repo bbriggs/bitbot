@@ -5,7 +5,6 @@ import (
     "math/rand"
     "strings"
     "strconv"
-    "fmt"
 )
 
 var TarotTrigger = NamedTrigger{
@@ -34,8 +33,8 @@ var TarotTrigger = NamedTrigger{
             } else {
                 irc.Reply(m, "Try again..")
             }
-            return true
         }
+        return true
     },
 }
 
