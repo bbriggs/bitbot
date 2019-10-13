@@ -16,6 +16,7 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"!tableflip":                  TableFlipTrigger,
 		"!unflip":                     TableUnflipTrigger,
 		"!help":                       HelpTrigger,
+		"!8ball":                      Magic8BallTrigger,
 	}
 	b := makeMockBot("bitbot")
 
