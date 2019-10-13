@@ -19,13 +19,13 @@ var TarotTrigger = NamedTrigger{
 			irc.Reply(m, resp)
 	} else {
 		msg := strings.TrimPrefix(m.Content, "!tarot ")
-		int num
+        int num := 1
 		fmt.Sscanf(msg, "%d", &num)
 		if (num < 1 || num > 78) {
 			num = 1
 		}
 		deck := rand.Perm(78)
-		for [0; num; 1] {
+        for i := 0; i < num; i++ {
 			card, deck = a[0], a[1:]
 			resp := tarotCards[card]
 			irc.Reply(m, resp)
