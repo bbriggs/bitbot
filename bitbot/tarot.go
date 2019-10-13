@@ -24,9 +24,10 @@ var TarotTrigger = NamedTrigger{
 		if (num < 1 || num > 78) {
 			num = 1
 		}
-		deck := rand.Perm(78)
+		deck := rand.Perm(77)
+        var card
         for i := 0; i < num; i++ {
-			card, deck = a[0], a[1:]
+			card, deck = deck[0], deck[1:]
 			resp := tarotCards[card]
 			irc.Reply(m, resp)
 		}
