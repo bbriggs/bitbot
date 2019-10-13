@@ -19,7 +19,7 @@ var TarotTrigger = NamedTrigger{
 			irc.Reply(m, resp)
 	} else {
 		msg := strings.TrimPrefix(m.Content, "!tarot ")
-        int num := 1
+        num := 1
 		fmt.Sscanf(msg, "%d", &num)
 		if (num < 1 || num > 78) {
 			num = 1
