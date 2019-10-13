@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED] 
 ### Added
+   - Add a magic 8-ball module (#72, bbriggs)
    - Prometheus endpoint and metrics (#70, bbriggs)
    - Help field added to NamedTriggers (#71)
    - New !help command lists all registered triggers (#69, bbriggs)
