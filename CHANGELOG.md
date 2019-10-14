@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Bitbot now adds an underscore to his nick when needed (#60, m-242)
    - Bitbot can now flip and unflip the table for you ! (#68, m-242)
    - Better tests for all triggers with conditions based on inbound messages
+   - Add tarot card draw module (#73, skidd0)
 
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
