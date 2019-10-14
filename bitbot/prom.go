@@ -12,4 +12,12 @@ func (b *Bot) createCounters() {
 	},
 		[]string{"channel", "user"})
 	b.counters["messageCounter"] = totalMessages
+
+	channelPop := promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "bitbot_channel_pop",
+		Help: "Number of users in a given channel",
+	},
+		[]string{"channel"})
+
+	b.gauges["channel_pop"] = channelPop
 }

@@ -109,6 +109,8 @@ func Run(config Config) {
 	if b.Config.Prometheus {
 		b.createCounters()
 		b.Bot.AddTrigger(MessageCounterTrigger)
+		b.Bot.AddTrigger(ChannelPopGaugeTrigger)
+		b.Bot.AddTrigger(SetChanPopGaugeTrigger)
 		http.Handle("/metrics", promhttp.Handler())
 		go http.ListenAndServe(b.Config.PromAddr, nil)
 	}
