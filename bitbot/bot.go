@@ -23,6 +23,7 @@ type Bot struct {
 	triggers     map[string]NamedTrigger // For "registered" triggers
 	triggerMutex *sync.RWMutex
 	counters     map[string]*prometheus.CounterVec
+	gauges       map[string]*prometheus.GaugeVec
 }
 
 type Config struct {
@@ -75,6 +76,7 @@ func Run(config Config) {
 	b.triggerMutex = &sync.RWMutex{}
 	b.triggers = make(map[string]NamedTrigger)
 	b.counters = make(map[string]*prometheus.CounterVec)
+	b.gauges = make(map[string]*prometheus.GaugeVec)
 
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
@@ -91,7 +93,6 @@ func Run(config Config) {
 
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
-	//b.Bot.Log("Loading triggers")
 	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
