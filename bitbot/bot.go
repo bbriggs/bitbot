@@ -22,7 +22,7 @@ type Bot struct {
 
 	triggers     map[string]NamedTrigger // For "registered" triggers
 	triggerMutex *sync.RWMutex
-	counters     map[string]prometheus.Counter
+	counters     map[string]*prometheus.CounterVec
 }
 
 type Config struct {
@@ -74,7 +74,7 @@ func Run(config Config) {
 	b.Config = config
 	b.triggerMutex = &sync.RWMutex{}
 	b.triggers = make(map[string]NamedTrigger)
-	b.counters = make(map[string]prometheus.Counter)
+	b.counters = make(map[string]*prometheus.CounterVec)
 
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels

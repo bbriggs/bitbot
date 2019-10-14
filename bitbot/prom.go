@@ -6,9 +6,10 @@ import (
 )
 
 func (b *Bot) createCounters() {
-	totalMessages := promauto.NewCounter(prometheus.CounterOpts{
+	totalMessages := promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "bitbot_messages_total",
 		Help: "The total number of processed messages",
-	})
+	},
+		[]string{"channel", "user"})
 	b.counters["messageCounter"] = totalMessages
 }
