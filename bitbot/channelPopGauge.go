@@ -11,11 +11,15 @@ var ChannelPopGaugeTrigger = NamedTrigger{
 	ID:   "channelPopGauge",
 	Help: "Updates a Prometheus gauge with the value of a channel's population",
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "JOIN"
+		return m.Command == "JOIN" || m.Command == "PART" || m.Command == "QUIT" || m.Command == "SQUIT"
 
 	},
 	Action: func(bot *hbot.Bot, m *hbot.Message) bool {
-		b.gauges["channel_pop"].WithLabelValues(m.To).Inc()
+		if m.Command == "JOIN" {
+			b.gauges["channel_pop"].WithLabelValues(m.To).Inc()
+			return true
+		}
+		b.gauges["channel_pop"].WithLabelValues(m.To).Dec()
 		return true
 	},
 }
