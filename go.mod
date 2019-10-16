@@ -23,5 +23,6 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20180818164646-67afb5ed74ec
 	gopkg.in/sorcix/irc.v1 v1.1.4
-	mvdan.cc/xurls/v2 v2.0.0
+	mvdan.cc/xurls/v2 v2.1.0
+//mvdan.cc/xurls/v2 v2.0.0
 )
