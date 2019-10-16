@@ -111,6 +111,7 @@ func Run(config Config) {
 		b.Bot.AddTrigger(MessageCounterTrigger)
 		b.Bot.AddTrigger(ChannelPopGaugeTrigger)
 		b.Bot.AddTrigger(SetChanPopGaugeTrigger)
+		b.Bot.AddTrigger(HandleListReplyTrigger)
 		http.Handle("/metrics", promhttp.Handler())
 		go http.ListenAndServe(b.Config.PromAddr, nil)
 	}
