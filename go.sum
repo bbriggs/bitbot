@@ -106,6 +106,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=
 github.com/whyrusleeping/hellabot v0.0.0-20181122155548-dedc83c4926a9c92ba011de32c82b39f88dbd868 h1:j5e9YT8kZBcM87vVPeqeh5p8rB5rketaoX5wyo9rixY=
 github.com/whyrusleeping/hellabot v0.0.0-20181122155548-dedc83c4926a9c92ba011de32c82b39f88dbd868/go.mod h1:zRAiGfU7mW52pKFTMpbHPe9vq8x0wXoYW2M+AZtfL0A=
+github.com/whyrusleeping/hellabot v0.0.0-20190117161550-dedc83c4926a h1:JWm+kRZiS6SqVyUolNjbBaNvSOQPIr3IJP8a0h0YgOk=
+github.com/whyrusleeping/hellabot v0.0.0-20190117161550-dedc83c4926a/go.mod h1:zRAiGfU7mW52pKFTMpbHPe9vq8x0wXoYW2M+AZtfL0A=
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 go.etcd.io/bbolt v1.3.2 h1:Z/90sZLPOeCy2PwprqkFa25PdkusRzaj9P8zm/KNyvk=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
