@@ -1,6 +1,7 @@
 package bitbot
 
 import (
+	"math/rand"
 	"strings"
 
 	"github.com/mb-14/gomarkov"
