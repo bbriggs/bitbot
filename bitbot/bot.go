@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mb-14/gomarkov"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/whyrusleeping/hellabot"
@@ -24,6 +25,8 @@ type Bot struct {
 	triggerMutex *sync.RWMutex
 	counters     map[string]*prometheus.CounterVec
 	gauges       map[string]*prometheus.GaugeVec
+	mChain       *gomarkov.Chain // Initialized Markov chain. Accessed and updated by markov triggers.
+	markovMutex  *sync.RWMutex
 }
 
 type Config struct {
@@ -74,6 +77,7 @@ func Run(config Config) {
 	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
 	b.Config = config
 	b.triggerMutex = &sync.RWMutex{}
+	b.markovMutex = &sync.RWMutex{}
 	b.triggers = make(map[string]NamedTrigger)
 	b.counters = make(map[string]*prometheus.CounterVec)
 	b.gauges = make(map[string]*prometheus.GaugeVec)
