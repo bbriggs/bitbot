@@ -3,6 +3,7 @@ package bitbot
 import (
 	"math/rand"
 	"strings"
+	"net/http"
 
 	"github.com/mb-14/gomarkov"
 	"github.com/whyrusleeping/hellabot"
@@ -19,9 +20,7 @@ var MarkovTrainerTrigger = NamedTrigger{
 			// Initialize markov chain
 			b.mChain = gomarkov.NewChain(1)
 		}
-		b.markovMutex.Lock()
-		b.mChain.Add(strings.Split(m.Content, " "))
-		b.markovMutex.Unlock()
+		markovAdd(b.mChain)
 		return false
 	},
 }
@@ -38,6 +37,35 @@ var MarkovResponseTrigger = NamedTrigger{
 	},
 }
 
+var MarkovInitTrigger = NamedTrigger{
+	ID: "markovInit",
+	Help: "Resets markov chain to a fresh chain, or bootstraps it with sample texts. Usage: !markov reset, !markov init",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content == "!markov ")
+	},
+	Action: func(irc *hbot.bot, m *hbot.Message) bool {
+		cmd := strings.Split(m.Content, " ")
+		if len(cmd) < 2 {
+			return false
+		}
+		switch cmd[1]{
+		case "reset":
+			// do stuff
+			b.mChain = gomarkov.NewChain(1)
+			return true
+		case "init":
+			// do other stuff
+			b.mChain = gomarkov.NewChain(1)
+			markovInit(b.mChain)
+			return true
+		default:
+			// didn't recognize the subcommands
+			return false
+		}
+	}
+	
+}
+
 func generateBabble(chain *gomarkov.Chain) string {
 	tokens := []string{gomarkov.StartToken}
 	for tokens[len(tokens)-1] != gomarkov.EndToken {
@@ -45,4 +73,15 @@ func generateBabble(chain *gomarkov.Chain) string {
 		tokens = append(tokens, next)
 	}
 	return strings.Join(tokens[1:len(tokens)-1], " ")
+}
+
+func markovInit(chain *gomarkov.Chain) string {
+	//todo
+}
+
+// wrapper for b.mChain.Add that includes file lock/unlock
+func markovAdd(text string, chain *gomarkov.Chain) {
+	b.markovMutex.Lock()
+	b.mChain.Add(strings.Split(text, " "))
+	b.markovMutex.Unlock()
 }
