@@ -13,7 +13,6 @@ var MarkovTrainerTrigger = NamedTrigger{
 	Help: "Incrementally trains bitbot's markov model on every new privmsg",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG"
-
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		if b.mChain == nil {
@@ -32,7 +31,6 @@ var MarkovResponseTrigger = NamedTrigger{
 	Help: "Returns a randomly generated markov string. Usage: !babble <seed words>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && (m.Content == "!babble" || rand.Intn(100) == 0) // 1% chance
-
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, generateBabble(b.mChain))
