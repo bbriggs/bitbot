@@ -7,13 +7,13 @@ import (
 	"strings"
 )
 
-var TrollLauncherTrigger = NamedTrigger {
-	ID:        "troll",
-	Help:      "Launches a random number of trolls for a random amount of damage. Usage: !troll <nick>",
+var TrollLauncherTrigger = NamedTrigger{
+	ID:   "troll",
+	Help: "Launches a random number of trolls for a random amount of damage. Usage: !troll <nick>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!troll ")
 	},
-	Action:    func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var damage_type = [13]string{"bludgeoning", "piercing", "slashing", "cold", "fire", "acid", "poison",
 			"psychic", "necrotic", "radiant", "lightning", "thunder", "force"}
 		cmd := strings.Split(m.Content, " ")
