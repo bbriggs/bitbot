@@ -31,7 +31,7 @@ var URLReaderTrigger = NamedTrigger{
 
 func shortenURL(uri string) string {
 	/* We are using 0x0.st */
-	resp, err := http.PostForm("http://example.com/form", url.Values{"shorten": {uri}})
+	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
 		fmt.Println("Coudln't shorten url : ", err);
 	}
@@ -40,7 +40,7 @@ func shortenURL(uri string) string {
 	if err != nil {
 		fmt.Println("Coudln't shorten url : ", err);
 	}
-
+	fmt.Println(string(body));
 	return string(body);
 }
 
