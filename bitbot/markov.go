@@ -48,7 +48,7 @@ var MarkovInitTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cmd := strings.Split(m.Content, " ")
 		if len(cmd) < 2 {
-			irc.Reply(m, MarkovInitTrigger.Help)
+			irc.Reply(m, "Usage: !markov reset, !markov init")
 			return true
 		}
 		switch cmd[1] {
