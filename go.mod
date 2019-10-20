@@ -6,6 +6,7 @@ require (
 	github.com/bbriggs/quotes v0.0.0-20190225011706-ef48dc0c0ec7
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
+	github.com/leanovate/gopter v0.2.4
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mb-14/gomarkov v0.0.0-20190125094512-044dd0dcb5e7
