@@ -1,7 +1,6 @@
 package bitbot
 
 import (
-	"fmt"
 	"log"
 	"io/ioutil"
 	"math/rand"
@@ -65,6 +64,7 @@ var MarkovInitTrigger = NamedTrigger{
 		default:
 			return true
 		}
+		return true
 	},
 }
 
