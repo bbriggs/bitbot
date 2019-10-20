@@ -22,7 +22,7 @@ var URLReaderTrigger = NamedTrigger{
 		if resp != "" {
 			irc.Reply(m, lookupPageTitle(m.Content))
 			if len(resp) > 70 {
-				irc.Reply(m, shortenURL(m.Content));
+				irc.Reply(m, shortenURL(m.Content))
 			}
 		}
 		return true
@@ -33,15 +33,15 @@ func shortenURL(uri string) string {
 	/* We are using 0x0.st */
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
-		fmt.Println("Coudln't shorten url : ", err);
+		fmt.Println("Coudln't shorten url : ", err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("Coudln't shorten url : ", err);
+		fmt.Println("Coudln't shorten url : ", err)
 	}
-	fmt.Println(string(body));
-	return string(body);
+	fmt.Println(string(body))
+	return string(body)
 }
 
 func isURL(message string) bool {
