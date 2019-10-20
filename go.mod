@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/bbriggs/quotes v0.0.0-20190225011706-ef48dc0c0ec7
-	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
@@ -12,8 +11,6 @@ require (
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mb-14/gomarkov v0.0.0-20190125094512-044dd0dcb5e7
-	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/mudler/sendfd v0.0.0-20150620134918-f0fc74c13877 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/prometheus/client_golang v1.1.0
