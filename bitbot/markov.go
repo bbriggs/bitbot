@@ -2,6 +2,7 @@ package bitbot
 
 import (
 	"fmt"
+	"log"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -48,22 +49,21 @@ var MarkovInitTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		cmd := strings.Split(m.Content, " ")
 		if len(cmd) < 2 {
-			return false
+			irc.Reply(m, MarkovInitTrigger.Help)
+			return true
 		}
 		switch cmd[1] {
 		case "reset":
 			b.mChain = gomarkov.NewChain(1)
-			return true
 		case "init":
 			b.mChain = gomarkov.NewChain(1)
-			if markovInit(b.mChain) == false {
-				irc.Reply(m, "Markov initialization failed.")
-			} else {
+			if markovInit(b.mChain) {
 				irc.Reply(m, "Markov initialization succeeded.")
+			} else {
+				irc.Reply(m, "Markov initialization failed.")
 			}
-			return true
 		default:
-			return false
+			return true
 		}
 	},
 }
@@ -85,13 +85,13 @@ func markovInit(chain *gomarkov.Chain) bool {
 	for _, link := range(sources) {
 		resp, err := http.Get(link)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return false
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return false
 		}
 		bodyString := string(body)
