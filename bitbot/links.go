@@ -5,8 +5,10 @@ import (
 	"github.com/whyrusleeping/hellabot"
 	"golang.org/x/net/html"
 	"io"
+	"io/ioutil"
 	"mvdan.cc/xurls/v2"
 	"net/http"
+	"net/url"
 )
 
 var URLReaderTrigger = NamedTrigger{
@@ -19,9 +21,27 @@ var URLReaderTrigger = NamedTrigger{
 		resp := lookupPageTitle(m.Content)
 		if resp != "" {
 			irc.Reply(m, lookupPageTitle(m.Content))
+			if len(resp) > 70 {
+				irc.Reply(m, shortenURL(m.Content));
+			}
 		}
 		return true
 	},
+}
+
+func shortenURL(uri string) string {
+	/* We are using 0x0.st */
+	resp, err := http.PostForm("http://example.com/form", url.Values{"shorten": {uri}})
+	if err != nil {
+		fmt.Println("Coudln't shorten url : ", err);
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Coudln't shorten url : ", err);
+	}
+
+	return string(body);
 }
 
 func isURL(message string) bool {
