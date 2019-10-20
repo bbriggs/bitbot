@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
-	"strings"
 	"net/http"
+	"strings"
 
 	"github.com/mb-14/gomarkov"
 	"github.com/whyrusleeping/hellabot"
@@ -40,7 +40,7 @@ var MarkovResponseTrigger = NamedTrigger{
 }
 
 var MarkovInitTrigger = NamedTrigger{
-	ID: "markovInit",
+	ID:   "markovInit",
 	Help: "Resets markov chain to a fresh chain, or bootstraps it with sample texts. Usage: !markov reset, !markov init",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!markov ")
@@ -50,7 +50,7 @@ var MarkovInitTrigger = NamedTrigger{
 		if len(cmd) < 2 {
 			return false
 		}
-		switch cmd[1]{
+		switch cmd[1] {
 		case "reset":
 			// do stuff
 			b.mChain = gomarkov.NewChain(1)
@@ -64,7 +64,6 @@ var MarkovInitTrigger = NamedTrigger{
 			return false
 		}
 	},
-	
 }
 
 func generateBabble(chain *gomarkov.Chain) string {
