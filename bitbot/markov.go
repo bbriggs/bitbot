@@ -52,15 +52,17 @@ var MarkovInitTrigger = NamedTrigger{
 		}
 		switch cmd[1] {
 		case "reset":
-			// do stuff
 			b.mChain = gomarkov.NewChain(1)
 			return true
 		case "init":
-			// do other stuff
 			b.mChain = gomarkov.NewChain(1)
-			return markovInit(b.mChain)
+			if markovInit(b.mChain) == false {
+				irc.Reply(m, "Markov initialization failed.")
+			} else {
+				irc.Reply(m, "Markov initialization succeeded.")
+			}
+			return true
 		default:
-			// didn't recognize the subcommands
 			return false
 		}
 	},
@@ -80,15 +82,18 @@ func markovInit(chain *gomarkov.Chain) bool {
 		"https://gist.githubusercontent.com/bbriggs/f63340a3ed1a1439b6f3f8d619eacac1/raw/1f363d500226c55bab735fe59074f06721348546/world_factbook.txt",
 		"https://gist.githubusercontent.com/parsec/2f4d4edf55336c0a2994cfcf951a8ea7/raw/4b66c99f1879b927ebc2b2ffb8fdd39dc9a4f7d2/SnwCrsh"}
 
-	i := 0
-	for i <= len(sources) {
-		resp, err := http.Get(sources[i])
+	for _, link := range(sources) {
+		resp, err := http.Get(link)
 		if err != nil {
 			fmt.Println(err)
 			return false
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println(err)
+			return false
+		}
 		bodyString := string(body)
 		markovAdd(bodyString, chain)
 	}
@@ -100,5 +105,4 @@ func markovAdd(text string, chain *gomarkov.Chain) {
 	b.markovMutex.Lock()
 	b.mChain.Add(strings.Split(text, " "))
 	b.markovMutex.Unlock()
-
 }
