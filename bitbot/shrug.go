@@ -5,11 +5,13 @@ import (
 	"strings"
 )
 
-var ShrugTrigger = hbot.Trigger{
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+var ShrugTrigger = NamedTrigger{
+	ID:   "shrug",
+	Help: "Usage: !shrug",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!shrug"
 	},
-	func(irc *hbot.Bot, m *hbot.Message) bool {
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, `¯\_(ツ)_/¯`)
 		return true
 	},
