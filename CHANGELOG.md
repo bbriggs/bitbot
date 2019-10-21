@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Bitbot can now flip and unflip the table for you ! (#68, m-242)
    - Better tests for all triggers with conditions based on inbound messages
    - Add tarot card draw module (#73, skidd0)
+   - Shortening long urls using 0x0.st (#87, m-242)
 
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
