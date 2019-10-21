@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Better tests for all triggers with conditions based on inbound messages
    - Add tarot card draw module (#73, skidd0)
    - Shortening long urls using 0x0.st (#87, m-242)
+   - Add markov chain reset/init module (#81, parsec)
+     - Reduced markov trigger chance from 1:100 to 1:1000
+   - Add troll launcher (#45, parsec)
 
 ### Fixed
    - Fixed the plugin links's tests (#53, @m-242)
