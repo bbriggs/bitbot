@@ -1,7 +1,6 @@
 package bitbot
 
 import (
-	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"golang.org/x/net/html"
 	"io"
@@ -55,11 +54,11 @@ func lookupPageTitle(message string) string {
 		return ""
 	}
 	defer resp.Body.Close()
-	fmt.Println("Unable to lookup page")
+	log.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		return (title)
 	} else {
-		fmt.Println("Unable to lookup page")
+		log.Println("Unable to lookup page")
 		return ("")
 	}
 }
