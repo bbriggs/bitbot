@@ -3,6 +3,7 @@ package bitbot
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/bbriggs/quotes/model"
@@ -27,13 +28,13 @@ func getQuote(endpoint string) (model.Response, bool) {
 	var resp model.Response
 	r, err := http.Get(fmt.Sprintf("https://quotes.fraq.io%s", endpoint))
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return resp, false
 	}
 	defer r.Body.Close()
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	return resp, false
 }
