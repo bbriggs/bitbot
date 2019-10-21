@@ -18,6 +18,8 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"!help":                       HelpTrigger,
 		"!8ball":                      Magic8BallTrigger,
 		"!babble":                     MarkovResponseTrigger,
+		"!markov reset":			   MarkovInitTrigger,
+		"!markov init":				   MarkovInitTrigger,
 	}
 	b := makeMockBot("bitbot")
 
