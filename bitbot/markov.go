@@ -70,9 +70,11 @@ var MarkovInitTrigger = NamedTrigger{
 
 func generateBabble(chain *gomarkov.Chain) string {
 	tokens := []string{gomarkov.StartToken}
-	for tokens[len(tokens)-1] != gomarkov.EndToken {
+    length := 0
+	for tokens[len(tokens)-1] != gomarkov.EndToken && length < 200 {
 		next, _ := chain.Generate(tokens[(len(tokens) - 1):])
 		tokens = append(tokens, next)
+        length += len(next)
 	}
 	return strings.Join(tokens[1:len(tokens)-1], " ")
 }
