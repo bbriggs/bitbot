@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
      - When running as a bot (and not a library), all plugins are loaded by default.
      - Plugins must be of `bitbot.NamedTrigger` type. Sorry not sorry. (#69, bbriggs)
        - We depend on NamedTrigger for loading and unloading and and some other metadata about plugins
+   - Fixed `docker-build.sh`'s final output (#92, m-242)
 
 ### Changed
    - Config struct updated to include plugins and a mutex
