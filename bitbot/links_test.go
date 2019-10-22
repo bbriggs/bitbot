@@ -81,3 +81,13 @@ func TestLookupPageTitleRedirect(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestUrlShortening(t *testing.T) {
+	go func() {
+		title := shortenURL("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+		if !strings.Contains(title, "0x0.st") {
+			t.Log("Didn't properly shorten URL")
+			t.Fail()
+		}
+	}()
+}
