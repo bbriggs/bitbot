@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
    - Add markov chain reset/init module (#81, parsec)
      - Reduced markov trigger chance from 1:100 to 1:1000
+     - Limited message length to ~200 chars (#93, skidd0)
    - Add troll launcher (#45, parsec)
  
 ### Fixed
