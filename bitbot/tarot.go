@@ -25,22 +25,22 @@ var TarotTrigger = NamedTrigger{
 				if num < 1 || num > len(tarotCards) {
 					num = 1
 				}
-                if num > 5 {
-                    for i := 0; i < num; i++ {
-                        irc.Msg(m.From, tarotCards[deck[i]])
-                    }
-                    irc.Reply(m, "I have PMed you your reading.")
-                } else {
-                    for i := 0; i < num; i++ {
-                        irc.Reply(m, tarotCards[deck[i]])
-                    }
-                }
-            } else {
-                irc.Reply(m, "Try again..")
-            }
-        }
-        return true
-    },
+				if num > 5 {
+					for i := 0; i < num; i++ {
+						irc.Msg(m.From, tarotCards[deck[i]])
+					}
+					irc.Reply(m, "I have PMed you your reading.")
+				} else {
+					for i := 0; i < num; i++ {
+						irc.Reply(m, tarotCards[deck[i]])
+					}
+				}
+			} else {
+				irc.Reply(m, "Try again..")
+			}
+		}
+		return true
+	},
 }
 
 var tarotCards = []string{
