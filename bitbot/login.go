@@ -43,7 +43,7 @@ func (b Bot) NickservLogin() (string, bool) {
 	if b.Config.NickservPass == "" {
 		return "", false
 	}
-	login := fmt.Sprintf("IDENTIFY %s", b.Config.NickservPass)
+	login := fmt.Sprintf("IDENTIFY %s", b.Bot.Nick, b.Config.NickservPass)
 	return login, true
 }
 
