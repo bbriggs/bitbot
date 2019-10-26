@@ -3,9 +3,11 @@ package bitbot
 import (
 	"encoding/binary"
 	"fmt"
+	"strings"
+	"time"
+
 	"github.com/whyrusleeping/hellabot"
 	"gopkg.in/sorcix/irc.v1"
-	"time"
 )
 
 // NamedTrigger is a local re-implementation of hbot.Trigger to support unique names
@@ -47,6 +49,21 @@ func (b *Bot) ListTriggers() []string {
 		triggers = append(triggers, k)
 	}
 	return triggers
+}
+
+// JoinAllChannels attempts to rejoin all channels defined in the bot's config
+// This is a workaround for the joining channels which may be +r before the bot is identified
+func (b *Bot) JoinAllChannels() {
+	for _, channel := range b.Config.Channels {
+		splitchan := strings.SplitN(channel, ":", 2)
+		if len(splitchan) == 2 {
+			channel = splitchan[0]
+			password := splitchan[1]
+			b.Bot.Send(fmt.Sprintf("JOIN %s %s", channel, password))
+		} else {
+			b.Bot.Send(fmt.Sprintf("JOIN %s", channel))
+		}
+	}
 }
 
 func int64ToByte(i int64) []byte {

@@ -16,6 +16,9 @@ var OperLogin = hbot.Trigger{
 		ns, ok := b.NickservLogin()
 		if ok {
 			bot.Msg("NickServ", ns)
+			time.Sleep(5 * time.Second)
+			// To get into those pesky +r channels
+			b.JoinAllChannels()
 		}
 		time.Sleep(5 * time.Second)
 

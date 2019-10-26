@@ -123,5 +123,4 @@ func Run(config Config) {
 	// GOOOOOOO
 	defer b.DB.Close()
 	b.Bot.Run()
-
 }
