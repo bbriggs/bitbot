@@ -30,6 +30,9 @@ var URLReaderTrigger = NamedTrigger{
 }
 
 func shortenURL(uri string) string {
+	// extract url
+	uri = xurls.Strict().FindString(uri)
+
 	/* We are using 0x0.st */
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
