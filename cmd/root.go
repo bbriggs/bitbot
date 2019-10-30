@@ -76,7 +76,7 @@ var rootCmd = &cobra.Command{
 			}
 		}
 		config := bitbot.Config{
-			NickservPass: viper.GetString("nickservPass"),
+			NickservPass: viper.GetString("nickserv"),
 			OperUser:     viper.GetString("operUser"),
 			OperPass:     viper.GetString("operPass"),
 			Channels:     viper.GetStringSlice("channels"),
