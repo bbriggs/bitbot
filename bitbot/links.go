@@ -24,16 +24,17 @@ var URLReaderTrigger = NamedTrigger{
 		if resp != "" {
 			title := lookupPageTitle(m.Content)
 			if len(m.Content) > 70 {
-				irc.Reply(m, shortenURL(m.Content, title))
-			} else {
-				irc.Reply(m, title)
+				short := shortenURL(m.Content)
+				short = strings.TrimRight(short, "\n") //triming
+				title = fmt.Sprintf("%s %s", short, title)
 			}
+			irc.Reply(m, title)
 		}
 		return true
 	},
 }
 
-func shortenURL(uri string, title string) string {
+func shortenURL(uri string) string {
 	// extract url
 	uri = xurls.Strict().FindString(uri)
 
@@ -49,11 +50,7 @@ func shortenURL(uri string, title string) string {
 	}
 
 	short := string(body)
-	short = strings.TrimRight(short, "\n") //triming
-	// Concat title and shortened link
-	response := fmt.Sprintf("%s %s", short, title)
-	log.Println("RESP : ", response)
-	return response
+	return short
 }
 
 func isURL(message string) bool {
