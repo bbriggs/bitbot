@@ -60,6 +60,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"markovResponse": bitbot.MarkovResponseTrigger,
 	"markovInit":     bitbot.MarkovInitTrigger,
 	"troll":          bitbot.TrollLauncherTrigger,
+	"raider":         bitbot.RaiderQuoteTrigger,
 	"markovTrainer":  bitbot.MarkovTrainerTrigger,
 }
 
