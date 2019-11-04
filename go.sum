@@ -79,6 +79,8 @@ github.com/leanovate/gopter v0.2.4 h1:U4YLBggDFhJdqQsG4Na2zX7joVTky9vHaj/AGEwSuX
 github.com/leanovate/gopter v0.2.4/go.mod h1:gNcbPWNEWRe4lm+bycKqxUYoH5uoVje5SkOJ3uoLer8=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
+github.com/markcheno/go-quote v0.0.0-20190813122547-65145e8af89f h1:EbpTIlqfOCMc8cbymn8DL9W75F+LLSoGdxBpHF4HU1o=
+github.com/markcheno/go-quote v0.0.0-20190813122547-65145e8af89f/go.mod h1:cDo3FVvBpEI83B1KazdWnVAh4K2F0ing4aCEEanmh9o=
 github.com/mattn/go-colorable v0.1.1 h1:G1f5SKeVxmagw/IyvzvtZE4Gybcc4Tr1tf7I8z0XgOg=
 github.com/mattn/go-colorable v0.1.1/go.mod h1:FuOcm+DKB9mbwrcAfNl7/TZVBZ6rcnceauSikq3lYCQ=
 github.com/mattn/go-colorable v0.1.4 h1:snbPLB8fVfU9iwbbo30TPtbLRzwWu6aJS6Xh4eaaviA=
