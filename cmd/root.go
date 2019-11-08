@@ -47,6 +47,8 @@ var (
 
 var pluginMap = map[string]bitbot.NamedTrigger{
 	"trackIdleUsers": bitbot.TrackIdleUsers,
+	"invite":         bitbot.InviteTrigger,
+	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
 	"shrug":          bitbot.ShrugTrigger,
