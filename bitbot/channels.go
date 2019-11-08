@@ -1,8 +1,6 @@
 package bitbot
 
 import (
-	"fmt"
-
 	"github.com/whyrusleeping/hellabot"
 )
 
@@ -13,7 +11,7 @@ var InviteTrigger = NamedTrigger{
 		return m.Command == "INVITE"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		fmt.Println(m)
+		irc.Join(m.Content)
 		return true
 	},
 }
