@@ -12,6 +12,10 @@ else
 	XFLAGS="-X github.com/bbriggs/bitbot/bitbot.VERSION=$GIT_COMMIT"
 fi
 
+# Passing variables in the build for the !info trigger
+sed "s/.*GitCommit.*/	GitCommit  string = \"$GIT_COMMIT\"/" -i bitbot/version.go
+sed "s/.*GitBranch.*/	GitBranch  string = \"$GIT_BRANCH\"/" -i bitbot/version.go
+
 GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -a -ldflags "-s -w -extldflags '-static' ${XFLAGS}" -o ./opt/bitbot
 
 if [ $? -eq 0 ]; then
