@@ -34,8 +34,7 @@ var PartTrigger = NamedTrigger{
 			return true
 		} else if len(splitMsg) > 2 {
 			// part channel provided in args
-			partChannel(irc, splitMsg[2], irc.Nick)
-			fmt.Printf("\n\n%+v\n\n", m)
+			irc.Part(splitMsg[2], irc.Nick)
 			return true
 		}
 		// fallthrough; not enough args
