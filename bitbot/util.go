@@ -99,8 +99,3 @@ func makeMockBot(nick string) *hbot.Bot {
 		Host: "foo",
 	}
 }
-
-func partChannel(irc *hbot.Bot, ch, msg string) {
-	partString := "PART " + ch + " " + msg
-	irc.Send(partString)
-}
