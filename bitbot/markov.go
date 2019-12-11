@@ -29,7 +29,7 @@ var MarkovTrainerTrigger = NamedTrigger{
 
 var MarkovResponseTrigger = NamedTrigger{
 	ID:   "markovResponse",
-	Help: "Returns a randomly generated markov string. Usage: !babble <seed words>",
+	Help: "Returns a randomly generated markov string. Usage: !babble",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && (m.Content == "!babble" || rand.Intn(1000) == 0) // .1% chance, less spam
 	},
