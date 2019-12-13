@@ -23,7 +23,7 @@ var DecisionsTrigger = NamedTrigger{
 			r = "Choose what?"
 		}
 		irc.Reply(m, r)
-		return false
+		return true
 	},
 }
 

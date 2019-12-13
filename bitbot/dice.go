@@ -26,7 +26,7 @@ var RollTrigger = NamedTrigger{
 			resp = DICE_USAGE
 		}
 		irc.Reply(m, resp)
-		return false
+		return true
 	},
 }
 

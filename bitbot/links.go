@@ -1,6 +1,7 @@
 package bitbot
 
 import (
+	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"golang.org/x/net/html"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"mvdan.cc/xurls/v2"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 var URLReaderTrigger = NamedTrigger{
@@ -20,16 +22,22 @@ var URLReaderTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		resp := lookupPageTitle(m.Content)
 		if resp != "" {
-			irc.Reply(m, lookupPageTitle(m.Content))
+			title := lookupPageTitle(m.Content)
 			if len(m.Content) > 70 {
-				irc.Reply(m, shortenURL(m.Content))
+				short := shortenURL(m.Content)
+				short = strings.TrimRight(short, "\n") //triming
+				title = fmt.Sprintf("%s %s", short, title)
 			}
+			irc.Reply(m, title)
 		}
 		return true
 	},
 }
 
 func shortenURL(uri string) string {
+	// extract url
+	uri = xurls.Strict().FindString(uri)
+
 	/* We are using 0x0.st */
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
@@ -40,7 +48,9 @@ func shortenURL(uri string) string {
 	if err != nil {
 		log.Println("Coudln't shorten url : ", err)
 	}
-	return string(body)
+
+	short := string(body)
+	return short
 }
 
 func isURL(message string) bool {
