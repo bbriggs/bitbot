@@ -16,11 +16,11 @@ var EpeenTrigger = NamedTrigger{
 		cmd := strings.Split(m.Content, " ")
 		var nick = cmd[1]
 		var peepee = ""
-        if (nick == "suser" || nick == "not_suser") {
-		    peepee = ""
-        } else {
-		    peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
-        }
+		if nick == "suser" || nick == "not_suser" {
+			peepee = ""
+		} else {
+			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
+		}
 		var reply = nick + "'s peepee: " + peepee
 
 		irc.Reply(m, reply)
