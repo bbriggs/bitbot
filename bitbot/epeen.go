@@ -13,14 +13,13 @@ var EpeenTrigger = NamedTrigger{
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!epeen"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		cmd := strings.Split(m.Content, " ")
-		var nick = cmd[1]
+		var nick = m.From
 		var peepee = ""
-        if (nick == "suser" || nick == "not_suser") {
-		    peepee = ""
-        } else {
-		    peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
-        }
+		if nick == "suser" || nick == "not_suser" {
+			peepee = "8=D"
+		} else {
+			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
+		}
 		var reply = nick + "'s peepee: " + peepee
 
 		irc.Reply(m, reply)
