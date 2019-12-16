@@ -17,7 +17,7 @@ var EpeenTrigger = NamedTrigger{
 		var nick = cmd[1]
 		var peepee = ""
 		if nick == "suser" || nick == "not_suser" {
-			peepee = ""
+			peepee = "8=D"
 		} else {
 			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
 		}
