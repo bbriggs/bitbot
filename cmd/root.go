@@ -6,7 +6,7 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+//				suser was here
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
 //
@@ -63,6 +63,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"markovInit":     bitbot.MarkovInitTrigger,
 	"troll":          bitbot.TrollLauncherTrigger,
 	"markovTrainer":  bitbot.MarkovTrainerTrigger,
+	"epeen":          bitbot.EpeenTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
