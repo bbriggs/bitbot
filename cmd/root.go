@@ -162,5 +162,3 @@ func initConfig() {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }
-
-// fine suser was down here
