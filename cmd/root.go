@@ -47,6 +47,8 @@ var (
 
 var pluginMap = map[string]bitbot.NamedTrigger{
 	"trackIdleUsers": bitbot.TrackIdleUsers,
+	"invite":         bitbot.InviteTrigger,
+	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
 	"shrug":          bitbot.ShrugTrigger,
@@ -57,10 +59,11 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"help":           bitbot.HelpTrigger,
 	"8ball":          bitbot.Magic8BallTrigger,
 	"tarot":          bitbot.TarotTrigger,
-	"markovTrainer":  bitbot.MarkovTrainerTrigger,
 	"markovResponse": bitbot.MarkovResponseTrigger,
-	"markovInit":	  bitbot.MarkovInitTrigger,
-	"troll":		  bitbot.TrollLauncherTrigger,
+	"markovInit":     bitbot.MarkovInitTrigger,
+	"troll":          bitbot.TrollLauncherTrigger,
+	"markovTrainer":  bitbot.MarkovTrainerTrigger,
+	"epeen":          bitbot.EpeenTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -76,7 +79,7 @@ var rootCmd = &cobra.Command{
 			}
 		}
 		config := bitbot.Config{
-			NickservPass: viper.GetString("nickservPass"),
+			NickservPass: viper.GetString("nickserv"),
 			OperUser:     viper.GetString("operUser"),
 			OperPass:     viper.GetString("operPass"),
 			Channels:     viper.GetStringSlice("channels"),

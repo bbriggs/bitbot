@@ -13,6 +13,6 @@ var MessageCounterTrigger = NamedTrigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		b.counters["messageCounter"].WithLabelValues(m.To, m.Name).Inc()
-		return true
+		return false
 	},
 }
