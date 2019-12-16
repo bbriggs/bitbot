@@ -38,10 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - Plugin map type is now `map[string]NamedTrigger` instead of `sync.Map` and guarded with a `sync.RWMutexv`
 ## [1.1.0] - 2019-12-16
 ### Added
-   - added epeen function to display the requesters peepee
-   - epeen.go
-   - added the trigger to root.go
-   -guys...suser was also here
+   - added epeen function to display the requesters peepee (#rememberMe, @suser)
 
 ## [1.1.0] - 2018-11-24
 ### Added
