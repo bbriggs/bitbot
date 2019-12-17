@@ -30,12 +30,11 @@ var PartTrigger = NamedTrigger{
 		fmt.Println(splitMsg)
 		if len(splitMsg) == 2 {
 			// part same channel message was received on
-			partChannel(irc, m.Params[0], irc.Nick)
+			irc.Part(m.Params[0], irc.Nick)
 			return true
 		} else if len(splitMsg) > 2 {
 			// part channel provided in args
-			partChannel(irc, splitMsg[2], irc.Nick)
-			fmt.Printf("\n\n%+v\n\n", m)
+			irc.Part(splitMsg[2], irc.Nick)
 			return true
 		}
 		// fallthrough; not enough args
