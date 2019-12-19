@@ -16,10 +16,8 @@ var EpeenTrigger = NamedTrigger{
 		var nick = m.From
 		var peepee = ""
 		switch nick {
-		case "skidd0":
-			peepee = "peepee not found"
-		case "m242":
-			peepee = "8=twatsicle=D"
+		case "skidd0" || "m242":
+			peepee = "8====================D" // Yup, childish :D
 		default:
 			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
 		}
