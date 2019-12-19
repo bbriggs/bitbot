@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/bbriggs/bitbot/tree/HEAD)
-
-[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.1.0...HEAD)
+## [v1.2.0-CunningChuckwalla](https://github.com/bbriggs/bitbot/tree/v1.2.0-CunningChuckwalla) (2019-12-17)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.1.0...v1.2.0-CunningChuckwalla)
 
 **Implemented enhancements:**
 
@@ -33,6 +32,7 @@
 
 **Merged pull requests:**
 
+- Prep for release 1.2.0 [\#120](https://github.com/bbriggs/bitbot/pull/120) ([bbriggs](https://github.com/bbriggs))
 - fmt-ed epeen [\#118](https://github.com/bbriggs/bitbot/pull/118) ([skidd0](https://github.com/skidd0))
 - Fix epeen [\#117](https://github.com/bbriggs/bitbot/pull/117) ([skidd0](https://github.com/skidd0))
 - created epeen trigger [\#116](https://github.com/bbriggs/bitbot/pull/116) ([TheRealSuser](https://github.com/TheRealSuser))
@@ -109,6 +109,7 @@
 - fix panic [\#32](https://github.com/bbriggs/bitbot/pull/32) ([C-Sto](https://github.com/C-Sto))
 - Add skip flag [\#31](https://github.com/bbriggs/bitbot/pull/31) ([bbriggs](https://github.com/bbriggs))
 - Fix short title problem [\#25](https://github.com/bbriggs/bitbot/pull/25) ([sylviamoss](https://github.com/sylviamoss))
+- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.1](https://github.com/bbriggs/bitbot/tree/0.1.1) (2018-10-08)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.0...0.1.1)
@@ -132,7 +133,6 @@
 - Add compile output information to aid in debugging [\#10](https://github.com/bbriggs/bitbot/pull/10) ([bbriggs](https://github.com/bbriggs))
 - fix configuration issues with circle ci [\#9](https://github.com/bbriggs/bitbot/pull/9) ([wadadli](https://github.com/wadadli))
 - updates to the circle ci config [\#8](https://github.com/bbriggs/bitbot/pull/8) ([wadadli](https://github.com/wadadli))
-- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 - Add version output at build time  [\#6](https://github.com/bbriggs/bitbot/pull/6) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.0](https://github.com/bbriggs/bitbot/tree/0.1.0) (2018-09-28)
