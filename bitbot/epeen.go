@@ -15,9 +15,12 @@ var EpeenTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var nick = m.From
 		var peepee = ""
-		if nick == "suser" || nick == "not_suser" {
-			peepee = "8=D"
-		} else {
+		switch nick {
+		case "skidd0":
+			peepee = "peepee not found"
+		case "m242":
+			peepee = "8=twatsicle=D"
+		default:
 			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
 		}
 		var reply = nick + "'s peepee: " + peepee
