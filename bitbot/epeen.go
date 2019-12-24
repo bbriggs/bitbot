@@ -15,9 +15,9 @@ var EpeenTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var nick = m.From
 		var peepee = ""
-		switch nick {
+		switch nick { //leaving switch statement for added fuckery down the road
 		case "m242":
-			peepee = "8====================D Ɛ suser" // Yup, childish :D
+			peepee = "No Peepee Detected, have you tried a microscope?" // Yup, childish :D
 		default:
 			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
 		}
