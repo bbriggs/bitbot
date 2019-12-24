@@ -17,7 +17,7 @@ var EpeenTrigger = NamedTrigger{
 		var peepee = ""
 		switch nick { //leaving switch statement for added fuckery down the road
 		case "m242":
-			peepee = "No Peepee Detected, have you tried a microscope?" // Yup, childish :D
+			peepee = "No Peepee Detected, it must be hidden in Suser's ass" // Yup, childish :D
 		default:
 			peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
 		}
