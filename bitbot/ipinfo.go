@@ -1,7 +1,6 @@
 package bitbot
 
 import (
-	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"io/ioutil"
 	"log"
