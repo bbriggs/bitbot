@@ -20,6 +20,8 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"!babble":                     MarkovResponseTrigger,
 		"!markov reset":               MarkovInitTrigger,
 		"!markov init":                MarkovInitTrigger,
+		"!epeen":                      EpeenTrigger,
+		"!ipinfo":                     IPinfoTrigger,
 	}
 	b := makeMockBot("bitbot")
 

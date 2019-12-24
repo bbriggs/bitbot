@@ -1,13 +1,26 @@
 package bitbot
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 )
+
+type Geo_data struct {
+	IP       string
+	Hostname string
+	City     string
+	Region   string
+	Country  string
+	Loc      string
+	Org      string
+	Postal   string
+	Timezone string
+	Readme   string
+}
 
 var IPinfoTrigger = NamedTrigger{
 	ID:   "ipinfo",
@@ -28,16 +41,29 @@ var IPinfoTrigger = NamedTrigger{
 	},
 }
 
+func decode_json(b []byte) string {
+	var ipinfo Geo_data
+	var reply string
+	err := json.Unmarshal(b, &ipinfo)
+	if err != nil {
+		log.Println(err)
+	}
+	reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s", ipinfo.IP, ipinfo.Hostname, ipinfo.City, ipinfo.Region, ipinfo.Country, ipinfo.Loc, ipinfo.Org, ipinfo.Postal, ipinfo.Timezone)
+	return reply
+
+}
+
 func query(ip string) string {
 	url := "http://ipinfo.io/" + ip
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	json, err := ioutil.ReadAll(res.Body)
+	jsonData, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return string(json)
+
+	return decode_json(jsonData)
 }
