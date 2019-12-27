@@ -1,11 +1,8 @@
 package bitbot
 
 import (
-<<<<<<< HEAD
 	"encoding/json"
 	"fmt"
-=======
->>>>>>> 0e47efe0d5ae66c3ca4b94723bff3744bea859fb
 	"github.com/whyrusleeping/hellabot"
 	"io/ioutil"
 	"log"
