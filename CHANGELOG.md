@@ -1,100 +1,152 @@
-# Changelog
-All notable changes to this project will be documented in this file.
+# Change Log
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v1.2.0-CunningChuckwalla](https://github.com/bbriggs/bitbot/tree/v1.2.0-CunningChuckwalla) (2019-12-17)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.1.0...v1.2.0-CunningChuckwalla)
 
-## [UNRELEASED] 
-### Added
-   - Add a magic 8-ball module (#72, bbriggs)
-   - Prometheus endpoint and metrics (#70, bbriggs)
-   - Help field added to NamedTriggers (#71)
-   - New !help command lists all registered triggers (#69, bbriggs)
-   - !help command also supports positional arguments and returns contents of Help field (#71)
-   - Let bitbot help you decide things! Use `{nick} choose {option} or {option} [or {option}]...` 
-   - Bitbot now adds an underscore to his nick when needed (#60, m-242)
-   - Bitbot can now flip and unflip the table for you ! (#68, m-242)
-   - Better tests for all triggers with conditions based on inbound messages
-   - Add tarot card draw module (#73, skidd0)
-   - Shortening long urls using 0x0.st (#87, m-242)
+**Implemented enhancements:**
 
-   - Use `log` instead of `fmt` when possible
+- Include !tableflip and !unflip commands [\#42](https://github.com/bbriggs/bitbot/issues/42)
 
-   - Add markov chain reset/init module (#81, parsec)
-     - Reduced markov trigger chance from 1:100 to 1:1000
-     - Limited message length to ~200 chars (#93, skidd0)
-   - Add troll launcher (#45, parsec)
- 
-### Fixed
-   - Fixed the plugin links's tests (#53, @m-242)
-   - Specify plugins to load using the config file instead of modifying the source code. Whodathunkit.
-     - When running as a bot (and not a library), all plugins are loaded by default.
-     - Plugins must be of `bitbot.NamedTrigger` type. Sorry not sorry. (#69, bbriggs)
-       - We depend on NamedTrigger for loading and unloading and and some other metadata about plugins
-   - Fixed `docker-build.sh`'s final output (#92, m-242)
+**Fixed bugs:**
 
-### Changed
-   - Config struct updated to include plugins and a mutex
-   - Plugin map type is now `map[string]NamedTrigger` instead of `sync.Map` and guarded with a `sync.RWMutexv`
+- Limit babble size to avoid kick [\#93](https://github.com/bbriggs/bitbot/issues/93)
+- Fix docker-build.sh [\#91](https://github.com/bbriggs/bitbot/issues/91)
+- Channel Pop Gauge is Registering High Counts [\#76](https://github.com/bbriggs/bitbot/issues/76)
 
-## [1.1.0] - 2018-11-24
-### Added
-   - ACL type to manage allowed and rejected users
-   - Admins list (using ACL type) and `--admins` flag
-   - Dynamic loading and unloading of modules (guarded by admins list)
-       - Modules that are loadable must be registered with the local triggers `sync.Map`
-   - `!triggers` command to list registered modules
-   - NamedTrigger type that extends the new interface used for bitbot handlers
+**Closed issues:**
 
-### Changed
-   - Running on fork of bitbot until work around new style of triggers/interfaces is resolved
+- Links shortening segmentation fault [\#104](https://github.com/bbriggs/bitbot/issues/104)
+- Fix `version.go` [\#98](https://github.com/bbriggs/bitbot/issues/98)
+- Use the log package instead of the fmt packages inside triggers [\#88](https://github.com/bbriggs/bitbot/issues/88)
+- Automate the Markov triggers seeding. [\#82](https://github.com/bbriggs/bitbot/issues/82)
+- Add controls to re-initialize \(clear\) and bootstrap markov model [\#81](https://github.com/bbriggs/bitbot/issues/81)
+- Update references in `go.mod` file [\#78](https://github.com/bbriggs/bitbot/issues/78)
+- Anti spam module [\#61](https://github.com/bbriggs/bitbot/issues/61)
+- Get a new nick if configured one is taken [\#55](https://github.com/bbriggs/bitbot/issues/55)
+- Magic 8-Ball Module [\#46](https://github.com/bbriggs/bitbot/issues/46)
+- Troll Launcher Module [\#45](https://github.com/bbriggs/bitbot/issues/45)
+- Truncated links should end with ellipses. [\#43](https://github.com/bbriggs/bitbot/issues/43)
+- Build/incorporate a URL shortener [\#28](https://github.com/bbriggs/bitbot/issues/28)
+- Nickserv authentication [\#26](https://github.com/bbriggs/bitbot/issues/26)
+- Add RPG style dice roll function [\#18](https://github.com/bbriggs/bitbot/issues/18)
 
-## [1.0.0] - 2018-11-18
-### Added
-   - Skip processing of a message by prefixing your message with !skip
-   - Support to logging into nickserv, server oper via flag configuration
-   - 0.0
-   - Config struct added
+**Merged pull requests:**
 
-### Removed
-   - Removed `version` subcommand in favor of a `--version` flag
+- Prep for release 1.2.0 [\#120](https://github.com/bbriggs/bitbot/pull/120) ([bbriggs](https://github.com/bbriggs))
+- fmt-ed epeen [\#118](https://github.com/bbriggs/bitbot/pull/118) ([skidd0](https://github.com/skidd0))
+- Fix epeen [\#117](https://github.com/bbriggs/bitbot/pull/117) ([skidd0](https://github.com/skidd0))
+- created epeen trigger [\#116](https://github.com/bbriggs/bitbot/pull/116) ([TheRealSuser](https://github.com/TheRealSuser))
+- Updated markov help [\#114](https://github.com/bbriggs/bitbot/pull/114) ([m-242](https://github.com/m-242))
+- Properly set version/commit/branch info at build time [\#113](https://github.com/bbriggs/bitbot/pull/113) ([bbriggs](https://github.com/bbriggs))
+- Use new Part method in hbot.Bot [\#112](https://github.com/bbriggs/bitbot/pull/112) ([bbriggs](https://github.com/bbriggs))
+- Join and part channels [\#110](https://github.com/bbriggs/bitbot/pull/110) ([bbriggs](https://github.com/bbriggs))
+- Prevent MarkovTrainer from training on links and commands [\#107](https://github.com/bbriggs/bitbot/pull/107) ([bbriggs](https://github.com/bbriggs))
+- fixed the segfault problem by cleaning the url, closes \#104 [\#106](https://github.com/bbriggs/bitbot/pull/106) ([m-242](https://github.com/m-242))
+- Fix improperly bound nickserv config variable [\#102](https://github.com/bbriggs/bitbot/pull/102) ([bbriggs](https://github.com/bbriggs))
+- Update nickserv login to include bot nick [\#101](https://github.com/bbriggs/bitbot/pull/101) ([bbriggs](https://github.com/bbriggs))
+- PM tarot reading when \> 5 cards [\#99](https://github.com/bbriggs/bitbot/pull/99) ([skidd0](https://github.com/skidd0))
+- Readded snwcrsh source, and converted the array to a slice. \(\#94\) [\#97](https://github.com/bbriggs/bitbot/pull/97) ([parsec](https://github.com/parsec))
+- Limit !babble to max 200 chars. [\#96](https://github.com/bbriggs/bitbot/pull/96) ([skidd0](https://github.com/skidd0))
+- Fix docker build.sh, closes \#91 [\#92](https://github.com/bbriggs/bitbot/pull/92) ([m-242](https://github.com/m-242))
+- reduce markov chance [\#90](https://github.com/bbriggs/bitbot/pull/90) ([skidd0](https://github.com/skidd0))
+- used log in triggers, closes \#88 [\#89](https://github.com/bbriggs/bitbot/pull/89) ([m-242](https://github.com/m-242))
+- Shortening long urls [\#87](https://github.com/bbriggs/bitbot/pull/87) ([m-242](https://github.com/m-242))
+- Removed Snwcrsh Source [\#86](https://github.com/bbriggs/bitbot/pull/86) ([parsec](https://github.com/parsec))
+- Wrote `!troll` Troll Launcher \(\#45\) [\#85](https://github.com/bbriggs/bitbot/pull/85) ([parsec](https://github.com/parsec))
+- Updated `cmd/root.go` to include `markovInit` [\#84](https://github.com/bbriggs/bitbot/pull/84) ([parsec](https://github.com/parsec))
+- MarkovInit \(Issue \#81\) [\#83](https://github.com/bbriggs/bitbot/pull/83) ([parsec](https://github.com/parsec))
+- Add markov trigger [\#80](https://github.com/bbriggs/bitbot/pull/80) ([bbriggs](https://github.com/bbriggs))
+- Add new trigger to watch for RPL\_LIST messages from server. Fixes \#76 [\#77](https://github.com/bbriggs/bitbot/pull/77) ([bbriggs](https://github.com/bbriggs))
+- Add Prom gauge to track user count per channel [\#75](https://github.com/bbriggs/bitbot/pull/75) ([bbriggs](https://github.com/bbriggs))
+- Add 8ball to trigger condition tests [\#74](https://github.com/bbriggs/bitbot/pull/74) ([bbriggs](https://github.com/bbriggs))
+- Add Tarot Trigger [\#73](https://github.com/bbriggs/bitbot/pull/73) ([skidd0](https://github.com/skidd0))
+- Add magic 8 ball [\#72](https://github.com/bbriggs/bitbot/pull/72) ([bbriggs](https://github.com/bbriggs))
+- Help text [\#71](https://github.com/bbriggs/bitbot/pull/71) ([bbriggs](https://github.com/bbriggs))
+- Prometheus [\#70](https://github.com/bbriggs/bitbot/pull/70) ([bbriggs](https://github.com/bbriggs))
+- Add a help plugin [\#69](https://github.com/bbriggs/bitbot/pull/69) ([bbriggs](https://github.com/bbriggs))
+- Flipping the table [\#68](https://github.com/bbriggs/bitbot/pull/68) ([m-242](https://github.com/m-242))
+- Add BeefyTrigger to default trigger map [\#64](https://github.com/bbriggs/bitbot/pull/64) ([bbriggs](https://github.com/bbriggs))
+- Enable all plugins in pluginMap by default [\#63](https://github.com/bbriggs/bitbot/pull/63) ([bbriggs](https://github.com/bbriggs))
+- no push binary [\#62](https://github.com/bbriggs/bitbot/pull/62) ([m-242](https://github.com/m-242))
+- Auto rename [\#60](https://github.com/bbriggs/bitbot/pull/60) ([m-242](https://github.com/m-242))
+- Tests for Trigger Conditions [\#59](https://github.com/bbriggs/bitbot/pull/59) ([bbriggs](https://github.com/bbriggs))
+- Create map of available plugins to be loaded [\#58](https://github.com/bbriggs/bitbot/pull/58) ([bbriggs](https://github.com/bbriggs))
+- BEEF [\#57](https://github.com/bbriggs/bitbot/pull/57) ([bbriggs](https://github.com/bbriggs))
+- Update README to new usage patterns [\#56](https://github.com/bbriggs/bitbot/pull/56) ([bbriggs](https://github.com/bbriggs))
+- Title shortener working, closes \#43 [\#53](https://github.com/bbriggs/bitbot/pull/53) ([m-242](https://github.com/m-242))
+- Fixing circle ci tests [\#52](https://github.com/bbriggs/bitbot/pull/52) ([m-242](https://github.com/m-242))
+- Pass plugins in as configuration [\#51](https://github.com/bbriggs/bitbot/pull/51) ([bbriggs](https://github.com/bbriggs))
+- Fix wrong spelling in docker-build.sh [\#50](https://github.com/bbriggs/bitbot/pull/50) ([omBratteng](https://github.com/omBratteng))
+- Link expansion [\#49](https://github.com/bbriggs/bitbot/pull/49) ([bbriggs](https://github.com/bbriggs))
+- Send first 350 chars of title to account for twitter links [\#48](https://github.com/bbriggs/bitbot/pull/48) ([bbriggs](https://github.com/bbriggs))
+- Stop hauling deps around like a moron [\#47](https://github.com/bbriggs/bitbot/pull/47) ([bbriggs](https://github.com/bbriggs))
+- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
+- Fix crashes on empty titles; extend search space for titles to 2^16-1… [\#41](https://github.com/bbriggs/bitbot/pull/41) ([bbriggs](https://github.com/bbriggs))
+- Add quotes module [\#40](https://github.com/bbriggs/bitbot/pull/40) ([bbriggs](https://github.com/bbriggs))
+- Decisions [\#38](https://github.com/bbriggs/bitbot/pull/38) ([bbriggs](https://github.com/bbriggs))
+- Redirect following [\#30](https://github.com/bbriggs/bitbot/pull/30) ([harrywhite4](https://github.com/harrywhite4))
 
-### Fixed
-   - No more panics when Bitbot can't read a web page.
+## [v1.1.0](https://github.com/bbriggs/bitbot/tree/v1.1.0) (2018-11-24)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.0.0...v1.1.0)
 
-### Changed
-   - `Run` method's signature has changed and only accepts the newly-added Config struct
-     - Yes, this is a breaking change (hence the version bump)
-     - Accepting a config struct means fewer changes to the function signature in the future
-   - Dockerfile is waaaay slimmer 
-     - Runs in `scratch` container
-     - Runs as limited user
-     - Totally statically compiled
+**Merged pull requests:**
 
-## [0.1.1] - 2018-10-08
-### Added
-   - Shruggies! (#15, @wadadli)
-   - CircleCI support for automating tests (#8, @wadadli)
-   - Added a changelog
+- Hot loading [\#37](https://github.com/bbriggs/bitbot/pull/37) ([bbriggs](https://github.com/bbriggs))
 
-### Changed
+## [v1.0.0](https://github.com/bbriggs/bitbot/tree/v1.0.0) (2018-11-19)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.1...v1.0.0)
 
-### Fixed
-  - Fix crashes on very large titles (#22, @jrwren)
-  - Trim spaces from incoming messages when matching single word commands (#17, @bbriggs)
-  - Fix build time variable injection for seting version, git SHA, and branch (#6, #7, #10, #11, #12, @bbriggs)
-  - Certain URL schemes were breaking and crashing the bot (#3, @bbriggs)
-  - Properly vendor _all_ dependencies (#4, #5, @bbriggs)
-  - Bot no longer crashes on bad HTML/URLs because of missing error handler (#2, @bbriggs)
+**Fixed bugs:**
 
-## [0.1.0] - 2018-09-28
-### Added
-  - Initial semver'd release
-  - Spelling fix in readme (#1)
-  - Report titles of URLs posted in chat
-  - Basic idle tracker
-  - !info command displays build, semver, and branch
+- Crashing on short HTTP title elements [\#23](https://github.com/bbriggs/bitbot/issues/23)
 
-### Changed
+**Merged pull requests:**
 
-### Fixed
+- Add support for nickserv, server oper, and channel oper [\#36](https://github.com/bbriggs/bitbot/pull/36) ([bbriggs](https://github.com/bbriggs))
+- Slim down image size and use scratch container [\#35](https://github.com/bbriggs/bitbot/pull/35) ([bbriggs](https://github.com/bbriggs))
+- Set abyss threshold to 2 [\#34](https://github.com/bbriggs/bitbot/pull/34) ([bbriggs](https://github.com/bbriggs))
+- Add Abyss simulator [\#33](https://github.com/bbriggs/bitbot/pull/33) ([bbriggs](https://github.com/bbriggs))
+- fix panic [\#32](https://github.com/bbriggs/bitbot/pull/32) ([C-Sto](https://github.com/C-Sto))
+- Add skip flag [\#31](https://github.com/bbriggs/bitbot/pull/31) ([bbriggs](https://github.com/bbriggs))
+- Fix short title problem [\#25](https://github.com/bbriggs/bitbot/pull/25) ([sylviamoss](https://github.com/sylviamoss))
+- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
+
+## [0.1.1](https://github.com/bbriggs/bitbot/tree/0.1.1) (2018-10-08)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.0...0.1.1)
+
+**Fixed bugs:**
+
+- Bitbot crashes on very large titles [\#20](https://github.com/bbriggs/bitbot/issues/20)
+
+**Closed issues:**
+
+- !shrug breaks on a trailing space [\#16](https://github.com/bbriggs/bitbot/issues/16)
+
+**Merged pull requests:**
+
+- Release 0.1.1 [\#24](https://github.com/bbriggs/bitbot/pull/24) ([bbriggs](https://github.com/bbriggs))
+- fix crashes on very long titles [\#22](https://github.com/bbriggs/bitbot/pull/22) ([jrwren](https://github.com/jrwren))
+- Trim spaces from incoming messages when matching for single-word comm… [\#17](https://github.com/bbriggs/bitbot/pull/17) ([bbriggs](https://github.com/bbriggs))
+- Add shrug trigger to bitbot [\#15](https://github.com/bbriggs/bitbot/pull/15) ([wadadli](https://github.com/wadadli))
+- Dockerhub sucks [\#12](https://github.com/bbriggs/bitbot/pull/12) ([bbriggs](https://github.com/bbriggs))
+- Work around Dockerhub's shallow clone and set a default version [\#11](https://github.com/bbriggs/bitbot/pull/11) ([bbriggs](https://github.com/bbriggs))
+- Add compile output information to aid in debugging [\#10](https://github.com/bbriggs/bitbot/pull/10) ([bbriggs](https://github.com/bbriggs))
+- fix configuration issues with circle ci [\#9](https://github.com/bbriggs/bitbot/pull/9) ([wadadli](https://github.com/wadadli))
+- updates to the circle ci config [\#8](https://github.com/bbriggs/bitbot/pull/8) ([wadadli](https://github.com/wadadli))
+- Add version output at build time  [\#6](https://github.com/bbriggs/bitbot/pull/6) ([bbriggs](https://github.com/bbriggs))
+
+## [0.1.0](https://github.com/bbriggs/bitbot/tree/0.1.0) (2018-09-28)
+**Closed issues:**
+
+- Crashes when getting unsupported URL schemes [\#2](https://github.com/bbriggs/bitbot/issues/2)
+
+**Merged pull requests:**
+
+- Switch back to upstream [\#5](https://github.com/bbriggs/bitbot/pull/5) ([bbriggs](https://github.com/bbriggs))
+- Remove the go get ./.. from Dockerfile  [\#4](https://github.com/bbriggs/bitbot/pull/4) ([bbriggs](https://github.com/bbriggs))
+- Fix \#2: Move defer after error handling in url lookups [\#3](https://github.com/bbriggs/bitbot/pull/3) ([bbriggs](https://github.com/bbriggs))
+- Fix Spelling Error [\#1](https://github.com/bbriggs/bitbot/pull/1) ([zombeej](https://github.com/zombeej))
+
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
