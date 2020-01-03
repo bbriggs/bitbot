@@ -10,7 +10,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var raiderQuote = NamedTrigger{
+var RaiderQuoteTrigger = NamedTrigger{
 	ID: "raider",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && b.Random.Intn(1000) == 1
