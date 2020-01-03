@@ -47,8 +47,13 @@ func decode_json(b []byte) string {
 	err := json.Unmarshal(b, &ipinfo)
 	if err != nil {
 		log.Println(err)
+
 	}
-	reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s", ipinfo.IP, ipinfo.Hostname, ipinfo.City, ipinfo.Region, ipinfo.Country, ipinfo.Loc, ipinfo.Org, ipinfo.Postal, ipinfo.Timezone)
+	if ipinfo.IP == nil {
+		reply = "either the IP was not valid or we are being rate limited"
+	} else {
+		reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s", ipinfo.IP, ipinfo.Hostname, ipinfo.City, ipinfo.Region, ipinfo.Country, ipinfo.Loc, ipinfo.Org, ipinfo.Postal, ipinfo.Timezone)
+	}
 	return reply
 
 }
