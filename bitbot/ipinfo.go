@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type Geo_data struct {
+type GeoData struct {
 	IP       string
 	Hostname string
 	City     string
@@ -42,8 +42,8 @@ var IPinfoTrigger = NamedTrigger{
 	},
 }
 
-func decode_json(b []byte) string {
-	var ipinfo Geo_data
+func decodeJson(b []byte) string {
+	var ipinfo GeoData
 	var reply string
 	err := json.Unmarshal(b, &ipinfo)
 	if err != nil {
@@ -71,5 +71,5 @@ func query(ip string) string {
 		log.Fatal(err)
 	}
 
-	return decode_json(jsonData)
+	return decodeJson(jsonData)
 }
