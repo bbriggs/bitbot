@@ -37,6 +37,29 @@ type ACL struct {
 	Rejected []string
 }
 
+//contains returns a bool if the string is found in the slice of strings
+func contains(list []string, item string) (int, bool) {
+	for i, val := range list {
+		if item == val {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
+//yea yea commenting my code sucks ass fraq
+//isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
+func (acl ACL) isAllowed(nick string) bool {
+	err, ret := contains(acl.Permitted, nick)
+	return ret
+}
+
+//isDenied returns a bool if the nick is contained in the ACL struct rejected slice
+func (acl ACL) isDenied(nick string) bool {
+	err, ret := contains(acl.Rejected, nick)
+	return ret
+}
+
 // ListTriggers gets all trigger IDs currently registered to the bot
 func (b *Bot) ListTriggers() []string {
 	var triggers []string
