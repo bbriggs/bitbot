@@ -3,11 +3,12 @@ package bitbot
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/whyrusleeping/hellabot"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/whyrusleeping/hellabot"
 )
 
 type GeoData struct {
