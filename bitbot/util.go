@@ -37,8 +37,9 @@ type ACL struct {
 	Rejected []string
 }
 
-//contains returns a bool if the string is found in the slice of strings
-func contains(list []string, item string) (int, bool) {
+// contains returns (int, bool) where int is the index location and bool
+// indicates if the string is present in the slice of strings
+func stringSliceContains(list []string, item string) (int, bool) {
 	for i, val := range list {
 		if item == val {
 			return i, true
@@ -47,16 +48,15 @@ func contains(list []string, item string) (int, bool) {
 	return -1, false
 }
 
-//yea yea commenting my code sucks ass fraq
-//isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
+// isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
 func (acl ACL) isAllowed(nick string) bool {
-	_, ret := contains(acl.Permitted, nick)
+	_, ret := stringSliceContains(acl.Permitted, nick)
 	return ret
 }
 
 //isDenied returns a bool if the nick is contained in the ACL struct rejected slice
 func (acl ACL) isDenied(nick string) bool {
-	_, ret := contains(acl.Rejected, nick)
+	_, ret := stringSliceContains(acl.Rejected, nick)
 	return ret
 }
 
