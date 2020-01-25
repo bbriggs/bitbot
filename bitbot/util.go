@@ -37,6 +37,29 @@ type ACL struct {
 	Rejected []string
 }
 
+// contains returns (int, bool) where int is the index location and bool
+// indicates if the string is present in the slice of strings
+func stringSliceContains(list []string, item string) (int, bool) {
+	for i, val := range list {
+		if item == val {
+			return i, true
+		}
+	}
+	return 0, false // We return the zero value when we don't find anything. I really hope you're checking that bool.
+}
+
+// isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
+func (acl ACL) isAllowed(nick string) bool {
+	_, ret := stringSliceContains(acl.Permitted, nick)
+	return ret
+}
+
+//isDenied returns a bool if the nick is contained in the ACL struct rejected slice
+func (acl ACL) isDenied(nick string) bool {
+	_, ret := stringSliceContains(acl.Rejected, nick)
+	return ret
+}
+
 // ListTriggers gets all trigger IDs currently registered to the bot
 func (b *Bot) ListTriggers() []string {
 	var triggers []string
