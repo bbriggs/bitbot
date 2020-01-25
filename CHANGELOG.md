@@ -147,7 +147,6 @@
 - fix panic [\#32](https://github.com/bbriggs/bitbot/pull/32) ([C-Sto](https://github.com/C-Sto))
 - Add skip flag [\#31](https://github.com/bbriggs/bitbot/pull/31) ([bbriggs](https://github.com/bbriggs))
 - Fix short title problem [\#25](https://github.com/bbriggs/bitbot/pull/25) ([sylviamoss](https://github.com/sylviamoss))
-- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.1](https://github.com/bbriggs/bitbot/tree/0.1.1) (2018-10-08)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.0...0.1.1)
@@ -171,6 +170,7 @@
 - Work around Dockerhub's shallow clone and set a default version [\#11](https://github.com/bbriggs/bitbot/pull/11) ([bbriggs](https://github.com/bbriggs))
 - Add compile output information to aid in debugging [\#10](https://github.com/bbriggs/bitbot/pull/10) ([bbriggs](https://github.com/bbriggs))
 - updates to the circle ci config [\#8](https://github.com/bbriggs/bitbot/pull/8) ([wadadli](https://github.com/wadadli))
+- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 - Add version output at build time  [\#6](https://github.com/bbriggs/bitbot/pull/6) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.0](https://github.com/bbriggs/bitbot/tree/0.1.0) (2018-09-28)
