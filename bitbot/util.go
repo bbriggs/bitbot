@@ -45,7 +45,7 @@ func stringSliceContains(list []string, item string) (int, bool) {
 			return i, true
 		}
 	}
-	return -1, false
+	return 0, false // We return the zero value when we don't find anything. I really hope you're checking that bool.
 }
 
 // isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
