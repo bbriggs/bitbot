@@ -50,13 +50,13 @@ func contains(list []string, item string) (int, bool) {
 //yea yea commenting my code sucks ass fraq
 //isAllowed returns a bool if the nick is contained in the ACL struct permitted slice
 func (acl ACL) isAllowed(nick string) bool {
-	err, ret := contains(acl.Permitted, nick)
+	_, ret := contains(acl.Permitted, nick)
 	return ret
 }
 
 //isDenied returns a bool if the nick is contained in the ACL struct rejected slice
 func (acl ACL) isDenied(nick string) bool {
-	err, ret := contains(acl.Rejected, nick)
+	_, ret := contains(acl.Rejected, nick)
 	return ret
 }
 
