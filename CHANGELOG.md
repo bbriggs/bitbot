@@ -1,17 +1,61 @@
 # Change Log
 
+## [v1.2.2](https://github.com/bbriggs/bitbot/tree/v1.2.2) (2020-01-25)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.2.1...v1.2.2)
+
+**Implemented enhancements:**
+
+- Improve ACL checks [\#127](https://github.com/bbriggs/bitbot/pull/127) ([TheRealSuser](https://github.com/TheRealSuser))
+- Ipinfo add [\#125](https://github.com/bbriggs/bitbot/pull/125) ([TheRealSuser](https://github.com/TheRealSuser))
+
+**Fixed bugs:**
+
+- suser and m242 resume their epeen contest [\#124](https://github.com/bbriggs/bitbot/pull/124) ([TheRealSuser](https://github.com/TheRealSuser))
+
+**Merged pull requests:**
+
+- Add ipinfo module [\#126](https://github.com/bbriggs/bitbot/pull/126) ([TheRealSuser](https://github.com/TheRealSuser))
+- Export name for RaiderQuoteTrigger and add it to default plugin map [\#108](https://github.com/bbriggs/bitbot/pull/108) ([bbriggs](https://github.com/bbriggs))
+
+## [v1.2.1](https://github.com/bbriggs/bitbot/tree/v1.2.1) (2019-12-19)
+[Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.2.0-CunningChuckwalla...v1.2.1)
+
+**Fixed bugs:**
+
+- epeen fixed formatting maintainted [\#122](https://github.com/bbriggs/bitbot/pull/122) ([TheRealSuser](https://github.com/TheRealSuser))
+
+**Merged pull requests:**
+
+- Dev [\#123](https://github.com/bbriggs/bitbot/pull/123) ([m-242](https://github.com/m-242))
+- Update changelog with new release notes [\#121](https://github.com/bbriggs/bitbot/pull/121) ([bbriggs](https://github.com/bbriggs))
+
 ## [v1.2.0-CunningChuckwalla](https://github.com/bbriggs/bitbot/tree/v1.2.0-CunningChuckwalla) (2019-12-17)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.1.0...v1.2.0-CunningChuckwalla)
 
 **Implemented enhancements:**
 
 - Include !tableflip and !unflip commands [\#42](https://github.com/bbriggs/bitbot/issues/42)
+- created epeen trigger [\#116](https://github.com/bbriggs/bitbot/pull/116) ([TheRealSuser](https://github.com/TheRealSuser))
+- Updated markov help [\#114](https://github.com/bbriggs/bitbot/pull/114) ([m-242](https://github.com/m-242))
+- Use new Part method in hbot.Bot [\#112](https://github.com/bbriggs/bitbot/pull/112) ([bbriggs](https://github.com/bbriggs))
+- Join and part channels [\#110](https://github.com/bbriggs/bitbot/pull/110) ([bbriggs](https://github.com/bbriggs))
+- Prevent MarkovTrainer from training on links and commands [\#107](https://github.com/bbriggs/bitbot/pull/107) ([bbriggs](https://github.com/bbriggs))
+- PM tarot reading when \> 5 cards [\#99](https://github.com/bbriggs/bitbot/pull/99) ([skidd0](https://github.com/skidd0))
+- Readded snwcrsh source, and converted the array to a slice. \(\#94\) [\#97](https://github.com/bbriggs/bitbot/pull/97) ([parsec](https://github.com/parsec))
+- Limit !babble to max 200 chars. [\#96](https://github.com/bbriggs/bitbot/pull/96) ([skidd0](https://github.com/skidd0))
 
 **Fixed bugs:**
 
 - Limit babble size to avoid kick [\#93](https://github.com/bbriggs/bitbot/issues/93)
 - Fix docker-build.sh [\#91](https://github.com/bbriggs/bitbot/issues/91)
 - Channel Pop Gauge is Registering High Counts [\#76](https://github.com/bbriggs/bitbot/issues/76)
+- fmt-ed epeen [\#118](https://github.com/bbriggs/bitbot/pull/118) ([skidd0](https://github.com/skidd0))
+- Fix epeen [\#117](https://github.com/bbriggs/bitbot/pull/117) ([skidd0](https://github.com/skidd0))
+- Properly set version/commit/branch info at build time [\#113](https://github.com/bbriggs/bitbot/pull/113) ([bbriggs](https://github.com/bbriggs))
+- fixed the segfault problem by cleaning the url, closes \#104 [\#106](https://github.com/bbriggs/bitbot/pull/106) ([m-242](https://github.com/m-242))
+- Fix improperly bound nickserv config variable [\#102](https://github.com/bbriggs/bitbot/pull/102) ([bbriggs](https://github.com/bbriggs))
+- Update nickserv login to include bot nick [\#101](https://github.com/bbriggs/bitbot/pull/101) ([bbriggs](https://github.com/bbriggs))
+- Fix docker build.sh, closes \#91 [\#92](https://github.com/bbriggs/bitbot/pull/92) ([m-242](https://github.com/m-242))
 
 **Closed issues:**
 
@@ -33,21 +77,7 @@
 **Merged pull requests:**
 
 - Prep for release 1.2.0 [\#120](https://github.com/bbriggs/bitbot/pull/120) ([bbriggs](https://github.com/bbriggs))
-- fmt-ed epeen [\#118](https://github.com/bbriggs/bitbot/pull/118) ([skidd0](https://github.com/skidd0))
-- Fix epeen [\#117](https://github.com/bbriggs/bitbot/pull/117) ([skidd0](https://github.com/skidd0))
-- created epeen trigger [\#116](https://github.com/bbriggs/bitbot/pull/116) ([TheRealSuser](https://github.com/TheRealSuser))
-- Updated markov help [\#114](https://github.com/bbriggs/bitbot/pull/114) ([m-242](https://github.com/m-242))
-- Properly set version/commit/branch info at build time [\#113](https://github.com/bbriggs/bitbot/pull/113) ([bbriggs](https://github.com/bbriggs))
-- Use new Part method in hbot.Bot [\#112](https://github.com/bbriggs/bitbot/pull/112) ([bbriggs](https://github.com/bbriggs))
-- Join and part channels [\#110](https://github.com/bbriggs/bitbot/pull/110) ([bbriggs](https://github.com/bbriggs))
-- Prevent MarkovTrainer from training on links and commands [\#107](https://github.com/bbriggs/bitbot/pull/107) ([bbriggs](https://github.com/bbriggs))
-- fixed the segfault problem by cleaning the url, closes \#104 [\#106](https://github.com/bbriggs/bitbot/pull/106) ([m-242](https://github.com/m-242))
-- Fix improperly bound nickserv config variable [\#102](https://github.com/bbriggs/bitbot/pull/102) ([bbriggs](https://github.com/bbriggs))
-- Update nickserv login to include bot nick [\#101](https://github.com/bbriggs/bitbot/pull/101) ([bbriggs](https://github.com/bbriggs))
-- PM tarot reading when \> 5 cards [\#99](https://github.com/bbriggs/bitbot/pull/99) ([skidd0](https://github.com/skidd0))
-- Readded snwcrsh source, and converted the array to a slice. \(\#94\) [\#97](https://github.com/bbriggs/bitbot/pull/97) ([parsec](https://github.com/parsec))
-- Limit !babble to max 200 chars. [\#96](https://github.com/bbriggs/bitbot/pull/96) ([skidd0](https://github.com/skidd0))
-- Fix docker build.sh, closes \#91 [\#92](https://github.com/bbriggs/bitbot/pull/92) ([m-242](https://github.com/m-242))
+- Use Changelog Generator to standardize changelog [\#119](https://github.com/bbriggs/bitbot/pull/119) ([bbriggs](https://github.com/bbriggs))
 - reduce markov chance [\#90](https://github.com/bbriggs/bitbot/pull/90) ([skidd0](https://github.com/skidd0))
 - used log in triggers, closes \#88 [\#89](https://github.com/bbriggs/bitbot/pull/89) ([m-242](https://github.com/m-242))
 - Shortening long urls [\#87](https://github.com/bbriggs/bitbot/pull/87) ([m-242](https://github.com/m-242))
@@ -80,7 +110,6 @@
 - Link expansion [\#49](https://github.com/bbriggs/bitbot/pull/49) ([bbriggs](https://github.com/bbriggs))
 - Send first 350 chars of title to account for twitter links [\#48](https://github.com/bbriggs/bitbot/pull/48) ([bbriggs](https://github.com/bbriggs))
 - Stop hauling deps around like a moron [\#47](https://github.com/bbriggs/bitbot/pull/47) ([bbriggs](https://github.com/bbriggs))
-- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Fix crashes on empty titles; extend search space for titles to 2^16-1… [\#41](https://github.com/bbriggs/bitbot/pull/41) ([bbriggs](https://github.com/bbriggs))
 - Add quotes module [\#40](https://github.com/bbriggs/bitbot/pull/40) ([bbriggs](https://github.com/bbriggs))
 - Decisions [\#38](https://github.com/bbriggs/bitbot/pull/38) ([bbriggs](https://github.com/bbriggs))
@@ -109,7 +138,6 @@
 - fix panic [\#32](https://github.com/bbriggs/bitbot/pull/32) ([C-Sto](https://github.com/C-Sto))
 - Add skip flag [\#31](https://github.com/bbriggs/bitbot/pull/31) ([bbriggs](https://github.com/bbriggs))
 - Fix short title problem [\#25](https://github.com/bbriggs/bitbot/pull/25) ([sylviamoss](https://github.com/sylviamoss))
-- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.1](https://github.com/bbriggs/bitbot/tree/0.1.1) (2018-10-08)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.0...0.1.1)
@@ -124,6 +152,7 @@
 
 **Merged pull requests:**
 
+- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Release 0.1.1 [\#24](https://github.com/bbriggs/bitbot/pull/24) ([bbriggs](https://github.com/bbriggs))
 - fix crashes on very long titles [\#22](https://github.com/bbriggs/bitbot/pull/22) ([jrwren](https://github.com/jrwren))
 - Trim spaces from incoming messages when matching for single-word comm… [\#17](https://github.com/bbriggs/bitbot/pull/17) ([bbriggs](https://github.com/bbriggs))
@@ -133,6 +162,7 @@
 - Add compile output information to aid in debugging [\#10](https://github.com/bbriggs/bitbot/pull/10) ([bbriggs](https://github.com/bbriggs))
 - fix configuration issues with circle ci [\#9](https://github.com/bbriggs/bitbot/pull/9) ([wadadli](https://github.com/wadadli))
 - updates to the circle ci config [\#8](https://github.com/bbriggs/bitbot/pull/8) ([wadadli](https://github.com/wadadli))
+- Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 - Add version output at build time  [\#6](https://github.com/bbriggs/bitbot/pull/6) ([bbriggs](https://github.com/bbriggs))
 
 ## [0.1.0](https://github.com/bbriggs/bitbot/tree/0.1.0) (2018-09-28)

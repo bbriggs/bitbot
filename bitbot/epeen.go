@@ -15,6 +15,7 @@ var EpeenTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var nick = m.From
 		var peepee = ""
+
 		switch nick {
 		case "m242":
 			peepee = "8====================D Ɛ suser" // Yup, childish :D
