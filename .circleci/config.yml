@@ -12,7 +12,7 @@ jobs:
         name: Run unit tests
         command: go test -v ./...
      - webhook/notify:
-          endpoint: 'http://9af5dfa8.ngrok.io'
+          endpoint: 'http://9af5dfa8.ngrok.io/api/v1/circle/webhooks'
 workflows:
   version: 2
   default:
