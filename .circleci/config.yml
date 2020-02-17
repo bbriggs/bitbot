@@ -1,4 +1,7 @@
 version: 2.1
+orbs:
+  webhook: eddiewebb/webhook@0.0.4
+
 jobs:
   run_unit_tests:
     docker:
@@ -8,6 +11,8 @@ jobs:
      - run:
         name: Run unit tests
         command: go test -v ./...
+     - webhook/notify:
+          endpoint: 'https://postb.in/1581926654025-0535355808679'
 workflows:
   version: 2
   default:
