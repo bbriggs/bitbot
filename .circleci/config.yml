@@ -12,7 +12,7 @@ jobs:
         name: Run unit tests
         command: go test -v ./...
      - webhook/notify:
-          endpoint: 'https://postb.in/1581926654025-0535355808679'
+          endpoint: 'http://9af5dfa8.ngrok.io'
 workflows:
   version: 2
   default:
