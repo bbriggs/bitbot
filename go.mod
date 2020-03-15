@@ -6,6 +6,7 @@ require (
 	github.com/bbriggs/quotes v0.0.0-20190225011706-ef48dc0c0ec7
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
+	github.com/jinzhu/gorm v1.9.12
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
 	github.com/leanovate/gopter v0.2.4
 	github.com/mattn/go-colorable v0.1.4 // indirect
