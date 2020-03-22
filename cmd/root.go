@@ -89,6 +89,7 @@ var rootCmd = &cobra.Command{
 			User:    viper.GetString("dbUser"),
 			Pass:    viper.GetString("dbPass"),
 			Host:    viper.GetString("dbHost"),
+			Port:    viper.GetString("dbPort"),
 			Name:    viper.GetString("dbName"),
 			SSLMode: viper.GetString("dbSSLMode"),
 		}
@@ -171,6 +172,7 @@ func init() {
 	viper.SetDefault("plugins", defaultPlugins)
 	viper.SetDefault("dbUser", "bitbot")
 	viper.SetDefault("dbHost", "127.0.0.1")
+	viper.SetDefault("dbName", "bitbot")
 	viper.SetDefault("dbPort", "5432")
 }
 
