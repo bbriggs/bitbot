@@ -52,7 +52,6 @@ var (
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
-	"trackIdleUsers": bitbot.TrackIdleUsers,
 	"invite":         bitbot.InviteTrigger,
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
@@ -170,7 +169,9 @@ func init() {
 	viper.SetDefault("prom", false)
 	viper.SetDefault("promAddr", "127.0.0.1:8080")
 	viper.SetDefault("plugins", defaultPlugins)
-
+	viper.SetDefault("dbUser", "bitbot")
+	viper.SetDefault("dbHost", "127.0.0.1")
+	viper.SetDefault("dbPort", "5432")
 }
 
 // initConfig reads in config file and ENV variables if set.
