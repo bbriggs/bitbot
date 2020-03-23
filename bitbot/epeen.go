@@ -17,6 +17,8 @@ var EpeenTrigger = NamedTrigger{
 		var peepee = ""
 
 		switch nick {
+		case "daemon":
+			peepee = strings.Repeat("\\", rand.Intn(200)) + "D" + "\n(_)_)"
 		case "m242":
 			peepee = "8D" // Yup, childish :D
 		case "skidd0":
