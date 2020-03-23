@@ -9,6 +9,7 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
 	github.com/leanovate/gopter v0.2.4
+	github.com/markcheno/go-quote v0.0.0-20190813122547-65145e8af89f
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mb-14/gomarkov v0.0.0-20190125094512-044dd0dcb5e7
