@@ -122,6 +122,7 @@
 - Link expansion [\#49](https://github.com/bbriggs/bitbot/pull/49) ([bbriggs](https://github.com/bbriggs))
 - Send first 350 chars of title to account for twitter links [\#48](https://github.com/bbriggs/bitbot/pull/48) ([bbriggs](https://github.com/bbriggs))
 - Stop hauling deps around like a moron [\#47](https://github.com/bbriggs/bitbot/pull/47) ([bbriggs](https://github.com/bbriggs))
+- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Fix crashes on empty titles; extend search space for titles to 2^16-1… [\#41](https://github.com/bbriggs/bitbot/pull/41) ([bbriggs](https://github.com/bbriggs))
 - Add quotes module [\#40](https://github.com/bbriggs/bitbot/pull/40) ([bbriggs](https://github.com/bbriggs))
 - Decisions [\#38](https://github.com/bbriggs/bitbot/pull/38) ([bbriggs](https://github.com/bbriggs))
@@ -161,7 +162,6 @@
 
 **Merged pull requests:**
 
-- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Release 0.1.1 [\#24](https://github.com/bbriggs/bitbot/pull/24) ([bbriggs](https://github.com/bbriggs))
 - fix crashes on very long titles [\#22](https://github.com/bbriggs/bitbot/pull/22) ([jrwren](https://github.com/jrwren))
 - Trim spaces from incoming messages when matching for single-word comm… [\#17](https://github.com/bbriggs/bitbot/pull/17) ([bbriggs](https://github.com/bbriggs))
