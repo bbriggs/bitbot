@@ -7,17 +7,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"github.com/mb-14/gomarkov"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/whyrusleeping/hellabot"
-	bolt "go.etcd.io/bbolt"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 type Bot struct {
 	Bot    *hbot.Bot
-	DB     *bolt.DB
+	DB     *gorm.DB
 	Random *rand.Rand // Initialized PRNG
 	Config Config
 
@@ -41,6 +41,17 @@ type Config struct {
 	Plugins      []NamedTrigger // Plugins to start with
 	Prometheus   bool           // Enable Prometheus
 	PromAddr     string         // Listen address for prometheus endpoint
+	DBConfig     DBConfig       // Configuration settings for Database connection
+}
+
+// Configuration struct for Postgresql backend
+type DBConfig struct {
+	User    string
+	Pass    string
+	Host    string
+	Port    string
+	Name    string
+	SSLMode string
 }
 
 var b Bot = Bot{}
@@ -67,7 +78,7 @@ func (b *Bot) DropTrigger(t NamedTrigger) bool {
 }
 
 func Run(config Config) {
-	db, err := newDB()
+	db, err := newDB(config.DBConfig)
 	if err != nil {
 		log.Error(err.Error())
 		os.Exit(1)
