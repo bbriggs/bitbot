@@ -43,21 +43,32 @@ var IPinfoTrigger = NamedTrigger{
 	},
 }
 
-func decodeJson(b []byte) string {
-	var ipinfo GeoData
-	var reply string
+func decodeJSON(b []byte) string {
+	var (
+		ipinfo GeoData
+		reply  string
+	)
+
 	err := json.Unmarshal(b, &ipinfo)
 	if err != nil {
 		log.Println(err)
-
 	}
+
 	if ipinfo.IP == "" {
 		reply = "either the IP was not valid or we are being rate limited"
 	} else {
-		reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s", ipinfo.IP, ipinfo.Hostname, ipinfo.City, ipinfo.Region, ipinfo.Country, ipinfo.Loc, ipinfo.Org, ipinfo.Postal, ipinfo.Timezone)
+		reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s",
+			ipinfo.IP,
+			ipinfo.Hostname,
+			ipinfo.City,
+			ipinfo.Region,
+			ipinfo.Country,
+			ipinfo.Loc,
+			ipinfo.Org,
+			ipinfo.Postal,
+			ipinfo.Timezone)
 	}
 	return reply
-
 }
 
 func query(ip string) string {
@@ -66,11 +77,16 @@ func query(ip string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	jsonData, err := ioutil.ReadAll(res.Body)
-	res.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return decodeJson(jsonData)
+	err := res.Body.Close()
+	if err != nil {
+		log.Info(err) // It's probably not a big error
+	}
+
+	return decodeJSON(jsonData)
 }
