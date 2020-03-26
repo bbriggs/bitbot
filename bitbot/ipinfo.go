@@ -83,10 +83,6 @@ func query(ip string) string {
 		log.Fatal(err)
 	}
 
-	err := res.Body.Close()
-	if err != nil {
-		log.Info(err) // It's probably not a big error
-	}
-
+	res.Body.Close()
 	return decodeJSON(jsonData)
 }
