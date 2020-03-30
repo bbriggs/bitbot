@@ -56,6 +56,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
+	"covid19":        bitbot.Covid19Trigger,
 	"shrug":          bitbot.ShrugTrigger,
 	"urlReader":      bitbot.URLReaderTrigger,
 	"roll":           bitbot.RollTrigger,
