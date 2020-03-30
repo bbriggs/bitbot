@@ -45,6 +45,13 @@ prom: "true"
 promAddr: "127.0.0.0.1:8080"
 admins:
   "foo@your.irc.hostmask"
+prom: "true"
+promAddr: "0.0.0.0:8080"
+dbuser: "bitbot"
+dbpass: "bitbot"
+dbhost: "127.0.0.1"
+dbport: "5432"
+dbsslmode: "disable"
 # Plugins available to load are defined in cmd/bot.go
 plugins:
   - "roll"
@@ -59,6 +66,11 @@ plugins:
 Assuming a config file named `config.yaml` in your local directory:
 ```
 docker run --rm -it -v `pwd`/config.yaml:/app/config.yaml bbriggs/bitbot --config /app/config.yaml
+```
+
+You will need to have a postgresSQL database running, you can launch one that will work with the example config with
+```
+docker-compose up -d db
 ```
 
 Remember that if you're running in Docker, your Prometheus bind address must be 0.0.0.0 + some port and you must publish that port using `-p`
