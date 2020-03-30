@@ -33,24 +33,30 @@ import (
 const VERSION = ""
 
 var (
-	cfgFile  string
-	server   string
-	channels []string
-	nick     string
-	ssl      bool
-	nickserv string
-	operUser string
-	operPass string
-	promAddr string
-	prom     bool
+	cfgFile   string
+	server    string
+	channels  []string
+	nick      string
+	ssl       bool
+	nickserv  string
+	operUser  string
+	operPass  string
+	promAddr  string
+	prom      bool
+	dbUser    string
+	dbPass    string
+	dbHost    string
+	dbPort    string
+	dbName    string
+	dbSSLMode string
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
-	"trackIdleUsers": bitbot.TrackIdleUsers,
 	"invite":         bitbot.InviteTrigger,
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
+	"covid19":        bitbot.Covid19Trigger,
 	"shrug":          bitbot.ShrugTrigger,
 	"urlReader":      bitbot.URLReaderTrigger,
 	"roll":           bitbot.RollTrigger,
@@ -80,6 +86,14 @@ var rootCmd = &cobra.Command{
 				plugins = append(plugins, p)
 			}
 		}
+		dbConfig := bitbot.DBConfig{
+			User:    viper.GetString("dbUser"),
+			Pass:    viper.GetString("dbPass"),
+			Host:    viper.GetString("dbHost"),
+			Port:    viper.GetString("dbPort"),
+			Name:    viper.GetString("dbName"),
+			SSLMode: viper.GetString("dbSSLMode"),
+		}
 		config := bitbot.Config{
 			NickservPass: viper.GetString("nickserv"),
 			OperUser:     viper.GetString("operUser"),
@@ -90,6 +104,7 @@ var rootCmd = &cobra.Command{
 			SSL:          viper.GetBool("ssl"),
 			Prometheus:   viper.GetBool("prom"),
 			PromAddr:     viper.GetString("promAddr"),
+			DBConfig:     dbConfig,
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
@@ -125,6 +140,12 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
 	rootCmd.PersistentFlags().BoolVarP(&prom, "prom", "", prom, "enable prometheus")
 	rootCmd.PersistentFlags().StringVarP(&promAddr, "promAddr", "", promAddr, "Prometheus metrics address and port")
+	rootCmd.PersistentFlags().StringVarP(&dbUser, "dbUser", "", dbUser, "Postgresql user")
+	rootCmd.PersistentFlags().StringVarP(&dbPass, "dbPass", "", dbPass, "Postgresql password")
+	rootCmd.PersistentFlags().StringVarP(&dbHost, "dbHost", "", dbHost, "Postgresql host")
+	rootCmd.PersistentFlags().StringVarP(&dbPort, "dbPort", "", dbPort, "Postgresql port")
+	rootCmd.PersistentFlags().StringVarP(&dbName, "dbName", "", dbName, "Postgresql database name")
+	rootCmd.PersistentFlags().StringVarP(&dbSSLMode, "dbSSLMode", "", dbSSLMode, "Postgresql SSL Mode")
 
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("nickserv", rootCmd.PersistentFlags().Lookup("nickserv"))
@@ -134,6 +155,12 @@ func init() {
 	viper.BindPFlag("nick", rootCmd.PersistentFlags().Lookup("nick"))
 	viper.BindPFlag("ssl", rootCmd.PersistentFlags().Lookup("ssl"))
 	viper.BindPFlag("promAddr", rootCmd.PersistentFlags().Lookup("promAddr"))
+	viper.BindPFlag("dbUser", rootCmd.PersistentFlags().Lookup("dbUser"))
+	viper.BindPFlag("dbPass", rootCmd.PersistentFlags().Lookup("dbPass"))
+	viper.BindPFlag("dbHost", rootCmd.PersistentFlags().Lookup("dbHost"))
+	viper.BindPFlag("dbPort", rootCmd.PersistentFlags().Lookup("dbPort"))
+	viper.BindPFlag("dbName", rootCmd.PersistentFlags().Lookup("dbName"))
+	viper.BindPFlag("dbSSLMode", rootCmd.PersistentFlags().Lookup("dbSSLMode"))
 
 	// All plugins enabled by default
 	var defaultPlugins []string
@@ -144,7 +171,10 @@ func init() {
 	viper.SetDefault("prom", false)
 	viper.SetDefault("promAddr", "127.0.0.1:8080")
 	viper.SetDefault("plugins", defaultPlugins)
-
+	viper.SetDefault("dbUser", "bitbot")
+	viper.SetDefault("dbHost", "127.0.0.1")
+	viper.SetDefault("dbName", "bitbot")
+	viper.SetDefault("dbPort", "5432")
 }
 
 // initConfig reads in config file and ENV variables if set.
