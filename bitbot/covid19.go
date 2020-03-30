@@ -71,6 +71,7 @@ var Covid19Trigger = NamedTrigger{
 }
 
 func parseCovid19Trigger(args []string, data *Covid19Data) string {
+	// WIP
 	var resp string
 	switch len(args) {
 	case 0:
@@ -93,7 +94,7 @@ func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) 
 
 	for _, v := range data.Confirmed.Locations {
 		log.Println(v.CountryCode)
-		if v.CountryCode == cc {
+		if v.CountryCode == cc && v.Province == "nan" {
 			country = v.Country
 			confirmed = v.Latest
 			break
@@ -101,7 +102,7 @@ func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) 
 	}
 
 	for _, v := range data.Deaths.Locations {
-		if v.CountryCode == cc {
+		if v.CountryCode == cc && v.Province == "nan" {
 			deaths = v.Latest
 			break
 		}
