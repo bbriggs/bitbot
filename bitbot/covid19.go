@@ -79,7 +79,7 @@ func parseCovid19Trigger(args []string, data *Covid19Data) string {
 	case 1:
 		resp = fmt.Sprintf("Total confirmed: %d | Total deaths: %d", data.Confirmed.Latest, data.Deaths.Latest)
 	default:
-		country, confirmed, dead := covid19StatsByCountryCode(args[1], data)
+		country, confirmed, dead := covid19StatsByCountryCode(strings.ToUpper(args[1]), data)
 		resp = fmt.Sprintf("Stats for %s || Confirmed: %d | Deaths %d", country, confirmed, dead)
 	}
 	return resp
