@@ -126,14 +126,12 @@ func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) 
 		if v.CountryCode == cc {
 			country = v.Country   // Yes I am aware this write the country var every time. Sue me.
 			confirmed += v.Latest // Sum all the provinces because a "nan" field isn't guaranteed
-			break
 		}
 	}
 
 	for _, v := range data.Deaths.Locations {
 		if v.CountryCode == cc {
 			deaths += v.Latest
-			break
 		}
 	}
 	return country, confirmed, deaths
