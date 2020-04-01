@@ -93,17 +93,16 @@ func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) 
 	)
 
 	for _, v := range data.Confirmed.Locations {
-		log.Println(v.CountryCode)
-		if v.CountryCode == cc && v.Province == "nan" {
-			country = v.Country
-			confirmed = v.Latest
+		if v.CountryCode == cc {
+			country = v.Country   // Yes I am aware this write the country var every time. Sue me.
+			confirmed += v.Latest // Sum all the provinces because a "nan" field isn't guaranteed
 			break
 		}
 	}
 
 	for _, v := range data.Deaths.Locations {
-		if v.CountryCode == cc && v.Province == "nan" {
-			deaths = v.Latest
+		if v.CountryCode == cc {
+			deaths += v.Latest
 			break
 		}
 	}
