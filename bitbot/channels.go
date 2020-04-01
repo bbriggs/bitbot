@@ -23,7 +23,7 @@ var PartTrigger = NamedTrigger{
 	ID:   "part",
 	Help: "Command the bot to leave the channel. Usage: [bot nick] part [channel]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, irc.Nick + " part")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, irc.Nick+" part")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		splitMsg := strings.Split(m.Content, " ")
