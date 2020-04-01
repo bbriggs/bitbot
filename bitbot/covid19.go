@@ -78,11 +78,41 @@ func parseCovid19Trigger(args []string, data *Covid19Data) string {
 		resp = "Error: empty request"
 	case 1:
 		resp = fmt.Sprintf("Total confirmed: %d | Total deaths: %d", data.Confirmed.Latest, data.Deaths.Latest)
-	default:
+	case 2:
 		country, confirmed, dead := covid19StatsByCountryCode(strings.ToUpper(args[1]), data)
 		resp = fmt.Sprintf("Stats for %s || Confirmed: %d | Deaths %d", country, confirmed, dead)
+	default:
+		province, country, confirmed, dead := covid19StatsOfProvince(strings.ToUpper(args[1]), args[2:], data)
+		resp = fmt.Sprintf("Stats for %s, %s || Confirmed: %d | Deaths: %d", province, country, confirmed, dead)
 	}
 	return resp
+}
+
+func covid19StatsOfProvince(cc string, prov []string, data *Covid19Data) (string, string, int, int) {
+	var (
+		confirmed int
+		deaths    int
+		country   string
+		province  string
+	)
+	province = strings.Title(strings.Join(prov[:], " "))
+
+	for _, v := range data.Confirmed.Locations {
+		if v.Province == province {
+			country = v.Country
+			confirmed = v.Latest
+			break
+		}
+	}
+
+	for _, v := range data.Deaths.Locations {
+		if v.Province == province {
+			deaths = v.Latest
+			break
+		}
+	}
+
+	return province, country, confirmed, deaths
 }
 
 func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) {
