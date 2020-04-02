@@ -17,7 +17,7 @@ var UrbanDictionaryTrigger = NamedTrigger{
 	ID:   "urbandict",
 	Help: "Get an urban dictionary issued definition. Usage: !urbd [term]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!urbd")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!ud")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		resp := urbanDefinition(m.Content)
@@ -35,7 +35,7 @@ func urbanDefinition(message string) string {
 	}
 
 	if len(res.Results) > 0 {
-		return cleanDef(res.Results[0].Definition)
+		return fmt.Sprintf("%s: %s", term, cleanDef(res.Results[0].Definition))
 	}
 	return "No definition for that word"
 }
@@ -47,14 +47,14 @@ func cleanDef(def string) string {
 	return def
 }
 
-type SearchResult struct {
+type searchResult struct {
 	Type    string `json:"result_type"`
 	Tags    []string
-	Results []Result `json:"list"`
+	Results []result `json:"list"`
 	Sounds  []string
 }
 
-type Result struct {
+type result struct {
 	Author     string
 	Word       string
 	Definition string
@@ -64,7 +64,7 @@ type Result struct {
 	Downvote   int `json:"thumbs_down"`
 }
 
-func urbanDictQuery(searchTerm string) (*SearchResult, error) {
+func urbanDictQuery(searchTerm string) (*searchResult, error) {
 	const baseURL = "http://api.urbandictionary.com/v0/define?term="
 	resp, err := http.Get(baseURL + url.QueryEscape(searchTerm))
 	if err != nil {
@@ -81,7 +81,7 @@ func urbanDictQuery(searchTerm string) (*SearchResult, error) {
 		return nil, err
 	}
 
-	res := &SearchResult{}
+	res := &searchResult{}
 	err = json.Unmarshal(body, res)
 	if err != nil {
 		return nil, err
