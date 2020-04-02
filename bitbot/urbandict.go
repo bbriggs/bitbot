@@ -28,7 +28,7 @@ var UrbanDictionaryTrigger = NamedTrigger{
 
 func urbanDefinition(message string) string {
 	term := strings.SplitAfterN(message, " ", 2)[1] // Strip trigger word
-	res, err := Query(term)
+	res, err := urbanDictQuery(term)
 	if err != nil {
 		log.Println(err)
 		return "The search failed"
@@ -64,9 +64,9 @@ type Result struct {
 	Downvote   int `json:"thumbs_down"`
 }
 
-func Query(searchTerm string) (*SearchResult, error) {
-	const API_URL = "http://api.urbandictionary.com/v0/define?term="
-	resp, err := http.Get(API_URL + url.QueryEscape(searchTerm))
+func urbanDictQuery(searchTerm string) (*SearchResult, error) {
+	const baseURL = "http://api.urbandictionary.com/v0/define?term="
+	resp, err := http.Get(baseURL + url.QueryEscape(searchTerm))
 	if err != nil {
 		return nil, err
 	}
