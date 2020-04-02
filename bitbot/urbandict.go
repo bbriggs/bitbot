@@ -13,9 +13,9 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var UrbanDictionnaryTrigger = NamedTrigger{
+var UrbanDictionaryTrigger = NamedTrigger{
 	ID:   "urbandict",
-	Help: "Get an urban dictionnary issued definition. Usage: !urbd [term]",
+	Help: "Get an urban dictionary issued definition. Usage: !urbd [term]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!urbd")
 	},

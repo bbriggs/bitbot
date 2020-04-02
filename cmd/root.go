@@ -72,7 +72,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"markovTrainer":  bitbot.MarkovTrainerTrigger,
 	"epeen":          bitbot.EpeenTrigger,
 	"ipinfo":         bitbot.IPinfoTrigger,
-	"urbd":           bitbot.UrbanDictionnaryTrigger,
+	"urbd":           bitbot.UrbanDictionaryTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
