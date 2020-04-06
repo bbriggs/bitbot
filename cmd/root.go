@@ -164,7 +164,7 @@ func init() {
 
 	// All plugins enabled by default
 	var defaultPlugins []string
-	for plugin, _ := range pluginMap {
+	for plugin := range pluginMap {
 		defaultPlugins = append(defaultPlugins, plugin)
 	}
 	viper.SetDefault("nick", "bitbot")
