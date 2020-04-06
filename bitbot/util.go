@@ -66,7 +66,7 @@ func (b *Bot) ListTriggers() []string {
 	b.triggerMutex.RLock()
 	defer b.triggerMutex.RUnlock()
 
-	for k, _ := range b.triggers {
+	for k := range b.triggers {
 		triggers = append(triggers, k)
 	}
 	return triggers
