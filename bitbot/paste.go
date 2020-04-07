@@ -22,40 +22,42 @@ const (
 	gcmTagSize = 16 // for reference
 )
 
-type Array1 struct {
-	// todo: the following fields (till EOF) should be a (json ?) array
-	Nonce            []byte // base64(cipher_iv); getRandomBytes(16) default
-	Kdfsalt          []byte // base64(kdf_salt); getRandomBytes(8) default
-	Pbkdf_iterations int    // pbkdf_iterations; default
-	Pbkdf_keysize    int    // pbkdf_keysize; default
-	Cipher_tag_size  int    // cipher_tag_size (wtf ?); default
-	Cipher_algo      string // cipher_algo; default
-	Cipher_mode      string // cipher_mode; default
-	Compression_type string // compression_type; default
-	// EOF
-}
-type AuthData struct { //todo: should be type "json" ?
 
-	EncryptionDetails  Array1
-	Format             string // format of the paste
-	Open_discussion    bool   // open-discussion flag (todo: not sure if bool works)
-	Burn_after_reading bool   // burn-after-reading flag (todo: not sure if bool works)
+// type Array1 []interface { // TODO: more descriptive name
+// 	// TODO: the following fields (till EOF) should be a (json ?) array
+// 	Nonce            []byte // base64(cipher_iv); getRandomBytes(16) default
+// 	Kdfsalt          []byte // base64(kdf_salt); getRandomBytes(8) default
+// 	Pbkdf_iterations int    // pbkdf_iterations; default
+// 	Pbkdf_keysize    int    // pbkdf_keysize; default
+// 	Cipher_tag_size  int    // cipher_tag_size (wtf ?); default
+// 	Cipher_algo      string // cipher_algo; default
+// 	Cipher_mode      string // cipher_mode; default
+// 	Compression_type string // compression_type; default
+// 	// EOF
+// }
 
-}
+// type AuthData struct { //TODO: should be type "json" ?
+//
+//     EncryptionDetails  Array1 // TODO: more descriptive name
+// 	Format             string // format of the paste
+// 	Open_discussion    int   // open-discussion flag (TODO: not sure if bool works)
+// 	Burn_after_reading int   // burn-after-reading flag (TODO: not sure if bool works)
+//
+// }
 
-type PasteMeta struct { // todo: should be type "json" ?
+type PasteMeta struct { // TODO: should be type "json" ?
 	Expire string `json:"expire"`
 }
 
-type PasteRequest struct { // todo: should be type "json" ?
-	Adata      AuthData  `json:"adata"`
-	Meta       PasteMeta `json:"meta"` // todo: meta is another json
-	Version    int       `json:"v"`
-	Ciphertext []byte    `json:"ct"` // todo: type should be "base64" ?
+type PasteRequest struct { // TODO: should be type "json" ?
+	AuthData   [4]interface{} `json:"adata"`
+	Meta       PasteMeta      `json:"meta"` // TODO: meta is another json
+	Version    int            `json:"v"`
+	Ciphertext []byte         `json:"ct"` // TODO: type should be "base64" ?
 }
 
 type PasteResponse struct {
-	Status      int    `json:"status"` // todo: not sure if bool works
+	Status      int    `json:"status"` // TODO: not sure if bool works
 	Id          string `json:"id"`
 	Url         string `json:"url"`
 	Deletetoken string `json:"deletetoken"`
@@ -71,10 +73,10 @@ var PasteTrigger = NamedTrigger{
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 
 		// uncomment below
-		// plaintext := []byte(m.Content)		// todo: only fetch the paste content
+		// plaintext := []byte(m.Content)		// TODO: only fetch the paste content
 		// key, nonce, ciphertext, kdfsalt := encrypt(plaintext)
 		/*
-			todo:
+			TODO:
 				1. send request to privatebin
 				2. parse the response
 				3. check status, fail if not okay
@@ -97,7 +99,7 @@ func recvPaste(pasteReq *PasteRequest) PasteResponse {
 		fmt.Println(err)
 	}
 	httpClient := &http.Client{}
-	if req, err := http.NewRequest("POST", "https://bin.fraq.io", bytes.NewReader(jsonForm)); err != nil {  // todo: don't hardcode url
+	if req, err := http.NewRequest("POST", "https://bin.fraq.io", bytes.NewReader(jsonForm)); err != nil {  // TODO: don't hardcode url
 		fmt.Println(err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -134,8 +136,8 @@ func recvPaste(pasteReq *PasteRequest) PasteResponse {
 
 func encrypt(plaintext []byte) (string, []byte, []byte, []byte) {
 	// encrypts the message with a random key, then return it back
-	// todo: should generate the key instead of it being a random
-	// todo: should return a struct (first array of AuthData)
+	// TODO: should generate the key instead of it being a random
+	// TODO: should return a struct (first array of AuthData)
 
 	/*		public function create($pasteid, $paste)
 	{
