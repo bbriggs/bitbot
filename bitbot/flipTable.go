@@ -4,7 +4,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var TableFlipTrigger = NamedTrigger{
+var TableFlipTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals
 	ID:   "tableflip",
 	Help: "Flip a table. Usage: !tableflip",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -17,7 +17,7 @@ var TableFlipTrigger = NamedTrigger{
 	},
 }
 
-var TableUnflipTrigger = NamedTrigger{
+var TableUnflipTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals
 	ID: "unflip",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		match := (m.Content == "!unflip")

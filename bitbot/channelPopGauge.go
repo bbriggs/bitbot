@@ -9,7 +9,7 @@ import (
 	"gopkg.in/sorcix/irc.v1"
 )
 
-var ChannelPopGaugeTrigger = NamedTrigger{
+var ChannelPopGaugeTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals //nolint:gochecknoglobals
 	ID:   "channelPopGauge",
 	Help: "Updates a Prometheus gauge with the value of a channel's population",
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -32,7 +32,7 @@ var ChannelPopGaugeTrigger = NamedTrigger{
 	},
 }
 
-var HandleListReplyTrigger = NamedTrigger{
+var HandleListReplyTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals //nolint:gochecknoglobals
 	ID:   "handleListReply",
 	Help: "Sets the gauge for a channel pop when an RPL_LIST command is detected",
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
@@ -50,7 +50,7 @@ var HandleListReplyTrigger = NamedTrigger{
 	},
 }
 
-var SetChanPopGaugeTrigger = NamedTrigger{
+var SetChanPopGaugeTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals //nolint:gochecknoglobals
 	ID:   "setChannelPopGauge",
 	Help: "Sets the gauge for a channel's population when the bot joins",
 	Condition: func(bot *hbot.Bot, m *hbot.Message) bool {
