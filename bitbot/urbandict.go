@@ -13,7 +13,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var UrbanDictionaryTrigger = NamedTrigger{
+var UrbanDictionaryTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "urbandict",
 	Help: "Get an urban dictionary issued definition. Usage: !urbd [term]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -71,7 +71,7 @@ func urbanDictQuery(searchTerm string) (*searchResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck,gosec
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Response was not a 200: %d", resp.StatusCode)
