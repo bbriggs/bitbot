@@ -24,7 +24,7 @@ type GeoData struct {
 	Readme   string
 }
 
-var IPinfoTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var IPinfoTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "ipinfo",
 	Help: "!ipinfo <valid IP>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

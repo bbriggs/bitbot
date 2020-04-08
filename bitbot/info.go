@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var InfoTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var InfoTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "info",
 	Help: "Get version and repo information about this bot. Usage: !info",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

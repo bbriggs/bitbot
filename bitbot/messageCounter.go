@@ -4,7 +4,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var MessageCounterTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var MessageCounterTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "messageCounter",
 	Help: "Increments a counter for every message it sees in chat.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

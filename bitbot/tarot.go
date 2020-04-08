@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var TarotTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var TarotTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "Tarot",
 	Help: "Request tarot cards, default 1. Usage !tarot [num cards].",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

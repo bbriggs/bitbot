@@ -11,7 +11,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var MarkovTrainerTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var MarkovTrainerTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "markovTrainer",
 	Help: "Incrementally trains bitbot's markov model on every new privmsg",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -27,7 +27,7 @@ var MarkovTrainerTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	},
 }
 
-var MarkovResponseTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var MarkovResponseTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "markovResponse",
 	Help: "Returns a randomly generated markov string. Usage: !babble",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -39,7 +39,7 @@ var MarkovResponseTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	},
 }
 
-var MarkovInitTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var MarkovInitTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "markovInit",
 	Help: "Resets markov chain to a fresh chain, or bootstraps it with sample texts. Usage: !markov reset, !markov init",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

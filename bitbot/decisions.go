@@ -8,7 +8,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var DecisionsTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var DecisionsTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "decisions",
 	Help: "Let the bot decide something for you. Usage: ${bot_name} choose option option [option...]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
