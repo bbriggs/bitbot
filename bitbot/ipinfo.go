@@ -83,6 +83,6 @@ func query(ip string) string {
 		log.Fatal(err)
 	}
 
-	res.Body.Close()
+	res.Body.Close() //nolint:errcheck,gosec
 	return decodeJSON(jsonData)
 }

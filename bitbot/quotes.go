@@ -31,7 +31,7 @@ func getQuote(endpoint string) (model.Response, bool) {
 		log.Println(err.Error())
 		return resp, false
 	}
-	defer r.Body.Close()
+	defer r.Body.Close() //nolint:errcheck,gosec
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		log.Println(err)

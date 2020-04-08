@@ -70,7 +70,7 @@ func urbanDictQuery(searchTerm string) (*searchResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck,gosec
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP Response was not a 200: %d", resp.StatusCode)
