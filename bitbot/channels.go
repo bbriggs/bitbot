@@ -7,7 +7,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals
+var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	ID:   "invite",
 	Help: "Follow invites to other channels. Usage: /invite [bot nick]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -19,7 +19,7 @@ var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknogl
 	},
 }
 
-var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals
+var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	ID:   "part",
 	Help: "Command the bot to leave the channel. Usage: [bot nick] part [channel]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
