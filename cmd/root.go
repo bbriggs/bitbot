@@ -32,6 +32,7 @@ import (
 
 const VERSION = ""
 
+// nolint:gochecknoglobals
 var (
 	cfgFile   string
 	server    string
