@@ -94,7 +94,7 @@ func markovInit(chain *gomarkov.Chain) bool {
 			log.Println(err)
 			return false
 		}
-		defer resp.Body.Close()
+		defer resp.Body.Close() //nolint:errcheck,gosec
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Println(err)
