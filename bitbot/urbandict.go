@@ -43,6 +43,7 @@ func urbanDefinition(message string) string {
 func cleanDef(def string) string {
 	def = strings.ReplaceAll(def, "[", "")
 	def = strings.ReplaceAll(def, "]", "")
+	def = strings.ReplaceAll(def, "\r\n", " ")
 
 	return def
 }
