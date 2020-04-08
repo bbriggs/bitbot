@@ -6,7 +6,7 @@ import (
 
 // These should test basic passing cases
 func TestBasicNamedTriggers(t *testing.T) {
-	triggerTests := map[string]NamedTrigger{
+	triggerTests := map[string]NamedTrigger{ //nolint:gochecknoglobals //nolint:gochecknoglobals
 		"!shrug":                      ShrugTrigger,
 		"!skip":                       SkipTrigger,
 		"!info":                       InfoTrigger,

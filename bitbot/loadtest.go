@@ -53,7 +53,7 @@ var unloadTrigger = hbot.Trigger{
 	},
 }
 
-var listTriggers = NamedTrigger{
+var listTriggers = NamedTrigger{ //nolint:gochecknoglobals
 	ID: "listTriggers",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!triggers" && b.isAdmin(m)

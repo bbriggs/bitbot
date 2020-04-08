@@ -13,7 +13,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var UrbanDictionaryTrigger = NamedTrigger{
+var UrbanDictionaryTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	ID:   "urbandict",
 	Help: "Get an urban dictionary issued definition. Usage: !urbd [term]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

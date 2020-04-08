@@ -52,7 +52,7 @@ type Recovered struct {
 	Locations []Locations `json:"locations"`
 }
 
-var Covid19Trigger = NamedTrigger{
+var Covid19Trigger = NamedTrigger{ //nolint:gochecknoglobals
 	ID:   "covid19",
 	Help: "Fetch stats on Coronavirus by region",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

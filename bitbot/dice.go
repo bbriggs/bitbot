@@ -11,7 +11,7 @@ import (
 
 const DICE_USAGE = "Usage: [num dice]d[sides](+/-num) (opt: if fudging)"
 
-var RollTrigger = NamedTrigger{
+var RollTrigger = NamedTrigger{ //nolint:gochecknoglobals
 	ID:   "roll",
 	Help: "!roll " + DICE_USAGE,
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
