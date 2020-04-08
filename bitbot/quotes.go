@@ -10,7 +10,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var RaiderQuoteTrigger = NamedTrigger{ //nolint:gochecknoglobals
+var RaiderQuoteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID: "raider",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && b.Random.Intn(1000) == 1
