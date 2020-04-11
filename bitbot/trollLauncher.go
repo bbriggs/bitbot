@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var TrollLauncherTrigger = NamedTrigger{
+var TrollLauncherTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "troll",
 	Help: "Launches a random number of trolls for a random amount of damage. Usage: !troll <nick>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

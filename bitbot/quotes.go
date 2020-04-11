@@ -10,7 +10,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var RaiderQuoteTrigger = NamedTrigger{
+var RaiderQuoteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID: "raider",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && b.Random.Intn(1000) == 1
@@ -31,7 +31,7 @@ func getQuote(endpoint string) (model.Response, bool) {
 		log.Println(err.Error())
 		return resp, false
 	}
-	defer r.Body.Close()
+	defer r.Body.Close() //nolint:errcheck,gosec
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		log.Println(err)
