@@ -73,4 +73,9 @@ You will need to have a postgresSQL database running, you can launch one that wi
 docker-compose up -d db
 ```
 
+If you are running the database locally, then create a new user/database for bitbot:
+```
+psql -c "CREATE USER bitbot WITH PASSWORD 'bitbot'; CREATE DATABASE bitbot;"
+```
+
 Remember that if you're running in Docker, your Prometheus bind address must be 0.0.0.0 + some port and you must publish that port using `-p`

@@ -4,11 +4,14 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/tls"
 	// "encoding/base64"
+    "os"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+    "io/ioutil"
 	"net/http"
 	"strings"
 
@@ -23,7 +26,7 @@ const (
 )
 
 // not used directly in the paste request
-type array1 struct { // TODO: more descriptive name
+type Array1 struct { // TODO: more descriptive name
 	// TODO: the following fields (till EOF) should be a (json ?) array
 	Nonce           []byte // base64(cipher_iv); getRandomBytes(16) default
 	Kdfsalt         []byte // base64(kdf_salt); getRandomBytes(8) default
@@ -36,43 +39,13 @@ type array1 struct { // TODO: more descriptive name
 	// EOF
 }
 
-type authData struct { //TODO: should be type "json" ?
+type AuthData struct { //TODO: should be type "json" ?
 	//
-	EncryptionDetails *array1 // TODO: more descriptive name
-	Format            string  // format of the paste
-	OpenDiscussion    int     // open-discussion flag (TODO: not sure if bool works)
-	BurnAfterReading  int     // burn-after-reading flag (TODO: not sure if bool works)
+    EncryptionDetails []interface{} // TODO: more descriptive name (type was: Array1)
+	Format            string // format of the paste
+	OpenDiscussion    int    // open-discussion flag (TODO: not sure if bool works)
+	BurnAfterReading  int    // burn-after-reading flag (TODO: not sure if bool works)
 	//
-}
-
-func (req PasteRequest) NewRequest(iv []byte, cipherText []byte, dummyKDFsalt []byte, format string, openDiscussion int, burnAfterReading int, expiryDate string) *PasteRequest {
-
-
-	encryptionInfo := array1{iv,dummyKDFsalt,10000,265,128,"aes","gcm","zlib"}
-
-	// TODO: this is really messy!
-	aData := authData{EncryptionDetails: encryptionInfo, Format: format, OpenDiscussion: openDiscussion, BurnAfterReading: burnAfterReading}
-	// aData.EncryptionDetails = encryptionInfo
-	// aData.Format = format
-	// aData.OpenDiscussion = openDiscussion
-	// aData.BurnAfterReading = burnAfterReading
-	var aDataInterface [4]interface{} //https://golang.org/doc/faq#convert_slice_of_interface
-	// for i, v := range aData {
-	//         aDataInterface[i] = v
-	// }
-	aDataInterface[0] = aData.EncryptionDetails
-	aDataInterface[1] = aData.Format
-	aDataInterface[2] = aData.OpenDiscussion
-	aDataInterface[3] = aData.BurnAfterReading
-
-	meta := PasteMeta{expiryDate}
-	
-	req.AuthData = aDataInterface
-	req.Meta = meta
-	req.Version = 2
-	req.CipherText = cipherText
-
-	return &req
 }
 
 // ============================================================================================================================================================================================================================
@@ -81,18 +54,56 @@ type PasteMeta struct { // TODO: should be type "json" ?
 	Expire string `json:"expire"`
 }
 
-type PasteRequest struct { // TODO: should be type "json" ?
-	AuthData   [4]interface{} `json:"adata"`
-	Meta       *PasteMeta     `json:"meta"` // TODO: meta is another json
-	Version    int            `json:"v"`
-	CipherText []byte         `json:"ct"` // TODO: type should be "base64" ?
-}
-
 type PasteResponse struct {
 	Status      int    `json:"status"` // TODO: not sure if bool works
 	Id          string `json:"id"`
 	Url         string `json:"url"`
 	Deletetoken string `json:"deletetoken"`
+}
+
+type PasteRequest struct { // TODO: should be type "json" ?
+	AuthData   []interface{} `json:"adata"`
+	Meta       PasteMeta      `json:"meta"` // TODO: meta is another json
+	Version    int            `json:"v"`
+	CipherText []byte         `json:"ct"` // TODO: type should be "base64" ?
+}
+
+func  NewRequest(iv []byte, cipherText []byte, dummyKDFsalt []byte, format string, openDiscussion int, burnAfterReading int, expiryDate string) (*PasteRequest){
+
+	// encryptionInfo := Array1{iv, dummyKDFsalt, 10000, 265, 128, "aes", "gcm", "zlib"}
+    // encryptionInfo := make([]interface{}, 0)
+    var (
+        req PasteRequest
+        encryptionInfo []interface{}
+        aData   []interface{}       // or aData := make([]interface{}, 0); then append
+    )
+    encryptionInfo = append(encryptionInfo, iv, dummyKDFsalt, 100000, 256, 128, "aes", "gcm", "zlib")
+
+
+	// TODO: this is really messy!
+	// aData := AuthData{EncryptionDetails: encryptionInfo, Format: format, OpenDiscussion: openDiscussion, BurnAfterReading: burnAfterReading}
+	// aData.EncryptionDetails = encryptionInfo
+	// aData.Format = format
+	// aData.OpenDiscussion = openDiscussion
+	// aData.BurnAfterReading = burnAfterReading
+	// var aDataInterface []interface{} //https://golang.org/doc/faq#convert_slice_of_interface
+	// for i, v := range aData {
+	//         aDataInterface[i] = v
+	// }
+    aData = append(aData, encryptionInfo, format, openDiscussion, burnAfterReading)
+	// aDataInterface[0] = aData.EncryptionDetails
+	// aDataInterface[1] = aData.Format
+	// aDataInterface[2] = aData.OpenDiscussion
+	// aDataInterface[3] = aData.BurnAfterReading
+
+	meta := PasteMeta{expiryDate}
+
+	req.AuthData = aData
+	req.Meta = meta
+	req.Version = 2
+	req.CipherText = cipherText
+    return &req
+
 }
 
 var PasteTrigger = NamedTrigger{
@@ -104,15 +115,21 @@ var PasteTrigger = NamedTrigger{
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 
+		var (
+			pasteResp PasteResponse
+			pasteReq  *PasteRequest
+			err       error
+		)
 		// uncomment below
-		plaintext := []byte(m.Content)		// TODO: only fetch paste content and options
+		plaintext := []byte(m.Content) // TODO: only fetch paste content and options
 		key, nonce, ciphertext, kdfsalt := encrypt(plaintext)
-        pasteReq := PasteRequest.NewRequest(nonce, ciphertext, kdfsalt, "plaintext", 0, 0, "1week")
-        if pasteResp, err := recvPaste(pasteReq); err != nil {
-            fmt.Println("could not receive paste")
-            return false
-        }
-        fmt.Println("%v %v", key, pasteResp)
+		pasteReq = NewRequest(nonce, ciphertext, kdfsalt, "plaintext", 0, 0, "1week")
+		if pasteResp, err = recvPaste(pasteReq); err != nil {
+			fmt.Println("could not receive paste")
+			return false
+		}
+        // TODO: check pasteresponse.status
+		fmt.Println(key, pasteResp)
 		/*
 			TODO:
 				1. send request to privatebin
@@ -128,33 +145,50 @@ var PasteTrigger = NamedTrigger{
 func recvPaste(pasteReq *PasteRequest) (resp PasteResponse, err error) {
 	var (
 		jsonForm []byte
-		r, req   *http.Request
+		req      *http.Request
+		r        *http.Response
 	)
 
-	if jsonForm, err := json.Marshal(pasteReq); err != nil { // Marshal, not NewEncoder
+	if jsonForm, err = json.Marshal(pasteReq); err != nil { // Marshal, not NewEncoder
 		fmt.Println(err)
 	}
-	httpClient := &http.Client{}
-	if req, err := http.NewRequest("POST", "https://bin.fraq.io", bytes.NewReader(jsonForm)); err != nil { // TODO: don't hardcode url
+	fmt.Printf("marhsalled json: %s\n", jsonForm)
+	// TODO: self-signed certificates workaround (https://groups.google.com/d/msg/golang-nuts/v5ShM8R7Tdc/I2wyTy1o118J)
+	transportOptions := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+        ForceAttemptHTTP2: true,
+         Proxy: http.ProxyFromEnvironment,
+	}
+    // TODO: to debug w/ burp, install its cert here
+	httpClient := &http.Client{Transport: transportOptions}
+	if req, err = http.NewRequest("POST", "https://bin.fraq.io", bytes.NewReader(jsonForm)); err != nil { // TODO: don't hardcode url
 		fmt.Println(err)
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Add("X-Requested-With", "JSONHttpRequest")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+	req.Header.Add("X-Requested-With", "JSONHttpRequest")   // reason we used http.NewRequest w/ Client.Do()
+    req.Header.Add("Origin", "https://bin.fraq.io")
 
+    // fmt.Println("debugging body: ")
+    // if b, err := req.GetBody(); err == nil{
+    //     fmt.Println(ioutil.ReadAll(b))
+    //     fmt.Println(ioutil.ReadAll(req.Body))
+    // }
 	// resp, err := http.Post(, "application/json", &jsonForm)
-	if r, err := httpClient.Do(req); err != nil {
-        fmt.Println(err)    // TODO: use log
+	url, err := http.ProxyFromEnvironment(req)
+	fmt.Printf("proxy: %s %s\n", url, err)
+    req.WriteProxy(os.Stdout)
+	if r, err = httpClient.Do(req); err != nil {
+		fmt.Printf("post to paste site error: %s\n", err) // TODO: use log
+        return resp, err
 	}
 	// fmt.Println(r.Body)
 	defer r.Body.Close()
-	// body, err := ioutil.ReadAll(r.Body)
-	// if err != nil {
-	//  print(err)
+	body, err := ioutil.ReadAll(r.Body)
+    fmt.Printf("received body: %s, err %s", body, err)
+	err = json.Unmarshal(body, &resp)
+	// if err = json.NewDecoder(r.Body).Decode(&resp); err != nil {
+    //     fmt.Printf("json decoding error: %s\n", err) // TODO: use logging
 	// }
-	// err = json.Unmarshal(body, &m)
-	if err = json.NewDecoder(r.Body).Decode(&resp); err != nil {
-        fmt.Println(err)    // TODO: use logging
-	}
 
 	return resp, err
 }
@@ -202,7 +236,7 @@ func encrypt(plaintext []byte) (encodedKey string, nonce []byte, ciphertext []by
 	encodedKey = base58.Encode(key)
 	// 	encodedNonce := base64.StdEncoding.EncodeToString(nonce)
 	// 	encodedCipherText := base64.StdEncoding.EncodeToString(ciphertext)
-    dummyKDFsalt = make([]byte, 8)      // TODO: remove magic number
+	dummyKDFsalt = make([]byte, 8) // TODO: remove magic number
 	if _, err := io.ReadFull(rand.Reader, dummyKDFsalt); err != nil {
 		fmt.Println("warning, dummy kdfsalt is not initialized properly")
 		// encodedKDFsalt := "kvDZJC6IahU=" // dummy value for PBKDF as we don't use it
