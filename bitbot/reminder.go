@@ -50,7 +50,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		case "time":
 			irc.Reply(m, getTime())
 		case "add":
-			irc.Reply(m, addEvent(m))
+			irc.Reply(m, addEvent(m, irc))
 		case "list":
 			irc.Reply(m, listEvents(m, irc))
 		default:
@@ -88,13 +88,13 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 }
 
 // Parses an event adding message and adds the event
-func addEvent(message *hbot.Message) string {
+func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	// Parsing the message
 	channel := message.To
 	author := message.From
 	msg := strings.Split(message.Content, " ")
-	description := strings.Join(msg[2:len(msg)-2], " ")
-	time, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " "))
+	description := strings.Join(msg[2:len(msg)-2], " ") // FIXME: ugly
+	timeOfEvent, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " ")) // FIXME: ugly
 	if err != nil {
 		return fmt.Sprintf(
 			"Couldn't parse request format is \"!remind add Jitsi Meeting %s\"",
@@ -106,21 +106,40 @@ func addEvent(message *hbot.Message) string {
 		Channel:     channel,
 		Author:      author,
 		Description: description,
-		Time:        time,
-		People:      fmt.Sprintf("%s@", author)}
+		Time:        timeOfEvent,
+		People:      fmt.Sprintf("%s ", author)}
 	b.DB.NewRecord(event)
 	b.DB.Create(&event)
 
-	// TODO : Add a ticker or something, that will notify at time and remove Event from the db
+	// Launch a background routine that will HL interested people and remove the event from the DB.
+	eventTimer := time.NewTimer(event.Time.Sub(time.Now()))
+	go func (){
+		<-eventTimer.C
+		var timerEvent Event
+		b.DB.Where("Author = ? AND Description = ?",
+			event.Author, event.Description).Find(&timerEvent)
 
+		bot.Reply(message,
+			fmt.Sprintf("%s : %s",
+				timerEvent.Description,
+				timerEvent.People))
+
+		deleteEventByID(timerEvent.ID)
+	}()
+
+	// Feedback
 	return fmt.Sprintf("Adding event \"%s\" by %s, at %s in %s",
 		description,
 		author,
-		time.Format(timeFormat),
+		timeOfEvent.Format(timeFormat),
 		channel)
 }
 
 func getTime() string {
 	now := time.Now().In(location)
 	return now.Format(timeFormat)
+}
+
+func deleteEventByID(id int) {
+	b.DB.Where("ID = ?", id).Delete(Event{})
 }
