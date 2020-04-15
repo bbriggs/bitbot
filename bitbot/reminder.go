@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"log"
+	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -24,7 +26,7 @@ type Event struct {
 
 var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "reminder",
-	Help: "Set up events and remind them to concerned people. Usage: !remind list|time|add|remove|delete|join|part",
+	Help: "Set up events and remind them to concerned people. Usage: !remind list|time|add|remove|join|part",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!remind")
 	},
@@ -51,13 +53,108 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			irc.Reply(m, getTime())
 		case "add":
 			irc.Reply(m, addEvent(m, irc))
+		case "remove":
+			irc.Reply(m, removeEvent(m, irc))
 		case "list":
 			irc.Reply(m, listEvents(m, irc))
+		case "join":
+			irc.Reply(m, joinEvent(m))
+		case "part":
+			irc.Reply(m, partEvent(m))
 		default:
 			irc.Reply(m, "Wrong argument")
 		}
 		return true
 	},
+}
+
+type wrongFormatError struct {
+	arg string
+}
+
+func (e *wrongFormatError) Error() string {
+	return fmt.Sprintf("%s : is not of the awaited !remind [command] [ID] format", e.arg)
+}
+
+func getMessageID(body string) (int, error) {
+	// Parse message
+	msg := strings.Split(body, " ")
+	isAnID, err := regexp.MatchString("[0-9]+", msg[2])
+	if err != nil {
+		log.Println(err)
+	}
+
+	if len(msg) != 3 || !isAnID {
+		return -1, &wrongFormatError{body}
+	}
+	id, _ := strconv.Atoi(msg[2])
+	return id, nil
+}
+
+// Signal yourself as interested in an event (Facebook™)
+func joinEvent(message *hbot.Message) string {
+	id, err := getMessageID(message.Content)
+	if err != nil {
+		return "Wrong command. format is : !remind join [ID]"
+	}
+
+	var event Event
+	b.DB.Where("ID = ?", id).Take(&event)
+
+	// FIXME: you can add yourself multiple times.
+	event.People = fmt.Sprintf("%s%s ", event.People, message.Name)
+	b.DB.Save(&event)
+
+	feedback := fmt.Sprintf("Added %s to \"%s\"",
+		message.Name,
+		event.Description)
+
+	return feedback
+}
+
+func partEvent(message *hbot.Message) string {
+	id, err := getMessageID(message.Content)
+	if err != nil {
+		return "Wrong command. format is : !remind part [ID]"
+	}
+
+	var event Event
+	b.DB.Where("ID = ?", id).Take(&event)
+
+	event.People = strings.Replace(event.People, message.Name+" ", "", -1)
+	b.DB.Save(&event)
+
+	feedback := fmt.Sprintf("Removed %s from \"%s\"",
+		message.Name,
+		event.Description)
+
+	return feedback
+}
+
+// Remove an event given by his ID
+func removeEvent(message *hbot.Message, bot *hbot.Bot) string {
+	id, err := getMessageID(message.Content)
+	if err != nil {
+		return "Wrong command. format is : !remind remove [ID]"
+	}
+
+	var event Event
+	b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event)
+
+	// Feedback Message construction
+	var feedbackMessage string
+	if event.ID == id {
+		feedbackMessage = fmt.Sprintf("Deleted event %d : %s",
+			event.ID,
+			event.Description)
+
+		// Delete
+		b.DB.Delete(&event)
+	} else {
+		feedbackMessage = "No event you own with that ID"
+	}
+
+	return feedbackMessage
 }
 
 // Lists all the awaiting events in PM
@@ -93,7 +190,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	channel := message.To
 	author := message.From
 	msg := strings.Split(message.Content, " ")
-	description := strings.Join(msg[2:len(msg)-2], " ") // FIXME: ugly
+	description := strings.Join(msg[2:len(msg)-2], " ")                             // FIXME: ugly
 	timeOfEvent, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " ")) // FIXME: ugly
 	if err != nil {
 		return fmt.Sprintf(
@@ -113,7 +210,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 
 	// Launch a background routine that will HL interested people and remove the event from the DB.
 	eventTimer := time.NewTimer(event.Time.Sub(time.Now()))
-	go func (){
+	go func() {
 		<-eventTimer.C
 		var timerEvent Event
 		b.DB.Where("Author = ? AND Description = ?",
@@ -124,7 +221,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 				timerEvent.Description,
 				timerEvent.People))
 
-		deleteEventByID(timerEvent.ID)
+		b.DB.Where("ID = ?", timerEvent.ID).Delete(Event{})
 	}()
 
 	// Feedback
@@ -138,8 +235,4 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 func getTime() string {
 	now := time.Now().In(location)
 	return now.Format(timeFormat)
-}
-
-func deleteEventByID(id int) {
-	b.DB.Where("ID = ?", id).Delete(Event{})
 }
