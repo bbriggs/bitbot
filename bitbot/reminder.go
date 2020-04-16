@@ -10,12 +10,13 @@ import (
 	"time"
 )
 
+//nolint gochecknoglobals
 var (
 	location   *time.Location
 	timeFormat string
 )
 
-type Event struct {
+type eventType struct {
 	ID          int `gorm:"unique;AUTO_INCREMENT;PRIMARY_KEY"`
 	Channel     string
 	Author      string
@@ -40,7 +41,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
 		}
 
-		b.DB.AutoMigrate(&Event{})
+		b.DB.AutoMigrate(&eventType{})
 
 		splitMSG := strings.Split(m.Content, " ")
 		if len(splitMSG) < 2 {
@@ -52,15 +53,15 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		case "time":
 			irc.Reply(m, getTime())
 		case "add":
-			irc.Reply(m, addEvent(m, irc))
+			irc.Reply(m, addeventType(m, irc))
 		case "remove":
-			irc.Reply(m, removeEvent(m, irc))
+			irc.Reply(m, removeeventType(m))
 		case "list":
-			irc.Reply(m, listEvents(m, irc))
+			irc.Reply(m, listeventTypes(m, irc))
 		case "join":
-			irc.Reply(m, joinEvent(m))
+			irc.Reply(m, joineventType(m))
 		case "part":
-			irc.Reply(m, partEvent(m))
+			irc.Reply(m, parteventType(m))
 		default:
 			irc.Reply(m, "Wrong argument")
 		}
@@ -81,7 +82,7 @@ func getMessageIDFromString(body string) (int, error) {
 	msg := strings.Split(body, " ")
 	isAnID, err := regexp.MatchString("[0-9]+", msg[2])
 	if err != nil {
-		log.Info("Not and ID :",err)
+		log.Info("Not and ID :", err)
 	}
 
 	if len(msg) != 3 || !isAnID {
@@ -92,13 +93,14 @@ func getMessageIDFromString(body string) (int, error) {
 }
 
 // Signal yourself as interested in an event (Facebook™)
-func joinEvent(message *hbot.Message) string {
+func joineventType(message *hbot.Message) string {
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind join [ID]"
 	}
 
-	var event Event
+	var event eventType
+
 	b.DB.Where("ID = ?", id).Take(&event)
 
 	if strings.Contains(event.People, message.Name) {
@@ -115,13 +117,14 @@ func joinEvent(message *hbot.Message) string {
 	return feedback
 }
 
-func partEvent(message *hbot.Message) string {
+func parteventType(message *hbot.Message) string {
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind part [ID]"
 	}
 
-	var event Event
+	var event eventType
+
 	b.DB.Where("ID = ?", id).Take(&event)
 
 	event.People = strings.Replace(event.People, message.Name+" ", "", -1)
@@ -135,13 +138,14 @@ func partEvent(message *hbot.Message) string {
 }
 
 // Remove an event given by his ID
-func removeEvent(message *hbot.Message, bot *hbot.Bot) string {
+func removeeventType(message *hbot.Message) string {
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind remove [ID]"
 	}
 
-	var event Event
+	var event eventType
+
 	b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event)
 
 	// Feedback Message construction
@@ -161,21 +165,26 @@ func removeEvent(message *hbot.Message, bot *hbot.Bot) string {
 }
 
 // Lists all the awaiting events in PM
-func listEvents(message *hbot.Message, bot *hbot.Bot) string {
+func listeventTypes(message *hbot.Message, bot *hbot.Bot) string {
 	// Get all the db rows, iterate through them, format them and send them to pm
-	rows, err := b.DB.Model(&Event{}).Rows()
+	rows, err := b.DB.Model(&eventType{}).Rows()
 	if err != nil {
 		log.Error("Reminder: Couldn't get DB rows", err)
 	}
 
 	var (
-		event                   Event
+		event                   eventType
 		eventDescriptionMessage string
 	)
+
 	for rows.Next() {
-		b.DB.ScanRows(rows, &event)
+		err := b.DB.ScanRows(rows, &event)
+		if err != nil {
+			log.Error("Reminder: Couldn't get a db row", err)
+		}
+
 		eventDescriptionMessage = fmt.Sprintf(
-			"%d : [ %s ] at %s. Event author : %s, in channel %s, with %s",
+			"%d : [ %s ] at %s. eventType author : %s, in channel %s, with %s",
 			event.ID,
 			event.Description,
 			event.Time.Format(timeFormat),
@@ -189,18 +198,18 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 }
 
 // Parses an event adding message and adds the event
-func addEvent(message *hbot.Message, bot *hbot.Bot) string {
+func addeventType(message *hbot.Message, bot *hbot.Bot) string {
 	// Parsing the message
 	channel := message.To
 	author := message.From
 	msg := strings.Split(message.Content, " ")
-	// Everything in the message content that isn't a command or a time 
+	// Everything in the message content that isn't a command or a time
 	// specification is considered description
 	description := strings.Join(msg[2:len(msg)-2], " ")
-	
+
 	// We take the two last parts of the message (with space as the separator)
 	// and parse them as a time.
-	timeOfEvent, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " "))
+	timeOfeventType, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " "))
 	if err != nil {
 		return fmt.Sprintf(
 			"Couldn't parse request format is \"!remind add Jitsi Meeting %s\"",
@@ -208,36 +217,37 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	}
 
 	// Adding it to the DB
-	event := Event{
+	event := eventType{
 		Channel:     channel,
 		Author:      author,
 		Description: description,
-		Time:        timeOfEvent,
+		Time:        timeOfeventType,
 		People:      fmt.Sprintf("%s ", author)}
 	b.DB.NewRecord(event)
 	b.DB.Create(&event)
 
 	// Launch a background routine that will HL interested people and clean the DB.
-	eventTimer := time.NewTimer(event.Time.Sub(time.Now()))
+	eventTimer := time.NewTimer(time.Until(event.Time))
+
 	go func() {
 		<-eventTimer.C
-		var timerEvent Event
+		var timereventType eventType
 		b.DB.Where("Author = ? AND Description = ?",
-			event.Author, event.Description).Find(&timerEvent)
+			event.Author, event.Description).Find(&timereventType)
 
 		bot.Reply(message,
 			fmt.Sprintf("%s : %s",
-				timerEvent.Description,
-				timerEvent.People))
+				timereventType.Description,
+				timereventType.People))
 
-		b.DB.Where("ID = ?", timerEvent.ID).Delete(Event{})
+		b.DB.Where("ID = ?", timereventType.ID).Delete(eventType{})
 	}()
 
 	// Feedback
 	return fmt.Sprintf("Adding event \"%s\" by %s, at %s in %s",
 		description,
 		author,
-		timeOfEvent.Format(timeFormat),
+		timeOfeventType.Format(timeFormat),
 		channel)
 }
 
