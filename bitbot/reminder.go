@@ -76,7 +76,7 @@ type wrongFormatError struct {
 }
 
 func (e *wrongFormatError) Error() string {
-	return fmt.Sprintf("%s : is not of the awaited !remind [command] [ID] format", e.arg)
+	return fmt.Sprintf("%s : is not of the awaited format", e.arg)
 }
 
 func getMessageIDFromString(body string) (int, error) {
@@ -200,8 +200,23 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 }
 
 //FIXME : ...
-func parseAddCommandMessage(body string) (string, string) {
-	return "aaa", timeFormat
+func parseAddCommandMessage(body string) (string, string, error) {
+	var timeOfEvent string
+
+	body = strings.SplitAfterN(body, " ", 3)[2]
+	timeOfEventSliced := strings.Split(body, " ")
+	if len(timeOfEventSliced) > 2 {
+		timeOfEvent = strings.Join(
+			timeOfEventSliced[len(timeOfEventSliced) - 2:],
+			" ")
+	} else {
+		return "", "", &wrongFormatError{body}
+	}
+
+	description := strings.Replace(body, timeOfEvent, "", -1)
+
+	fmt.Println("%s\n%s", description, timeOfEvent)
+	return description, timeOfEvent, nil
 }
 
 // Parses an event adding message and adds the event
@@ -210,8 +225,12 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	channel := message.To
 	author := message.From
 
-	description, datetime := parseAddCommandMessage(message.Content)
-
+	description, datetime, err := parseAddCommandMessage(message.Content)
+	if err != nil {
+		return fmt.Sprintf(
+			"Wrong syntax, use !remind add Jitsi Meeting %s",
+			timeFormat)
+	}
 	// We take the two last parts of the message (with space as the separator)
 	// and parse them as a time.
 	timeOfreminderEvent, err := time.Parse(timeFormat, datetime)
@@ -260,6 +279,5 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 }
 
 func getTime() string {
-	now := time.Now().In(location)
-	return now.Format(timeFormat)
+	return time.Now().Format(timeFormat)
 }
