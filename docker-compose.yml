@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  bitbot:
+    # image: bbriggs/bitbot:latest
+    build: .
+    environment:
+      SERVER: "irc.example.com:6697"
+      CHANNELS: "#bots"
+      NICK: "bitbot-test"
+      SSL: "true"
+      PROM: "true"
+      PROMADDR: "0.0.0.0:8080"
+      DBUSER: "bitbot"
+      DBPASS: "bitbot"
+      DBHOST: "db"
+      DBPORT: "5432"
+      DBSSLMODE: "disable"
+  prometheus:
+    image: prom/prometheus
+    command:
+      - '--config.file=/tmp/prometheus.yml'
+    volumes:
+      - ./prometheus.yml:/tmp/prometheus.yml
+      - prometheus:/prometheus
+    ports:
+      - "127.0.0.1:9090:9090"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "grafana"
+    volumes:
+      - grafana:/var/lib/grafana
+  db:
+    image: postgres:12.1
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: bitbot
+      POSTGRES_PASSWORD: bitbot
+      POSTGRES_DB: bitbot
+
+volumes:
+  grafana:
+  prometheus:
+  bolt:
+  db-data:
