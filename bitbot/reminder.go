@@ -231,16 +231,18 @@ func addeventType(message *hbot.Message, bot *hbot.Bot) string {
 
 	go func() {
 		<-eventTimer.C
-		var timereventType eventType
+
+		var timerEvent eventType
+
 		b.DB.Where("Author = ? AND Description = ?",
-			event.Author, event.Description).Find(&timereventType)
+			event.Author, event.Description).Find(&timerEvent)
 
 		bot.Reply(message,
 			fmt.Sprintf("%s : %s",
-				timereventType.Description,
-				timereventType.People))
+				timerEvent.Description,
+				timerEvent.People))
 
-		b.DB.Where("ID = ?", timereventType.ID).Delete(eventType{})
+		b.DB.Where("ID = ?", timerEvent.ID).Delete(eventType{})
 	}()
 
 	// Feedback
