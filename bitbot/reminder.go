@@ -3,7 +3,7 @@ package bitbot
 import (
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
-	"log"
+	log "gopkg.in/inconshreveable/log15.v2"
 	"regexp"
 	"strconv"
 	"strings"
@@ -37,7 +37,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		location, err = time.LoadLocation("UTC")
 		if err != nil {
 			irc.Reply(m, "Something went wrong: Couldn't load timezone")
-			log.Println("Reminder : Couldn't load UTC timezone", err)
+			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
 		}
 
 		b.DB.AutoMigrate(&Event{})
@@ -81,7 +81,7 @@ func getMessageIDFromString(body string) (int, error) {
 	msg := strings.Split(body, " ")
 	isAnID, err := regexp.MatchString("[0-9]+", msg[2])
 	if err != nil {
-		log.Println(err)
+		log.Info("Not and ID :",err)
 	}
 
 	if len(msg) != 3 || !isAnID {
@@ -165,7 +165,7 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	// Get all the db rows, iterate through them, format them and send them to pm
 	rows, err := b.DB.Model(&Event{}).Rows()
 	if err != nil {
-		log.Println("Reminder: Couldn't get DB rows", err)
+		log.Error("Reminder: Couldn't get DB rows", err)
 	}
 
 	var (
