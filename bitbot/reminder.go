@@ -199,7 +199,6 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	return "I've PM'd you the list of awaiting events"
 }
 
-//FIXME : ...
 func parseAddCommandMessage(body string) (string, string, error) {
 	var timeOfEvent string
 
@@ -207,7 +206,7 @@ func parseAddCommandMessage(body string) (string, string, error) {
 	timeOfEventSliced := strings.Split(body, " ")
 	if len(timeOfEventSliced) > 2 {
 		timeOfEvent = strings.Join(
-			timeOfEventSliced[len(timeOfEventSliced) - 2:],
+			timeOfEventSliced[len(timeOfEventSliced)-2:],
 			" ")
 	} else {
 		return "", "", &wrongFormatError{body}
@@ -215,7 +214,6 @@ func parseAddCommandMessage(body string) (string, string, error) {
 
 	description := strings.Replace(body, timeOfEvent, "", -1)
 
-	fmt.Println("%s\n%s", description, timeOfEvent)
 	return description, timeOfEvent, nil
 }
 
@@ -251,8 +249,10 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	b.DB.Create(&event)
 
 	// Launch a background routine that will HL interested people and clean the DB.
-	timeToEvent := time.Until(event.Time) - time.Duration(2*time.Second)
-	eventTimer := time.NewTimer(2 * time.Second)
+	// The magic number 2 is indeed completely arbitrary, but we need it anyway.
+	timeToEvent := time.Until(event.Time) - (2 * time.Second) //nolint gomnd
+	eventTimer := time.NewTimer(2 * time.Second)              //nolint gomnd
+
 	go func() {
 		time.Sleep(timeToEvent)
 		<-eventTimer.C
