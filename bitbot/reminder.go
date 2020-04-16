@@ -76,7 +76,7 @@ func (e *wrongFormatError) Error() string {
 	return fmt.Sprintf("%s : is not of the awaited !remind [command] [ID] format", e.arg)
 }
 
-func getMessageID(body string) (int, error) {
+func getMessageIDFromString(body string) (int, error) {
 	// Parse message
 	msg := strings.Split(body, " ")
 	isAnID, err := regexp.MatchString("[0-9]+", msg[2])
@@ -93,7 +93,7 @@ func getMessageID(body string) (int, error) {
 
 // Signal yourself as interested in an event (Facebook™)
 func joinEvent(message *hbot.Message) string {
-	id, err := getMessageID(message.Content)
+	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind join [ID]"
 	}
@@ -101,7 +101,10 @@ func joinEvent(message *hbot.Message) string {
 	var event Event
 	b.DB.Where("ID = ?", id).Take(&event)
 
-	// FIXME: you can add yourself multiple times.
+	if strings.Contains(event.People, message.Name) {
+		b.DB.Save(&event)
+		return "You already subscribed to this event"
+	}
 	event.People = fmt.Sprintf("%s%s ", event.People, message.Name)
 	b.DB.Save(&event)
 
@@ -113,7 +116,7 @@ func joinEvent(message *hbot.Message) string {
 }
 
 func partEvent(message *hbot.Message) string {
-	id, err := getMessageID(message.Content)
+	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind part [ID]"
 	}
@@ -133,7 +136,7 @@ func partEvent(message *hbot.Message) string {
 
 // Remove an event given by his ID
 func removeEvent(message *hbot.Message, bot *hbot.Bot) string {
-	id, err := getMessageID(message.Content)
+	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
 		return "Wrong command. format is : !remind remove [ID]"
 	}
@@ -172,12 +175,13 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	for rows.Next() {
 		b.DB.ScanRows(rows, &event)
 		eventDescriptionMessage = fmt.Sprintf(
-			"%d : [ %s ] at %s. Event author : %s, in channel %s",
+			"%d : [ %s ] at %s. Event author : %s, in channel %s, with %s",
 			event.ID,
 			event.Description,
 			event.Time.Format(timeFormat),
 			event.Author,
-			event.Channel)
+			event.Channel,
+			event.People)
 		bot.Msg(message.Name, eventDescriptionMessage)
 	}
 
@@ -190,8 +194,13 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	channel := message.To
 	author := message.From
 	msg := strings.Split(message.Content, " ")
-	description := strings.Join(msg[2:len(msg)-2], " ")                             // FIXME: ugly
-	timeOfEvent, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " ")) // FIXME: ugly
+	// Everything in the message content that isn't a command or a time 
+	// specification is considered description
+	description := strings.Join(msg[2:len(msg)-2], " ")
+	
+	// We take the two last parts of the message (with space as the separator)
+	// and parse them as a time.
+	timeOfEvent, err := time.Parse(timeFormat, strings.Join(msg[len(msg)-2:], " "))
 	if err != nil {
 		return fmt.Sprintf(
 			"Couldn't parse request format is \"!remind add Jitsi Meeting %s\"",
@@ -208,7 +217,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	b.DB.NewRecord(event)
 	b.DB.Create(&event)
 
-	// Launch a background routine that will HL interested people and remove the event from the DB.
+	// Launch a background routine that will HL interested people and clean the DB.
 	eventTimer := time.NewTimer(event.Time.Sub(time.Now()))
 	go func() {
 		<-eventTimer.C
