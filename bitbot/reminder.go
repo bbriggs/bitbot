@@ -17,7 +17,8 @@ var (
 	timeFormat string
 )
 
-type reminderEvent struct {
+// The Gorm struct that represents an event in the DB.
+type ReminderEvent struct {
 	ID          int `gorm:"unique;AUTO_INCREMENT;PRIMARY_KEY"`
 	Channel     string
 	Author      string
@@ -41,8 +42,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			irc.Reply(m, "Something went wrong: Couldn't load timezone")
 			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
 		}
-
-		b.DB.AutoMigrate(&reminderEvent{})
 
 		splitMSG := strings.Split(m.Content, " ")
 		if len(splitMSG) < 2 {
@@ -96,7 +95,7 @@ func getMessageIDFromString(body string) (int, error) {
 
 // Signal yourself as interested in an event (Facebook™)
 func joinEvent(message *hbot.Message) string {
-	var event reminderEvent
+	var event ReminderEvent
 
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
@@ -120,7 +119,7 @@ func joinEvent(message *hbot.Message) string {
 }
 
 func partEvent(message *hbot.Message) string {
-	var event reminderEvent
+	var event ReminderEvent
 
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
@@ -141,7 +140,7 @@ func partEvent(message *hbot.Message) string {
 
 // Remove an event given by his ID
 func removeEvent(message *hbot.Message) string {
-	var event reminderEvent
+	var event ReminderEvent
 
 	id, err := getMessageIDFromString(message.Content)
 	if err != nil {
@@ -169,13 +168,13 @@ func removeEvent(message *hbot.Message) string {
 // Lists all the awaiting events in PM
 func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	// Get all the db rows, iterate through them, format them and send them to pm
-	rows, err := b.DB.Model(&reminderEvent{}).Rows()
+	rows, err := b.DB.Model(&ReminderEvent{}).Rows()
 	if err != nil {
 		log.Error("Reminder: Couldn't get DB rows", err)
 	}
 
 	var (
-		event                   reminderEvent
+		event                   ReminderEvent
 		eventDescriptionMessage string
 	)
 
@@ -186,7 +185,7 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 		}
 
 		eventDescriptionMessage = fmt.Sprintf(
-			"%d : [ %s ] at %s. reminderEvent author : %s, in channel %s, with %s",
+			"%d : [ %s ] at %s. Event author : %s, in channel %s, with %s",
 			event.ID,
 			event.Description,
 			event.Time.Format(timeFormat),
@@ -202,7 +201,12 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 func parseAddCommandMessage(body string) (string, string, error) {
 	var timeOfEvent string
 
-	body = strings.SplitAfterN(body, " ", 3)[2]
+	messageSplit := strings.SplitAfterN(body, " ", 3)
+	if len(messageSplit) <= 2 {
+		return "", "", &wrongFormatError{body}
+	}
+	body = messageSplit[2]
+
 	timeOfEventSliced := strings.Split(body, " ")
 	if len(timeOfEventSliced) > 2 {
 		timeOfEvent = strings.Join(
@@ -231,7 +235,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	}
 	// We take the two last parts of the message (with space as the separator)
 	// and parse them as a time.
-	timeOfreminderEvent, err := time.Parse(timeFormat, datetime)
+	timeOfEvent, err := time.Parse(timeFormat, datetime)
 	if err != nil {
 		return fmt.Sprintf(
 			"Couldn't parse request format is \"!remind add Jitsi Meeting %s\"",
@@ -239,11 +243,11 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	}
 
 	// Adding it to the DB
-	event := reminderEvent{
+	event := ReminderEvent{
 		Channel:     channel,
 		Author:      author,
 		Description: description,
-		Time:        timeOfreminderEvent,
+		Time:        timeOfEvent,
 		People:      fmt.Sprintf("%s ", author)}
 	b.DB.NewRecord(event)
 	b.DB.Create(&event)
@@ -257,7 +261,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 		time.Sleep(timeToEvent)
 		<-eventTimer.C
 
-		var timerEvent reminderEvent
+		var timerEvent ReminderEvent
 
 		b.DB.Where("Author = ? AND Description = ?",
 			event.Author, event.Description).Find(&timerEvent)
@@ -267,14 +271,14 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 				timerEvent.Description,
 				timerEvent.People))
 
-		b.DB.Where("ID = ?", timerEvent.ID).Delete(reminderEvent{})
+		b.DB.Where("ID = ?", timerEvent.ID).Delete(ReminderEvent{})
 	}()
 
 	// Feedback
 	return fmt.Sprintf("Adding event \"%s\" by %s, at %s in %s",
 		description,
 		author,
-		timeOfreminderEvent.Format(timeFormat),
+		timeOfEvent.Format(timeFormat),
 		channel)
 }
 

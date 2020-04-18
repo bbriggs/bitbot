@@ -56,9 +56,17 @@ type DBConfig struct {
 
 var b Bot = Bot{}
 
+func (t *NamedTrigger) AutoMigrateDB() {
+	if t.ID == "reminder" {
+		b.DB.AutoMigrate(&ReminderEvent{})
+		log.Info("Using Reminder's trigger DB schema")
+	}
+}
+
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
 	b.triggerMutex.Lock()
 	b.triggers[t.Name()] = t
+	t.AutoMigrateDB()
 	b.triggerMutex.Unlock()
 	b.Bot.AddTrigger(t)
 }
