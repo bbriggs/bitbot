@@ -1,7 +1,17 @@
 package bitbot
 
+// welp; it turned out the key (the base58 encoded one) is used in a key-derivation function; that is, the key used in AES-GCM is the derived one; consequently, the salt we send is equally important; here're the specs
+// key derivation function: pbkdf2
+// key: password of paste + our random key
+// salt: the one we send
+// hash algorithm: sha-256 (used at the end of derivation)
+// iterations: 10,000 (can we instruct the server to lower it ?)
+// ====================================================
+// will be using this: https://pkg.go.dev/golang.org/x/crypto/pbkdf2?tab=doc
 import (
 	"bytes"
+     "golang.org/x/crypto/pbkdf2"
+     "crypto/sha256"
 	"compress/zlib"
 	"crypto/aes"
 	"crypto/cipher"
@@ -115,7 +125,8 @@ var PasteTrigger = NamedTrigger{
 		plaintext := []byte(m.Content) // TODO: only fetch paste content and options
 		key, nonce,  kdfsalt := generateEncryptionParameters()
         adata := generateAuthenticationData(nonce, kdfsalt, "plaintext", 0, 0)
-        ciphertext := encrypt(plaintext, key, nonce,  adata)    // auth tag is appended to ciphertext
+        aesKey := pbkdf2.Key(key, kdfsalt, 100000, aesKeySize, sha256.New)
+        ciphertext := encrypt(plaintext, aesKey, nonce,  adata)    // auth tag is appended to ciphertext
 		pasteReq = NewRequest(adata, ciphertext, "1week")
 		if pasteResp, err = recvPaste(pasteReq); err != nil {
 			fmt.Println("could not receive paste")
@@ -128,8 +139,9 @@ var PasteTrigger = NamedTrigger{
 		}
 		url := fmt.Sprintf("https://bin.fraq.io%s#%s", pasteResp.Url, base58.Encode(key))
 		deleteURL := fmt.Sprintf("https://bin.fraq.io/?pasteid=%s&deletetoken=%s", pasteResp.Id, pasteResp.Deletetoken)
-        fmt.Printf("response: %v\n", pasteResp)
-		fmt.Printf("url: %s\n delete url: %s\n", url, deleteURL)
+        fmt.Printf("response: %v\n", pasteResp) // TODO: use logging
+        fmt.Printf("url: %s\n delete url: %s\n", url, deleteURL)    // TODO: use logging
+        irc.Reply(m, fmt.Sprintf("Link: %s | Delete paste: %s", url, deleteURL))
 
 		return true
 	},
@@ -142,7 +154,7 @@ func generateAuthenticationData(iv []byte, dummyKDFsalt []byte, format string, o
 		encryptionInfo []interface{}
 		aData          []interface{} // or aData := make([]interface{}, 0); then append
     )
-	encryptionInfo = append(encryptionInfo, iv, dummyKDFsalt, 100000, 256, 128, "aes", "gcm", "zlib")
+    encryptionInfo = append(encryptionInfo, iv, dummyKDFsalt, 100000, 256, 128, "aes", "gcm", "none")       // TODO: rget back zlib support
 	aData = append(aData, encryptionInfo, format, openDiscussion, burnAfterReading)
     return aData
 }
@@ -263,7 +275,7 @@ func encrypt(plaintext, key, iv []byte, authenticationData []interface{}) (ciphe
     fmt.Printf("marshalled cipher: %s\n", cipherJson)
     fmt.Printf("marshalled adata: %s\n", authenticatedDataJson)
 
-    // TODO: add check for compression support (for now, assuming defaults)
+    // TODO: add check for compression support (for now, assuming defaults); get back zlib
 	compressedCiphertextWriter := zlib.NewWriter(&compressedCiphertext)
 	compressedCiphertextWriter.Write(cipherJson)
 	compressedCiphertextWriter.Close()
@@ -273,7 +285,9 @@ func encrypt(plaintext, key, iv []byte, authenticationData []interface{}) (ciphe
 
     // authData is authenticated as well(https://github.com/r4sas/PBinCLI/blob/682b47fbd3e24a8a53c3b484ba896a5dbc85cda2/pbincli/format.py#L122)
     // kudos to filo for hinting about the tag location (https://github.com/golang/go/issues/32742)
-	ciphertext = aesgcm.Seal(nil, iv, compressedCiphertext.Bytes(), authenticatedDataJson)
+    // look for function " decryptOrPromptPassword" in privatebin.js; start debugging there
+    // TODO: fully support the API (https://github.com/PrivateBin/PrivateBin/wiki/API)
+    ciphertext = aesgcm.Seal(nil, iv, cipherJson, authenticatedDataJson) // TODO: zzzzlib
 	// 	encodedNonce := base64.StdEncoding.EncodeToString(nonce)
 	// 	encodedCipherText := base64.StdEncoding.EncodeToString(ciphertext)
 	fmt.Printf("pt: %s\n key: %s\n", plaintext, base58.Encode(key))

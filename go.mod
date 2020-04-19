@@ -18,6 +18,7 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/whyrusleeping/hellabot v0.0.0-20191113145436-fd8fa1922281
 	go.etcd.io/bbolt v1.3.3
+	golang.org/x/crypto v0.0.0-20200115085410-6d4e4cb37c7d
 	golang.org/x/net v0.0.0-20191014212845-da9a3fd4c582
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20180818164646-67afb5ed74ec
 	gopkg.in/sorcix/irc.v1 v1.1.4
