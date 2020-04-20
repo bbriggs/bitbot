@@ -57,7 +57,8 @@ type DBConfig struct {
 var b Bot = Bot{}
 
 func (t *NamedTrigger) autoMigrateDB() {
-	if t.ID == "reminder" {
+	switch(t.ID) {
+	case "reminder": 
 		b.DB.AutoMigrate(&ReminderEvent{})
 		log.Info("Using Reminder's trigger DB schema")
 	}
