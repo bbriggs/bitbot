@@ -36,7 +36,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		timeFormat = "2006-01-02 15:04"
 
-
 		splitMSG := strings.Split(m.Content, " ")
 		if len(splitMSG) < 2 {
 			irc.Reply(m, "Not enough arguments provided")
