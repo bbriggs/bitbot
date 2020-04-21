@@ -67,6 +67,7 @@ func (b *Bot) RegisterTrigger(t NamedTrigger) {
 	if t.Init != nil {
 		err = t.Init()
 	}
+
 	if err != nil {
 		log.Error("Trigger " + t.Name() + " failed to initialize: " + err.Error())
 	}
