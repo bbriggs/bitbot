@@ -56,20 +56,20 @@ type DBConfig struct {
 
 var b Bot = Bot{}
 
-func (t *NamedTrigger) autoMigrateDB() {
-	switch(t.ID) {
-	case "reminder": 
-		b.DB.AutoMigrate(&ReminderEvent{})
-		log.Info("Using Reminder's trigger DB schema")
-	}
-}
-
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
+	var err error
+
 	b.triggerMutex.Lock()
 	b.triggers[t.Name()] = t
-	t.autoMigrateDB()
 	b.triggerMutex.Unlock()
 	b.Bot.AddTrigger(t)
+
+	if t.Init != nil {
+		err = t.Init()
+	}
+	if err != nil {
+		log.Error("Trigger " + t.Name() + " failed to initialize: " + err.Error())
+	}
 }
 
 func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
