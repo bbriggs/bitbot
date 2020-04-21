@@ -36,12 +36,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		timeFormat = "2006-01-02 15:04"
 
-		var err error
-		location, err = time.LoadLocation("UTC")
-		if err != nil {
-			irc.Reply(m, "Something went wrong: Couldn't load timezone")
-			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
-		}
 
 		splitMSG := strings.Split(m.Content, " ")
 		if len(splitMSG) < 2 {
@@ -67,6 +61,18 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		}
 		return true
 	},
+	Init: func() error {
+		var err error
+
+		location, err = time.LoadLocation("UTC")
+		if err != nil {
+			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
+			return err
+		}
+
+		b.DB.AutoMigrate(&ReminderEvent{})
+		return nil
+	},
 }
 
 // This error is used when a badly formatted call of the trigger is made.
@@ -89,8 +95,7 @@ func getMessageIDFromString(body string) (int, error) {
 	if len(msg) != 3 || !isAnID {
 		return -1, &wrongFormatError{body}
 	}
-	id, _ := strconv.Atoi(msg[2])
-	return id, nil
+	return strconv.Atoi(msg[2])
 }
 
 // Signal yourself as interested in an event (Facebook™)
