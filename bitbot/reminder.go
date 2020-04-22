@@ -245,12 +245,12 @@ func partEvent(message *hbot.Message) string {
 	b.DB.Where("ID = ?", id).Take(&event)
 	defer b.DB.Save(&event)
 
-	if (event.Author == message.Name) {
+	if event.Author == message.Name {
 		return "Author of an event can't leave it."
 	}
-	
+
 	event.People = strings.Replace(event.People, message.Name+" ", "", -1)
-	
+
 	feedback := fmt.Sprintf("Removed %s from \"%s\"",
 		message.Name,
 		event.Description)
