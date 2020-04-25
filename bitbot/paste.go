@@ -113,7 +113,9 @@ var PasteTrigger = NamedTrigger{
 	Help: "returns a pastebin link for a PRIVMSG to bitbot" +
 		"\nUsage: !paste <content>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!paste ")
+		return m.Command == "PRIVMSG" && // This is a message
+			m.Params[0] == irc.Nick && // Private to the bot
+			strings.HasPrefix(m.Content, "!paste ") // beginning with !paste
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 
