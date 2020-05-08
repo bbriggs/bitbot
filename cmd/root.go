@@ -53,6 +53,7 @@ var (
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
+	"ignore":         bitbot.IgnoreTrigger,
 	"invite":         bitbot.InviteTrigger,
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
@@ -110,6 +111,7 @@ var rootCmd = &cobra.Command{
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
+			Ignored: viper.GetStringSlice("ignored"),
 			Plugins: plugins,
 		}
 		log.Println("Starting bitbot...")
