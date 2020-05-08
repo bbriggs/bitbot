@@ -4,14 +4,14 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var IgnoreTrigger = NamedTrigger{ //noliny:gochecknoglobals,golint
+var IgnoreTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "ignore",
 	Help: "Ignore messages from other bots.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return stringInSlice(m.From, b.Config.Ignored)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return true // consume the message
+		return true // consume the message, so that other triggers don't get to process it
 	},
 }
 
