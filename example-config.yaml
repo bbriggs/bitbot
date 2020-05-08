@@ -11,6 +11,8 @@ nick: "bitbot"
 ssl: "true"
 admins:
   "foo@your.irc.hostmask"
+ignored:
+  "the-lisp-bot"
 # Plugins available to load are defined in cmd/bot.go
 plugins:
   - "roll"
