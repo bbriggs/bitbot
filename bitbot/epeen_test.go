@@ -12,6 +12,6 @@ func TestMakeEpeenAnswer(t *testing.T) {
 	}
 
 	if !matched {
-		t.Error("makeEpeenAnswer outputed a malformed epeen")
+		t.Error("makeEpeenAnswer outputted a malformed epeen")
 	}
 }

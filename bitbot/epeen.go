@@ -20,18 +20,8 @@ var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 }
 
 func makeEpeenAnswer(nick string) string {
-	var peepee = ""
+	peepeeSize := 20
 
-	switch nick {
-	case "daemon":
-		peepee = strings.Repeat("\\", rand.Intn(200)) + "D" + "\n(_)_)"
-	case "m242":
-		peepee = "8D" // Yup, childish :D
-	case "skidd0":
-		peepee = "8=ancap=D"
-	default:
-		peepee = "8" + strings.Repeat("=", rand.Intn(20)) + "D"
-	}
+	peepee := "8" + strings.Repeat("=", rand.Intn(peepeeSize)) + "D"
 	return nick + "'s peepee: " + peepee
-
 }
