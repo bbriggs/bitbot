@@ -2,9 +2,11 @@ package bitbot
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
