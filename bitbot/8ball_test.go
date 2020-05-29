@@ -7,6 +7,7 @@ import (
 
 func TestMake8BallAnswer(t *testing.T) {
 	rand.Seed(1)
+
 	var testAnswers string
 
 	answersMap := make(map[string]int)
