@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var URLReaderTrigger = NamedTrigger{
+var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "urls",
 	Help: "Looks up URLs in chat and returns the page title as a message.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -63,7 +63,7 @@ func lookupPageTitle(message string) string {
 	if err != nil {
 		return ""
 	}
-	defer resp.Body.Close()
+	defer resp.Body.Close() //nolint:errcheck,gosec
 	log.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		return (title)

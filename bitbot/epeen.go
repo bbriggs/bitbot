@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-var EpeenTrigger = NamedTrigger{
+var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "epeen",
 	Help: "epeen returns the length of the requesters epeen. Usage: !epeen",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
