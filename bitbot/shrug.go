@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var ShrugTrigger = NamedTrigger{
+var ShrugTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "shrug",
 	Help: "Usage: !shrug",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
