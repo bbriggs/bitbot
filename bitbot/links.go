@@ -37,9 +37,12 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 }
 
 func cleanTitle(title string) string {
-	title = strings.Trim(title, " \t\r\n")
 	re := regexp.MustCompile(`[ \t\r\n]+`)
+
+	title = strings.Trim(title, " \t\r\n")
+
 	title = re.ReplaceAllString(title, " ")
+
 	if len(title) > 70 {
 		title = fmt.Sprintf("%s...", title[0:67])
 	}
