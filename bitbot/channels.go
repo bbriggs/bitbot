@@ -27,7 +27,7 @@ var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		isPartMessage, err := regexp.MatchString("^"+irc.Nick+".*part",
 			m.Content)
-                if err != nil {
+		if err != nil {
 			log.Error(err.Error())
 		}
 		return m.Command == "PRIVMSG" && isPartMessage
