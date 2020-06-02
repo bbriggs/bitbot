@@ -6,6 +6,30 @@ import (
 	"testing"
 )
 
+func TestCleanTitle(t *testing.T) {
+	answered := ""
+	// tests["title"]"awaited answer"
+	tests := make(map[string]string)
+	tests["aa"] = "aa"
+	tests[" aa "] = "aa"
+	tests["  aa  "] = "aa"
+	tests["a  a"] = "a a"
+	tests["	a	a"] = "a a"
+	tests["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] =
+		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..."
+
+	for original, awaited := range tests {
+		answered = cleanTitle(original)
+		if answered != awaited {
+			t.Errorf(
+				"Failed at cleaning title cleanTitle('%s'): expected '%s', got '%s'.",
+				original,
+				awaited,
+				answered)
+		}
+	}
+}
+
 func TestGetHTMLTitle(t *testing.T) {
 	r, w := io.Pipe()
 	go func() {
