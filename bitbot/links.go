@@ -28,6 +28,11 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 				short = strings.TrimRight(short, "\n") //triming
 				title = fmt.Sprintf("%s %s", short, title)
 			}
+			// Clean title
+			title = strings.Trim(title, " \n\r")
+			if len(title) > 70 {
+				title = fmt.Sprintf("%s...", title[0:67])
+			}
 			irc.Reply(m, title)
 		}
 		return true
