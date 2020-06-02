@@ -28,6 +28,8 @@ var NewVarTrigger = NamedTrigger{ // This has to be an exported variable.
 
 If you do some complex string modifications, having a `makeNewVarMessage(...) string` function might be useful for testing purpose.
 
+Also, the epeen and 8ball triggers are simple and good real life example.
+
 ## Contribution flow
 
 This is a rough outline of what a contributor's workflow looks like:
