@@ -10,6 +10,7 @@ import (
 	"mvdan.cc/xurls/v2"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -28,10 +29,26 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 				short = strings.TrimRight(short, "\n") //triming
 				title = fmt.Sprintf("%s %s", short, title)
 			}
+			title = cleanTitle(title)
 			irc.Reply(m, title)
 		}
 		return true
 	},
+}
+
+func cleanTitle(title string) string {
+	maxLength := 70
+
+	re := regexp.MustCompile(`[ \t\r\n]+`)
+
+	title = strings.Trim(title, " \t\r\n")
+
+	title = re.ReplaceAllString(title, " ")
+
+	if len(title) > maxLength {
+		title = fmt.Sprintf("%s...", title[0:67])
+	}
+	return title
 }
 
 func shortenURL(uri string) string {

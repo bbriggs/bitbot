@@ -11,7 +11,6 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-//nolint gochecknoglobals
 var (
 	location   *time.Location
 	timeFormat string
@@ -121,8 +120,8 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 
 	// Launch a background routine that will HL interested people and clean the DB.
 	// The magic number 2 is indeed completely arbitrary, but we need it anyway.
-	timeToEvent := time.Until(event.Time) - (2 * time.Second) //nolint gomnd
-	eventTimer := time.NewTimer(2 * time.Second)              //nolint gomnd
+	timeToEvent := time.Until(event.Time) - (2 * time.Second)
+	eventTimer := time.NewTimer(2 * time.Second) //nolint:gomnd // Arbitrary
 
 	go func() {
 		time.Sleep(timeToEvent)
