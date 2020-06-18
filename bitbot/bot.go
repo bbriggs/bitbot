@@ -96,6 +96,7 @@ func Run(config Config) {
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	log.Info("Connecting to postgres...")
+
 	db, err := newDB(config.DBConfig)
 	if err != nil {
 		log.Error("Database connection unsuccessful: " + err.Error())
