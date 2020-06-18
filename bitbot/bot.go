@@ -88,21 +88,8 @@ func (b *Bot) DropTrigger(t NamedTrigger) bool {
 }
 
 func Run(config Config) {
-	db, err := newDB(config.DBConfig)
-	if err != nil {
-		log.Error(err.Error())
-		os.Exit(1)
-	}
-
-	b.DB = db
-	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
-	b.Config = config
-	b.triggerMutex = &sync.RWMutex{}
-	b.markovMutex = &sync.RWMutex{}
-	b.triggers = make(map[string]NamedTrigger)
-	b.counters = make(map[string]*prometheus.CounterVec)
-	b.gauges = make(map[string]*prometheus.GaugeVec)
-
+	log.Info("Initializing bitbot...")
+	log.Info("Setting up IRC connection...")
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
 	}
@@ -115,9 +102,28 @@ func Run(config Config) {
 		log.Error(err.Error())
 		os.Exit(1)
 	}
-
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
+
+	log.Info("Connecting to postgres...")
+
+	db, err := newDB(config.DBConfig)
+	if err != nil {
+		log.Error("Database connection unsuccessful: " + err.Error())
+	} else {
+		log.Info("Database connection successful!")
+	}
+	b.DB = db
+
+	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
+	b.Config = config
+	b.triggerMutex = &sync.RWMutex{}
+	b.markovMutex = &sync.RWMutex{}
+	b.triggers = make(map[string]NamedTrigger)
+	b.counters = make(map[string]*prometheus.CounterVec)
+	b.gauges = make(map[string]*prometheus.GaugeVec)
+
+	log.Info("Loading triggers...")
 	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
@@ -128,8 +134,7 @@ func Run(config Config) {
 		b.RegisterTrigger(trigger)
 	}
 
-	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
-
+	log.Info("Starting prometheus on http:// " + b.Config.PromAddr + "/metrics")
 	// Prometheus stuff
 	if b.Config.Prometheus {
 		b.createCounters()
@@ -143,6 +148,7 @@ func Run(config Config) {
 
 	// GOOOOOOO
 	defer b.DB.Close()
+	log.Info("Starting bitbot...")
 	b.Bot.Run()
 
 }
