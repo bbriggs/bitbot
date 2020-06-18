@@ -57,10 +57,20 @@ type DBConfig struct {
 var b Bot = Bot{}
 
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
+	var err error
+
 	b.triggerMutex.Lock()
 	b.triggers[t.Name()] = t
 	b.triggerMutex.Unlock()
 	b.Bot.AddTrigger(t)
+
+	if t.Init != nil {
+		err = t.Init()
+	}
+
+	if err != nil {
+		log.Error("Trigger " + t.Name() + " failed to initialize: " + err.Error())
+	}
 }
 
 func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {

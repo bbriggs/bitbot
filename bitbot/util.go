@@ -14,6 +14,7 @@ type NamedTrigger struct {
 	Help      string // Help text
 	Condition func(*hbot.Bot, *hbot.Message) bool
 	Action    func(*hbot.Bot, *hbot.Message) bool
+	Init      func() error
 }
 
 // Name satisfies the hbot.Handler interface

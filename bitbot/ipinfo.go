@@ -77,7 +77,6 @@ func query(ip string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	jsonData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
