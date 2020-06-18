@@ -13,10 +13,13 @@ var Magic8BallTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!8ball")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := magic8responses[rand.Intn(len(magic8responses)-1)]
-		irc.Reply(m, resp)
+		irc.Reply(m, make8BallAnswer())
 		return true
 	},
+}
+
+func make8BallAnswer() string {
+	return magic8responses[rand.Intn(len(magic8responses)-1)]
 }
 
 var magic8responses = []string{
