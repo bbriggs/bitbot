@@ -5,6 +5,7 @@
 
 **Merged pull requests:**
 
+- Release 1.3.0 [\#141](https://github.com/bbriggs/bitbot/pull/141) ([bbriggs](https://github.com/bbriggs))
 - Migrate from bbolt to Postgres [\#140](https://github.com/bbriggs/bitbot/pull/140) ([bbriggs](https://github.com/bbriggs))
 - Declare /data volume in Dockerfile [\#138](https://github.com/bbriggs/bitbot/pull/138) ([bbriggs](https://github.com/bbriggs))
 - Minor vanity fix [\#132](https://github.com/bbriggs/bitbot/pull/132) ([PaulGWebster](https://github.com/PaulGWebster))
@@ -122,15 +123,18 @@
 - Link expansion [\#49](https://github.com/bbriggs/bitbot/pull/49) ([bbriggs](https://github.com/bbriggs))
 - Send first 350 chars of title to account for twitter links [\#48](https://github.com/bbriggs/bitbot/pull/48) ([bbriggs](https://github.com/bbriggs))
 - Stop hauling deps around like a moron [\#47](https://github.com/bbriggs/bitbot/pull/47) ([bbriggs](https://github.com/bbriggs))
+- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Fix crashes on empty titles; extend search space for titles to 2^16-1… [\#41](https://github.com/bbriggs/bitbot/pull/41) ([bbriggs](https://github.com/bbriggs))
 - Add quotes module [\#40](https://github.com/bbriggs/bitbot/pull/40) ([bbriggs](https://github.com/bbriggs))
 - Decisions [\#38](https://github.com/bbriggs/bitbot/pull/38) ([bbriggs](https://github.com/bbriggs))
-- Hot loading [\#37](https://github.com/bbriggs/bitbot/pull/37) ([bbriggs](https://github.com/bbriggs))
-- Set abyss threshold to 2 [\#34](https://github.com/bbriggs/bitbot/pull/34) ([bbriggs](https://github.com/bbriggs))
 - Redirect following [\#30](https://github.com/bbriggs/bitbot/pull/30) ([harrywhite4](https://github.com/harrywhite4))
 
 ## [v1.1.0](https://github.com/bbriggs/bitbot/tree/v1.1.0) (2018-11-24)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/v1.0.0...v1.1.0)
+
+**Merged pull requests:**
+
+- Hot loading [\#37](https://github.com/bbriggs/bitbot/pull/37) ([bbriggs](https://github.com/bbriggs))
 
 ## [v1.0.0](https://github.com/bbriggs/bitbot/tree/v1.0.0) (2018-11-19)
 [Full Changelog](https://github.com/bbriggs/bitbot/compare/0.1.1...v1.0.0)
@@ -143,6 +147,7 @@
 
 - Add support for nickserv, server oper, and channel oper [\#36](https://github.com/bbriggs/bitbot/pull/36) ([bbriggs](https://github.com/bbriggs))
 - Slim down image size and use scratch container [\#35](https://github.com/bbriggs/bitbot/pull/35) ([bbriggs](https://github.com/bbriggs))
+- Set abyss threshold to 2 [\#34](https://github.com/bbriggs/bitbot/pull/34) ([bbriggs](https://github.com/bbriggs))
 - Add Abyss simulator [\#33](https://github.com/bbriggs/bitbot/pull/33) ([bbriggs](https://github.com/bbriggs))
 - fix panic [\#32](https://github.com/bbriggs/bitbot/pull/32) ([C-Sto](https://github.com/C-Sto))
 - Add skip flag [\#31](https://github.com/bbriggs/bitbot/pull/31) ([bbriggs](https://github.com/bbriggs))
@@ -161,7 +166,6 @@
 
 **Merged pull requests:**
 
-- Finally patched roll.go [\#44](https://github.com/bbriggs/bitbot/pull/44) ([parsec](https://github.com/parsec))
 - Release 0.1.1 [\#24](https://github.com/bbriggs/bitbot/pull/24) ([bbriggs](https://github.com/bbriggs))
 - fix crashes on very long titles [\#22](https://github.com/bbriggs/bitbot/pull/22) ([jrwren](https://github.com/jrwren))
 - Trim spaces from incoming messages when matching for single-word comm… [\#17](https://github.com/bbriggs/bitbot/pull/17) ([bbriggs](https://github.com/bbriggs))
@@ -169,6 +173,7 @@
 - Dockerhub sucks [\#12](https://github.com/bbriggs/bitbot/pull/12) ([bbriggs](https://github.com/bbriggs))
 - Work around Dockerhub's shallow clone and set a default version [\#11](https://github.com/bbriggs/bitbot/pull/11) ([bbriggs](https://github.com/bbriggs))
 - Add compile output information to aid in debugging [\#10](https://github.com/bbriggs/bitbot/pull/10) ([bbriggs](https://github.com/bbriggs))
+- fix configuration issues with circle ci [\#9](https://github.com/bbriggs/bitbot/pull/9) ([wadadli](https://github.com/wadadli))
 - updates to the circle ci config [\#8](https://github.com/bbriggs/bitbot/pull/8) ([wadadli](https://github.com/wadadli))
 - Update info output [\#7](https://github.com/bbriggs/bitbot/pull/7) ([bbriggs](https://github.com/bbriggs))
 - Add version output at build time  [\#6](https://github.com/bbriggs/bitbot/pull/6) ([bbriggs](https://github.com/bbriggs))
@@ -180,7 +185,6 @@
 
 **Merged pull requests:**
 
-- fix configuration issues with circle ci [\#9](https://github.com/bbriggs/bitbot/pull/9) ([wadadli](https://github.com/wadadli))
 - Switch back to upstream [\#5](https://github.com/bbriggs/bitbot/pull/5) ([bbriggs](https://github.com/bbriggs))
 - Remove the go get ./.. from Dockerfile  [\#4](https://github.com/bbriggs/bitbot/pull/4) ([bbriggs](https://github.com/bbriggs))
 - Fix \#2: Move defer after error handling in url lookups [\#3](https://github.com/bbriggs/bitbot/pull/3) ([bbriggs](https://github.com/bbriggs))

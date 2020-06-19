@@ -14,7 +14,6 @@ Avatar|Contributor|Contributions
 <img class='float-left rounded-1' src='https://avatars0.githubusercontent.com/u/7466346?v=4' width='36' height='36' alt='@C-Sto'>|[@C-Sto](https://github.com/C-Sto)|1
 <img class='float-left rounded-1' src='https://avatars3.githubusercontent.com/u/106443?v=4' width='36' height='36' alt='@jrwren'>|[@jrwren](https://github.com/jrwren)|1
 <img class='float-left rounded-1' src='https://avatars2.githubusercontent.com/u/1681525?v=4' width='36' height='36' alt='@omBratteng'>|[@omBratteng](https://github.com/omBratteng)|1
-<img class='float-left rounded-1' src='https://avatars3.githubusercontent.com/u/24479461?v=4' width='36' height='36' alt='@TheRealSuser'>|[@TheRealSuser](https://github.com/TheRealSuser)|1
 
 ---
 
