@@ -6,7 +6,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var NickTakenTrigger = NamedTrigger{
+var NickTakenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "nick",
 	Help: "Avoids nick collisions by renaming the bot if the nick is already taken.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

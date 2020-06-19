@@ -2,12 +2,14 @@ package bitbot
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var InviteTrigger = NamedTrigger{
+var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "invite",
 	Help: "Follow invites to other channels. Usage: /invite [bot nick]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -19,11 +21,16 @@ var InviteTrigger = NamedTrigger{
 	},
 }
 
-var PartTrigger = NamedTrigger{
+var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "part",
 	Help: "Command the bot to leave the channel. Usage: [bot nick] part [channel]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, irc.Nick)
+		isPartMessage, err := regexp.MatchString("^"+irc.Nick+".*part",
+			m.Content)
+		if err != nil {
+			log.Error(err.Error())
+		}
+		return m.Command == "PRIVMSG" && isPartMessage
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		splitMsg := strings.Split(m.Content, " ")

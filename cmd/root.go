@@ -32,6 +32,7 @@ import (
 
 const VERSION = ""
 
+// nolint:gochecknoglobals
 var (
 	cfgFile   string
 	server    string
@@ -56,6 +57,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
 	"info":           bitbot.InfoTrigger,
+	"covid19":        bitbot.Covid19Trigger,
 	"shrug":          bitbot.ShrugTrigger,
 	"urlReader":      bitbot.URLReaderTrigger,
 	"roll":           bitbot.RollTrigger,
@@ -71,6 +73,8 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"markovTrainer":  bitbot.MarkovTrainerTrigger,
 	"epeen":          bitbot.EpeenTrigger,
 	"ipinfo":         bitbot.IPinfoTrigger,
+	"urbd":           bitbot.UrbanDictionaryTrigger,
+	"reminder":       bitbot.ReminderTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -163,7 +167,7 @@ func init() {
 
 	// All plugins enabled by default
 	var defaultPlugins []string
-	for plugin, _ := range pluginMap {
+	for plugin := range pluginMap {
 		defaultPlugins = append(defaultPlugins, plugin)
 	}
 	viper.SetDefault("nick", "bitbot")

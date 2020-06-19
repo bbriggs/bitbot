@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-var AbyssTrigger = NamedTrigger{
+var AbyssTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "abyss",
 	Help: "State of the art advanced Abyss simulator. Non-interactive.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {

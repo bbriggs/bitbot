@@ -6,17 +6,20 @@ import (
 	"strings"
 )
 
-var Magic8BallTrigger = NamedTrigger{
+var Magic8BallTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "8ball",
 	Help: "Beseech the magic 8ball. Usage: !8ball [question]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!8ball")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := magic8responses[rand.Intn(len(magic8responses)-1)]
-		irc.Reply(m, resp)
+		irc.Reply(m, make8BallAnswer())
 		return true
 	},
+}
+
+func make8BallAnswer() string {
+	return magic8responses[rand.Intn(len(magic8responses)-1)]
 }
 
 var magic8responses = []string{

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var HelpTrigger = NamedTrigger{
+var HelpTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "help",
 	Help: "Usage: !help [trigger name]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
