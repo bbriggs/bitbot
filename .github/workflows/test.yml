@@ -1,5 +1,5 @@
-name: Continuous integration
-on: [push, pull_request]
+name: Continuous Integration
+on: pull_request
 
 jobs:
   test:
