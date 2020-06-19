@@ -1,12 +1,13 @@
 ---
-name: Docker Latest Build
+name: Docker Release Build
 on:
-  push:
-    branches:
-      - dev
+  release:
+    types:
+      - created
+      - published
 jobs:
   build:
-    name: Latest Build
+    name: Release Build
     runs-on: ubuntu-latest
     steps:
       - name: Build and push
@@ -17,4 +18,3 @@ jobs:
           repository: bbriggs/bitbot
           add_git_labels: true
           push: true
-
