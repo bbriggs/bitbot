@@ -84,7 +84,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 // Get the time in UTC, formatted in the expected way.
 func getTime() string {
-	return time.Now().In(location).Format(timeFormat)
+	return fmt.Sprintf("%s UTC", time.Now().In(location).Format(timeFormat))
 }
 
 // Parses an event adding message and adds the event
@@ -96,7 +96,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	description, datetime, err := parseAddCommandMessage(message.Content)
 	if err != nil {
 		return fmt.Sprintf(
-			"Wrong syntax, use !remind add Jitsi Meeting %s",
+			"Wrong syntax, use !remind add Jitsi Meeting %s UTC",
 			timeFormat)
 	}
 	// We take the two last parts of the message (with space as the separator)
@@ -141,7 +141,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 	}()
 
 	// Feedback
-	return fmt.Sprintf("Adding event \"%s\" by %s, at %s in %s",
+	return fmt.Sprintf("Adding event \"%s\" by %s, at %s UTC in %s",
 		description,
 		author,
 		timeOfEvent.Format(timeFormat),
@@ -195,7 +195,7 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 		}
 
 		eventDescriptionMessage = fmt.Sprintf(
-			"%d : [ %s ] at %s. Event author : %s, in channel %s, with %s",
+			"%d : [ %s ] at %s UTC. Event author : %s, in channel %s, with %s",
 			event.ID,
 			event.Description,
 			event.Time.Format(timeFormat),
