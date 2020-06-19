@@ -179,6 +179,7 @@ func init() {
 	viper.SetDefault("dbHost", "127.0.0.1")
 	viper.SetDefault("dbName", "bitbot")
 	viper.SetDefault("dbPort", "5432")
+	viper.SetDefault("ignored", []string{})
 }
 
 // initConfig reads in config file and ENV variables if set.

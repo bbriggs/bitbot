@@ -110,6 +110,7 @@ func Run(config Config) {
 	b.Bot = irc
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 	// These are non-optional and added to every bot instance
+	b.Bot.AddTrigger(IgnoreTrigger)
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
