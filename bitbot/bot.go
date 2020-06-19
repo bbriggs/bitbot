@@ -58,10 +58,20 @@ type DBConfig struct {
 var b Bot = Bot{}
 
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
+	var err error
+
 	b.triggerMutex.Lock()
 	b.triggers[t.Name()] = t
 	b.triggerMutex.Unlock()
 	b.Bot.AddTrigger(t)
+
+	if t.Init != nil {
+		err = t.Init()
+	}
+
+	if err != nil {
+		log.Error("Trigger " + t.Name() + " failed to initialize: " + err.Error())
+	}
 }
 
 func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
@@ -79,36 +89,43 @@ func (b *Bot) DropTrigger(t NamedTrigger) bool {
 }
 
 func Run(config Config) {
-	db, err := newDB(config.DBConfig)
-	if err != nil {
-		log.Error(err.Error())
-		os.Exit(1)
-	}
-
-	b.DB = db
-	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
-	b.Config = config
-	b.triggerMutex = &sync.RWMutex{}
-	b.markovMutex = &sync.RWMutex{}
-	b.triggers = make(map[string]NamedTrigger)
-	b.counters = make(map[string]*prometheus.CounterVec)
-	b.gauges = make(map[string]*prometheus.GaugeVec)
-
+	log.Info("Initializing bitbot...")
+	log.Info("Setting up IRC connection...")
+	// Initialize connection
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
 	}
 	sslOptions := func(bot *hbot.Bot) {
 		bot.SSL = b.Config.SSL
 	}
-
+	b.Config = config
 	irc, err := hbot.NewBot(b.Config.Server, b.Config.Nick, chans, sslOptions)
 	if err != nil {
 		log.Error(err.Error())
 		os.Exit(1)
 	}
-
 	b.Bot = irc
+
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
+
+	log.Info("Connecting to postgres...")
+
+	db, err := newDB(config.DBConfig)
+	if err != nil {
+		log.Error("Database connection unsuccessful: " + err.Error())
+	} else {
+		log.Info("Database connection successful!")
+	}
+	b.DB = db
+
+	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
+	b.triggerMutex = &sync.RWMutex{}
+	b.markovMutex = &sync.RWMutex{}
+	b.triggers = make(map[string]NamedTrigger)
+	b.counters = make(map[string]*prometheus.CounterVec)
+	b.gauges = make(map[string]*prometheus.GaugeVec)
+
+	log.Info("Loading triggers...")
 	// These are non-optional and added to every bot instance
 	b.Bot.AddTrigger(IgnoreTrigger)
 	b.Bot.AddTrigger(OperLogin)
@@ -120,8 +137,7 @@ func Run(config Config) {
 		b.RegisterTrigger(trigger)
 	}
 
-	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
-
+	log.Info("Starting prometheus on http:// " + b.Config.PromAddr + "/metrics")
 	// Prometheus stuff
 	if b.Config.Prometheus {
 		b.createCounters()
@@ -135,6 +151,7 @@ func Run(config Config) {
 
 	// GOOOOOOO
 	defer b.DB.Close()
+	log.Info("Starting bitbot...")
 	b.Bot.Run()
 
 }
