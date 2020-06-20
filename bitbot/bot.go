@@ -38,6 +38,7 @@ type Config struct {
 	Server       string         // server:port for connections
 	SSL          bool           // Enable SSL for the connection
 	Admins       ACL            // slice of masks representing administrators
+	Ignored      []string       // slice of strings containing ignored nicks (bots)
 	Plugins      []NamedTrigger // Plugins to start with
 	Prometheus   bool           // Enable Prometheus
 	PromAddr     string         // Listen address for prometheus endpoint
@@ -126,6 +127,7 @@ func Run(config Config) {
 
 	log.Info("Loading triggers...")
 	// These are non-optional and added to every bot instance
+	b.Bot.AddTrigger(IgnoreTrigger)
 	b.Bot.AddTrigger(OperLogin)
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)

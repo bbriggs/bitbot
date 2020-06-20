@@ -53,6 +53,7 @@ var (
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
+	"ignore":         bitbot.IgnoreTrigger,
 	"invite":         bitbot.InviteTrigger,
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
@@ -111,6 +112,7 @@ var rootCmd = &cobra.Command{
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
+			Ignored: viper.GetStringSlice("ignored"),
 			Plugins: plugins,
 		}
 		log.Println("Starting bitbot...")
@@ -178,6 +180,7 @@ func init() {
 	viper.SetDefault("dbHost", "127.0.0.1")
 	viper.SetDefault("dbName", "bitbot")
 	viper.SetDefault("dbPort", "5432")
+	viper.SetDefault("ignored", []string{})
 }
 
 // initConfig reads in config file and ENV variables if set.
