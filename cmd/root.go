@@ -21,13 +21,12 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"github.com/bbriggs/bitbot/bitbot"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 const VERSION = ""
@@ -50,6 +49,7 @@ var (
 	dbPort    string
 	dbName    string
 	dbSSLMode string
+	logger    log.Logger
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
@@ -115,7 +115,7 @@ var rootCmd = &cobra.Command{
 			Ignored: viper.GetStringSlice("ignored"),
 			Plugins: plugins,
 		}
-		log.Println("Starting bitbot...")
+		logger.Info("Starting bitbot...")
 		bitbot.Run(config)
 	},
 }
@@ -123,10 +123,19 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	logger = createLogger()
+
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		os.Exit(1)
 	}
+}
+
+// Creates a logger to be used in all of the package.
+func createLogger() log.Logger {
+	l := log.New()
+	l.SetHandler(log.StreamHandler(os.Stderr, log.JsonFormat()))
+	return l
 }
 
 func init() {
@@ -197,6 +206,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		logger.Info("Reading config", "config file", viper.ConfigFileUsed())
 	}
 }
