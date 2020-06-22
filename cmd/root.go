@@ -114,6 +114,7 @@ var rootCmd = &cobra.Command{
 			},
 			Ignored: viper.GetStringSlice("ignored"),
 			Plugins: plugins,
+			Logger:  logger,
 		}
 		logger.Info("Starting bitbot...")
 		bitbot.Run(config)
