@@ -79,7 +79,6 @@ func query(ip string) string {
 	jsonData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't read ipinfo.io answer", "error", err)
-
 	}
 
 	res.Body.Close() //nolint:errcheck,gosec

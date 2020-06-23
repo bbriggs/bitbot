@@ -136,6 +136,7 @@ func Execute() {
 func createLogger() log.Logger {
 	l := log.New()
 	l.SetHandler(log.StreamHandler(os.Stderr, log.JsonFormat()))
+
 	return l
 }
 

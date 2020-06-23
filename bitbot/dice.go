@@ -34,7 +34,6 @@ var RollTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 func roll(r string) string {
 	res, _, err := dice.Roll(r)
 	if err != nil {
-		b.Config.Logger.Error(err.Error())
 		return DICE_USAGE
 	}
 	return fmt.Sprintf("%v", res.Int())

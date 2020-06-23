@@ -15,6 +15,7 @@ func (b Bot) isAdmin(m *hbot.Message) bool {
 			return true
 		}
 	}
+
 	b.Config.Logger.Warn("Admin request declined", "username", fullname)
 	return false
 }
