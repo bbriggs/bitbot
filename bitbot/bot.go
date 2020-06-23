@@ -107,9 +107,7 @@ func Run(config Config) {
 	}
 	b.Bot = irc
 
-	//TODO get hellabot logs in a subfield to indicate clearly that they are not direct
-	// bitbot logs
-	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
+	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, hellaLogFormat()))
 
 	config.Logger.Info("Connecting to postgres...")
 

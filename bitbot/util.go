@@ -2,10 +2,13 @@ package bitbot
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"gopkg.in/sorcix/irc.v1"
 	"time"
+
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 // NamedTrigger is a local re-implementation of hbot.Trigger to support unique names
@@ -122,4 +125,37 @@ func makeMockBot(nick string) *hbot.Bot {
 		Nick: nick,
 		Host: "foo",
 	}
+}
+
+// A custom log15 handler to integrate hellabot logs into bitbot logs
+
+func hellaLogFormat() log.Format {
+	return log.FormatFunc(func(r *log.Record) []byte {
+		props := make(map[string]interface{})
+
+		props[r.KeyNames.Time] = r.Time
+		props[r.KeyNames.Lvl] = r.Lvl.String()
+		props[r.KeyNames.Msg] = r.Msg
+		props["source"] = "hellabot"
+
+		for i := 0; i < len(r.Ctx); i += 2 {
+			k, ok := r.Ctx[i].(string)
+			if !ok {
+				props["error"] = fmt.Sprintf("%+v is not a string key", r.Ctx[i])
+			}
+			props[k] = r.Ctx[i+1]
+		}
+
+		b, err := json.Marshal(props)
+		if err != nil {
+			b, _ = json.Marshal(map[string]string{
+				"errorKey": err.Error(),
+			})
+			return b
+		}
+
+		b = append(b, '\n')
+
+		return b
+	})
 }
