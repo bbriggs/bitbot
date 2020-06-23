@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/whyrusleeping/hellabot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -73,7 +72,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 		location, err = time.LoadLocation("UTC")
 		if err != nil {
-			log.Error("Reminder : Couldn't load UTC timezone", err.Error())
+			b.Config.Logger.Error("Reminder : Couldn't load UTC timezone", err.Error())
 			return err
 		}
 
@@ -180,7 +179,7 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	// Get all the db rows, iterate through them, format them and send them to pm
 	rows, err := b.DB.Model(&ReminderEvent{}).Rows()
 	if err != nil {
-		log.Error("Reminder: Couldn't get DB rows", err)
+		b.Config.Logger.Warn("Reminder: Couldn't get DB rows", err)
 	}
 
 	var (
@@ -191,7 +190,7 @@ func listEvents(message *hbot.Message, bot *hbot.Bot) string {
 	for rows.Next() {
 		err := b.DB.ScanRows(rows, &event)
 		if err != nil {
-			log.Error("Reminder: Couldn't get a db row", err)
+			b.Config.Logger.Warn("Reminder: Couldn't get a db row", err)
 		}
 
 		eventDescriptionMessage = fmt.Sprintf(
@@ -285,7 +284,7 @@ func getMessageIDFromString(body string) (int, error) {
 	msg := strings.Split(body, " ")
 	isAnID, err := regexp.MatchString("[0-9]+", msg[2])
 	if err != nil {
-		log.Info("Not and ID :", err)
+		b.Config.Logger.Warn("Not and ID :", err)
 	}
 
 	if len(msg) != 3 || !isAnID {

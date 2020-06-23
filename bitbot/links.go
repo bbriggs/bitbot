@@ -6,7 +6,6 @@ import (
 	"golang.org/x/net/html"
 	"io"
 	"io/ioutil"
-	"log"
 	"mvdan.cc/xurls/v2"
 	"net/http"
 	"net/url"
@@ -58,12 +57,12 @@ func shortenURL(uri string) string {
 	/* We are using 0x0.st */
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
-		log.Println("Coudln't shorten url : ", err)
+		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Coudln't shorten url : ", err)
+		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
 
 	short := string(body)
@@ -81,11 +80,10 @@ func lookupPageTitle(message string) string {
 		return ""
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
-	log.Println("Unable to lookup page")
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		return (title)
 	} else {
-		log.Println("Unable to lookup page")
+		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
 		return ("")
 	}
 }

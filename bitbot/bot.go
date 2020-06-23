@@ -43,7 +43,7 @@ type Config struct {
 	Prometheus   bool           // Enable Prometheus
 	PromAddr     string         // Listen address for prometheus endpoint
 	DBConfig     DBConfig       // Configuration settings for Database connection
-	Logger       log.Logger
+	Logger       log.Logger     // The logger used by all of the bot
 }
 
 // Configuration struct for Postgresql backend
@@ -107,6 +107,8 @@ func Run(config Config) {
 	}
 	b.Bot = irc
 
+	//TODO get hellabot logs in a subfield to indicate clearly that they are not direct
+	// bitbot logs
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, log.JsonFormat()))
 
 	config.Logger.Info("Connecting to postgres...")

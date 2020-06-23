@@ -1,7 +1,6 @@
 package bitbot
 
 import (
-	"log"
 	"strconv"
 	"strings"
 
@@ -39,11 +38,11 @@ var HandleListReplyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == irc.RPL_LIST
 	},
 	Action: func(bot *hbot.Bot, m *hbot.Message) bool {
-		log.Println("List Reply Received")
+		b.Config.Logger.Info("List Reply Received")
 		channel := m.Params[1]
 		pop, err := strconv.Atoi(m.Params[2])
 		if err != nil {
-			log.Println("RPL_LIST returned invalid reply")
+			b.Config.Logger.Info("RPL_LIST returned invalid reply")
 		}
 		b.gauges["channel_pop"].WithLabelValues(channel).Set(float64(pop))
 		return true

@@ -2,7 +2,6 @@ package bitbot
 
 import (
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -91,13 +90,13 @@ func markovInit(chain *gomarkov.Chain) bool {
 	for _, link := range sources {
 		resp, err := http.Get(link)
 		if err != nil {
-			log.Println(err)
+			b.Config.Logger.Warn("Markov init, couldn't get sources", "error", err)
 			return false
 		}
 		defer resp.Body.Close() //nolint:errcheck,gosec
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Println(err)
+			b.Config.Logger.Warn("Markov init, couldn't read sources", "error", err)
 			return false
 		}
 		bodyString := string(body)

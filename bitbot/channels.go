@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -28,7 +27,7 @@ var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		isPartMessage, err := regexp.MatchString("^"+irc.Nick+".*part",
 			m.Content)
 		if err != nil {
-			log.Error(err.Error())
+			b.Config.Logger.Error(err.Error())
 		}
 		return m.Command == "PRIVMSG" && isPartMessage
 	},
