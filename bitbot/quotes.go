@@ -3,7 +3,6 @@ package bitbot
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/bbriggs/quotes/model"
@@ -28,13 +27,13 @@ func getQuote(endpoint string) (model.Response, bool) {
 	var resp model.Response
 	r, err := http.Get(fmt.Sprintf("https://quotes.fraq.io%s", endpoint))
 	if err != nil {
-		log.Println(err.Error())
+		b.Config.Logger.Warn("Quote trigger, couldn't get page", "error", err.Error())
 		return resp, false
 	}
 	defer r.Body.Close() //nolint:errcheck,gosec
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
-		log.Println(err)
+		b.Config.Logger.Warn("Quote trigger, couldn't decode page", "error", err.Error())
 	}
 	return resp, false
 }
