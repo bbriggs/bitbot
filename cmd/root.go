@@ -33,23 +33,24 @@ const VERSION = ""
 
 // nolint:gochecknoglobals
 var (
-	cfgFile   string
-	server    string
-	channels  []string
-	nick      string
-	ssl       bool
-	nickserv  string
-	operUser  string
-	operPass  string
-	promAddr  string
-	prom      bool
-	dbUser    string
-	dbPass    string
-	dbHost    string
-	dbPort    string
-	dbName    string
-	dbSSLMode string
-	logger    log.Logger
+	cfgFile      string
+	server       string
+	channels     []string
+	nick         string
+	ssl          bool
+	nickserv     string
+	operUser     string
+	operPass     string
+	promAddr     string
+	prom         bool
+	dbUser       string
+	dbPass       string
+	dbHost       string
+	dbPort       string
+	dbName       string
+	dbSSLMode    string
+	embeddedPath string
+	logger       log.Logger
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
@@ -112,9 +113,10 @@ var rootCmd = &cobra.Command{
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
-			Ignored: viper.GetStringSlice("ignored"),
-			Plugins: plugins,
-			Logger:  logger,
+			Ignored:      viper.GetStringSlice("ignored"),
+			Plugins:      plugins,
+			EmbeddedPath: viper.GetString("embedded-db"),
+			Logger:       logger,
 		}
 		logger.Info("Starting bitbot...")
 		bitbot.Run(config)
@@ -162,6 +164,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&dbPort, "dbPort", "", dbPort, "Postgresql port")
 	rootCmd.PersistentFlags().StringVarP(&dbName, "dbName", "", dbName, "Postgresql database name")
 	rootCmd.PersistentFlags().StringVarP(&dbSSLMode, "dbSSLMode", "", dbSSLMode, "Postgresql SSL Mode")
+	rootCmd.PersistentFlags().StringVarP(&embeddedPath, "embedded-db", "", embeddedPath, "The path to the embedded DB")
 
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("nickserv", rootCmd.PersistentFlags().Lookup("nickserv"))
@@ -177,6 +180,7 @@ func init() {
 	viper.BindPFlag("dbPort", rootCmd.PersistentFlags().Lookup("dbPort"))
 	viper.BindPFlag("dbName", rootCmd.PersistentFlags().Lookup("dbName"))
 	viper.BindPFlag("dbSSLMode", rootCmd.PersistentFlags().Lookup("dbSSLMode"))
+	viper.BindPFlag("embedded-db", rootCmd.PersistentFlags().Lookup("embedded-db"))
 
 	// All plugins enabled by default
 	var defaultPlugins []string
@@ -192,6 +196,7 @@ func init() {
 	viper.SetDefault("dbName", "bitbot")
 	viper.SetDefault("dbPort", "5432")
 	viper.SetDefault("ignored", []string{})
+	viper.SetDefault("embedded-db", "/tmp/bitbot-embedded.db")
 }
 
 // initConfig reads in config file and ENV variables if set.
