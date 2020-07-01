@@ -113,11 +113,12 @@ func Run(config Config) {
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, hellaLogFormat()))
 
 	config.Logger.Info("Reading the embedded DB")
+
 	edb, err := bolt.Open(config.EmbeddedPath, 0666, nil)
 	if err != nil {
 		config.Logger.Warn("Couldn't open the embedded DB")
 	}
-	defer edb.Close()
+	defer edb.Close() //nolint:errcheck
 
 	b.EmbDB = edb
 
