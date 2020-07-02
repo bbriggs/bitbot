@@ -15,6 +15,7 @@ var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var epeen = makeEpeenAnswer(m.From)
 		irc.Reply(m, epeen)
+		irc.Reply(m, "Also, suser is a fed.")
 		return true
 	},
 }
