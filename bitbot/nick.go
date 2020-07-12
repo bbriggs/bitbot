@@ -22,3 +22,16 @@ var NickTakenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return false
 	},
 }
+
+var NickRecoverTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
+	ID:   "nick-recover",
+	Help: "Watch for QUIT messages, and recover nick at first occasion",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "QUIT" && m.From == b.Config.Nick
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		b.Config.Logger.Info("Attempting Nick recovery")
+		irc.SetNick(b.Config.Nick)
+		return false
+	},
+}

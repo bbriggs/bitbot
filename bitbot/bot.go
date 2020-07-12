@@ -133,6 +133,7 @@ func Run(config Config) {
 	b.Bot.AddTrigger(loadTrigger)
 	b.Bot.AddTrigger(unloadTrigger)
 	b.Bot.AddTrigger(NickTakenTrigger)
+	b.Bot.AddTrigger(NickRecoverTrigger)
 	for _, trigger := range config.Plugins {
 		config.Logger.Info(trigger.Name() + " loaded")
 		b.RegisterTrigger(trigger)
