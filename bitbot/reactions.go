@@ -28,3 +28,15 @@ var LennyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return true
 	},
 }
+
+var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
+	ID:   "DamnWeebs",
+	Help: "Usage: !weeb",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" && strings.TrimSpace(strings.ToLower(m.Content)) == "!weeb"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		irc.Reply(m, `gahd damn weebs`) //add list to randomly choose from
+		return true
+	},
+}
