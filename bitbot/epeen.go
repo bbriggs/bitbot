@@ -10,7 +10,7 @@ var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "epeen",
 	Help: "epeen returns the length of the requesters epeen. Usage: !epeen",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(m.Content) == "!epeen"
+		return m.Command == "PRIVMSG" && strings.ToLower(strings.TrimSpace(m.Content)) == "!epeen"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		var epeen = makeEpeenAnswer(m.From)
