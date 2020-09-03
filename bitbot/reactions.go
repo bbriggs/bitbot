@@ -2,6 +2,7 @@ package bitbot
 
 import (
 	"github.com/whyrusleeping/hellabot"
+	"regexp"
 	"strings"
 )
 
