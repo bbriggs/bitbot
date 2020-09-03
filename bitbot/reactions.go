@@ -34,7 +34,7 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	Help: "Usage: mention uwu",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 
-		match, _ := regexp.MatchString(`(?1)uwu|owo`, m.Content)
+		match, _ := regexp.MatchString(`(?i)uwu|owo`, m.Content)
 		return m.Command == "PRIVMSG" && match
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
