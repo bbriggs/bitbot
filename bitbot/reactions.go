@@ -31,12 +31,24 @@ var LennyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "DamnWeebs",
-	Help: "Usage: !weeb",
+	Help: "Usage: mention uwu",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.TrimSpace(strings.ToLower(m.Content)) == "!weeb"
+
+		match, _ := regexp.MatchString(`(?1)uwu|owo`, m.Content)
+		return m.Command == "PRIVMSG" && match
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Reply(m, `gahd damn weebs`) //add list to randomly choose from
+		adjectives := []string{ //add more as necessary
+			"damn",
+			"fucking",
+			"degenerate",
+			"incurable",
+			"disgusting",
+			"wonderful",
+		}
+		adj := adjectives[b.Random.Intn(len(adjectives))]
+		reply := m.Name + `, you ` + adj + ` weeb!`
+		irc.Reply(m, reply)
 		return true
 	},
 }
