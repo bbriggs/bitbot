@@ -1,8 +1,10 @@
 package bitbot
 
 import (
+	"fmt"
 	"github.com/whyrusleeping/hellabot"
 	"math/rand"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -11,6 +13,27 @@ var TarotTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "Tarot",
 	Help: "Request tarot cards, default 1. Usage !tarot [num cards].",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+
+		reg, _ := regexp.Compile(fmt.Sprintf(
+			"(?i)((fuck.*you.*%s)|(%s.*fuck.*you)|(%s.*you.*fuck))+",
+			b.Bot.Nick,
+			b.Bot.Nick,
+			b.Bot.Nick,
+		))
+		answers := []string{
+			"yeah ? well fuck you too",
+			":O mean",
+			"fuck me yourself you coward",
+			"Why are you so rude ?",
+			";_;",
+			fmt.Sprintf("No, fuck you %s", m.From),
+		}
+		if reg.MatchString(m.Content) && m.Command == "PRIVMSG" {
+			b.Config.Logger.Info("Answering to mean comments")
+			n := rand.Int() % len(answers)
+			irc.Reply(m, answers[n])
+		}
+
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!tarot")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
