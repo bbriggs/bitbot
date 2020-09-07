@@ -30,8 +30,25 @@ var NickRecoverTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "QUIT" && m.From == b.Config.Nick
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		b.Config.Logger.Info("Attempting Nick recovery")
-		irc.SetNick(b.Config.Nick)
+		tryNickRecovery(irc)
 		return false
 	},
+}
+
+var ManualNickRecoverTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
+	ID:   "nick-manual",
+	Help: "Attempt nick recovery at !nick-reco",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		return m.Command == "PRIVMSG" &&
+			strings.ToLower(strings.TrimSpace(m.Content)) == "!nick-reco"
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		tryNickRecovery(irc)
+		return false
+	},
+}
+
+func tryNickRecovery(irc *hbot.Bot) {
+	b.Config.Logger.Info("Attempting Nick recovery")
+	irc.SetNick(b.Config.Nick)
 }
