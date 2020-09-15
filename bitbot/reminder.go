@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	location   *time.Location
-	timeFormat string
+	location                     *time.Location
+	timeFormat                   string
+	reminderDBAccessErrorMessage string
 )
 
 // ReminderEvent : The Gorm struct that represents an event in the DB.
@@ -46,6 +47,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			return err
 		}
 
+		reminderDBAccessErrorMessage = "Something went wrong, no access to database"
 		return b.DB.AutoMigrate(&ReminderEvent{}).Error
 	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -114,6 +116,7 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 		Time:        timeOfEvent,
 		People:      fmt.Sprintf("%s ", author)}
 	b.DB.NewRecord(event)
+
 	if err := b.DB.Create(&event); err != nil {
 		return "Something went wrong"
 	}
@@ -158,7 +161,7 @@ func removeEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event); err != nil {
-		return "Something went wrong, no access to database"
+		return reminderDBAccessErrorMessage
 	}
 
 	// Feedback Message construction
@@ -170,7 +173,7 @@ func removeEvent(message *hbot.Message) string {
 
 		// Delete
 		if err := b.DB.Delete(&event); err != nil {
-			return "Something went wrong, no access to database"
+			return reminderDBAccessErrorMessage
 		}
 	} else {
 		feedbackMessage = "No event you own with that ID"
@@ -222,18 +225,18 @@ func joinEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
-		return "Something went wrong, no access to database"
+		return reminderDBAccessErrorMessage
 	}
 
 	if strings.Contains(event.People, message.Name) {
 		if err := b.DB.Save(&event); err != nil {
-			return "Something went wrong, no access to database"
+			return reminderDBAccessErrorMessage
 		}
 		return "You already subscribed to this event"
 	}
 	event.People = fmt.Sprintf("%s%s ", event.People, message.Name)
 	if err := b.DB.Save(&event); err != nil {
-		return "Something went wrong, no access to database"
+		return reminderDBAccessErrorMessage
 	}
 
 	feedback := fmt.Sprintf("Added %s to \"%s\"",
@@ -252,7 +255,7 @@ func partEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
-		return "Something went wrong, no access to database"
+		return reminderDBAccessErrorMessage
 	}
 	defer b.DB.Save(&event)
 
