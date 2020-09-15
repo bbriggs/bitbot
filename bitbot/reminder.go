@@ -10,13 +10,13 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var ( //nolint
+var (
 	location   *time.Location
 	timeFormat string
 )
 
 // ReminderEvent : The Gorm struct that represents an event in the DB.
-type ReminderEvent struct { //nolint
+type ReminderEvent struct {
 	ID          int `gorm:"unique;AUTO_INCREMENT;PRIMARY_KEY"`
 	Channel     string
 	Author      string
