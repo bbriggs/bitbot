@@ -10,14 +10,13 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var (
-	location                     *time.Location
-	timeFormat                   string
-	reminderDBAccessErrorMessage string
+var ( //nolint:gochecknoglobals,golint
+	location   *time.Location
+	timeFormat string
 )
 
 // ReminderEvent : The Gorm struct that represents an event in the DB.
-type ReminderEvent struct {
+type ReminderEvent struct { //nolint:gochecknoglobals,golint
 	ID          int `gorm:"unique;AUTO_INCREMENT;PRIMARY_KEY"`
 	Channel     string
 	Author      string
@@ -35,6 +34,10 @@ func (e *wrongFormatError) Error() string {
 	return fmt.Sprintf("%s : is not of the awaited format", e.arg)
 }
 
+func noAccessDBMessage() string {
+	return "Something went wrong, no access to database"
+}
+
 var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "reminder",
 	Help: "Set up events and remind them to concerned people. Usage: !remind list|time|add|remove|join|part",
@@ -47,7 +50,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			return err
 		}
 
-		reminderDBAccessErrorMessage = "Something went wrong, no access to database"
 		return b.DB.AutoMigrate(&ReminderEvent{}).Error
 	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -161,7 +163,7 @@ func removeEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event); err != nil {
-		return reminderDBAccessErrorMessage
+		return noAccessDBMessage()
 	}
 
 	// Feedback Message construction
@@ -173,7 +175,7 @@ func removeEvent(message *hbot.Message) string {
 
 		// Delete
 		if err := b.DB.Delete(&event); err != nil {
-			return reminderDBAccessErrorMessage
+			return noAccessDBMessage()
 		}
 	} else {
 		feedbackMessage = "No event you own with that ID"
@@ -225,18 +227,18 @@ func joinEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
-		return reminderDBAccessErrorMessage
+		return noAccessDBMessage()
 	}
 
 	if strings.Contains(event.People, message.Name) {
 		if err := b.DB.Save(&event); err != nil {
-			return reminderDBAccessErrorMessage
+			return noAccessDBMessage()
 		}
 		return "You already subscribed to this event"
 	}
 	event.People = fmt.Sprintf("%s%s ", event.People, message.Name)
 	if err := b.DB.Save(&event); err != nil {
-		return reminderDBAccessErrorMessage
+		return noAccessDBMessage()
 	}
 
 	feedback := fmt.Sprintf("Added %s to \"%s\"",
@@ -255,7 +257,7 @@ func partEvent(message *hbot.Message) string {
 	}
 
 	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
-		return reminderDBAccessErrorMessage
+		return noAccessDBMessage()
 	}
 	defer b.DB.Save(&event)
 
