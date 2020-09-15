@@ -17,5 +17,6 @@ require (
 	golang.org/x/net v0.0.0-20191014212845-da9a3fd4c582
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1
 	gopkg.in/sorcix/irc.v1 v1.1.4
+	gopkg.in/sorcix/irc.v2 v2.0.0-20200812151606-3f15758ea8c7
 	mvdan.cc/xurls/v2 v2.1.0
 )
