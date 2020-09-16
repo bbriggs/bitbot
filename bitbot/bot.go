@@ -12,12 +12,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/whyrusleeping/hellabot"
+	bolt "go.etcd.io/bbolt"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 type Bot struct {
 	Bot    *hbot.Bot
 	DB     *gorm.DB
+	EmbDB  *bolt.DB
 	Random *rand.Rand // Initialized PRNG
 	Config Config
 
@@ -43,6 +45,7 @@ type Config struct {
 	Prometheus   bool           // Enable Prometheus
 	PromAddr     string         // Listen address for prometheus endpoint
 	DBConfig     DBConfig       // Configuration settings for Database connection
+	EmbeddedPath string         // Path to the embedded DB
 	Logger       log.Logger     // The logger used by all of the bot
 }
 
@@ -108,6 +111,16 @@ func Run(config Config) {
 	b.Bot = irc
 
 	b.Bot.Logger.SetHandler(log.StreamHandler(os.Stdout, hellaLogFormat()))
+
+	config.Logger.Info("Reading the embedded DB")
+
+	edb, err := bolt.Open(config.EmbeddedPath, 0666, nil)
+	if err != nil {
+		config.Logger.Warn("Couldn't open the embedded DB")
+	}
+	defer edb.Close() //nolint:errcheck
+
+	b.EmbDB = edb
 
 	config.Logger.Info("Connecting to postgres...")
 
