@@ -17,4 +17,5 @@ if [ $? -eq 0 ]; then
 	echo -e "Compiled bitbot:\n\tGit tag: $GIT_TAG\n\tGit commit: $GIT_COMMIT\n\tGit branch: $GIT_BRANCH\n"
 else
 	echo "The build failed"
+	exit 1
 fi
