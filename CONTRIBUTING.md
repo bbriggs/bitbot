@@ -16,6 +16,11 @@ They have 4 main components, and are declared as shown below:
 var NewVarTrigger = NamedTrigger{ // This has to be an exported variable.
 	ID: "NewVar", // Used to access the trigger.
 	Help: "This trigger is here solely for demonstration purpose", // What the bot answers when "!help NewVar" is sent.
+	Init: func() error {
+		// This is _optionnal_. If the error returned is not nil, the trigger isn't registered.
+		// Use it do check for optionnal features like an external database, and for actions you only need to do once.
+		return nil
+	}
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return true // If this function returns true, the Action is executed.
 	},
