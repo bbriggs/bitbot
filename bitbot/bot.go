@@ -63,19 +63,23 @@ var b Bot = Bot{}
 
 func (b *Bot) RegisterTrigger(t NamedTrigger) {
 	var err error
-
 	b.triggerMutex.Lock()
-	b.triggers[t.Name()] = t
-	b.triggerMutex.Unlock()
-	b.Bot.AddTrigger(t)
+	defer b.triggerMutex.Unlock()
 
+	// Since the Init field has been added recently, we need to test if it exists
 	if t.Init != nil {
 		err = t.Init()
 	}
 
+	// If the init ran correctly, we register the trigger
 	if err != nil {
 		b.Config.Logger.Error("Trigger " + t.Name() + " failed to initialize: " + err.Error())
+	} else {
+		b.triggers[t.Name()] = t
+		b.Bot.AddTrigger(t)
+		b.Config.Logger.Info("Loaded" + t.Name())
 	}
+
 }
 
 func (b *Bot) FetchTrigger(name string) (NamedTrigger, bool) {
@@ -148,7 +152,7 @@ func Run(config Config) {
 	b.Bot.AddTrigger(NickTakenTrigger)
 	b.Bot.AddTrigger(NickRecoverTrigger)
 	for _, trigger := range config.Plugins {
-		config.Logger.Info(trigger.Name() + " loaded")
+		config.Logger.Info("Loading" + trigger.Name())
 		b.RegisterTrigger(trigger)
 	}
 

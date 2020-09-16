@@ -34,9 +34,24 @@ func (e *wrongFormatError) Error() string {
 	return fmt.Sprintf("%s : is not of the awaited format", e.arg)
 }
 
+func noAccessDBMessage() string {
+	return "Something went wrong, no access to database"
+}
+
 var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "reminder",
 	Help: "Set up events and remind them to concerned people. Usage: !remind list|time|add|remove|join|part",
+	Init: func() error {
+		var err error
+
+		location, err = time.LoadLocation("UTC")
+		if err != nil {
+			b.Config.Logger.Error("Reminder : Couldn't load UTC timezone", err.Error())
+			return err
+		}
+
+		return b.DB.AutoMigrate(&ReminderEvent{}).Error
+	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!remind")
 	},
@@ -66,18 +81,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			irc.Reply(m, "Wrong argument")
 		}
 		return true
-	},
-	Init: func() error {
-		var err error
-
-		location, err = time.LoadLocation("UTC")
-		if err != nil {
-			b.Config.Logger.Error("Reminder : Couldn't load UTC timezone", err.Error())
-			return err
-		}
-
-		b.DB.AutoMigrate(&ReminderEvent{})
-		return nil
 	},
 }
 
@@ -115,7 +118,10 @@ func addEvent(message *hbot.Message, bot *hbot.Bot) string {
 		Time:        timeOfEvent,
 		People:      fmt.Sprintf("%s ", author)}
 	b.DB.NewRecord(event)
-	b.DB.Create(&event)
+
+	if err := b.DB.Create(&event); err != nil {
+		return "Something went wrong"
+	}
 
 	// Launch a background routine that will HL interested people and clean the DB.
 	// The magic number 2 is indeed completely arbitrary, but we need it anyway.
@@ -156,7 +162,9 @@ func removeEvent(message *hbot.Message) string {
 		return "Wrong command. format is : !remind remove [ID]"
 	}
 
-	b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event)
+	if err := b.DB.Where("ID = ? AND Author = ?", id, message.Name).Take(&event); err != nil {
+		return noAccessDBMessage()
+	}
 
 	// Feedback Message construction
 	var feedbackMessage string
@@ -166,7 +174,9 @@ func removeEvent(message *hbot.Message) string {
 			event.Description)
 
 		// Delete
-		b.DB.Delete(&event)
+		if err := b.DB.Delete(&event); err != nil {
+			return noAccessDBMessage()
+		}
 	} else {
 		feedbackMessage = "No event you own with that ID"
 	}
@@ -216,14 +226,20 @@ func joinEvent(message *hbot.Message) string {
 		return "Wrong command. format is : !remind join [ID]"
 	}
 
-	b.DB.Where("ID = ?", id).Take(&event)
+	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
+		return noAccessDBMessage()
+	}
 
 	if strings.Contains(event.People, message.Name) {
-		b.DB.Save(&event)
+		if err := b.DB.Save(&event); err != nil {
+			return noAccessDBMessage()
+		}
 		return "You already subscribed to this event"
 	}
 	event.People = fmt.Sprintf("%s%s ", event.People, message.Name)
-	b.DB.Save(&event)
+	if err := b.DB.Save(&event); err != nil {
+		return noAccessDBMessage()
+	}
 
 	feedback := fmt.Sprintf("Added %s to \"%s\"",
 		message.Name,
@@ -240,7 +256,9 @@ func partEvent(message *hbot.Message) string {
 		return "Wrong command. format is : !remind part [ID]"
 	}
 
-	b.DB.Where("ID = ?", id).Take(&event)
+	if err := b.DB.Where("ID = ?", id).Take(&event); err != nil {
+		return noAccessDBMessage()
+	}
 	defer b.DB.Save(&event)
 
 	if event.Author == message.Name {
