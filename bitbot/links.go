@@ -1,6 +1,7 @@
 package bitbot
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,6 +20,21 @@ import (
 var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "urls",
 	Help: "Looks up URLs in chat and returns the page title as a message.",
+	Init: func() error {
+		var err error
+		if b.EmbDB != nil {
+			return b.EmbDB.Update(func(tx *bolt.Tx) error {
+				_, err = tx.CreateBucketIfNotExists([]byte("urlsCache"))
+				if err != nil {
+					b.Config.Logger.Error("couldn't create url caching bucket: %s", err)
+				} else {
+					b.Config.Logger.Info("Created/Read urls caching bucket")
+				}
+				return nil
+			})
+		}
+		return errors.New("The DB didn't initialise correctly")
+	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
@@ -34,27 +50,6 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			irc.Reply(m, title)
 		}
 		return true
-	},
-	Init: func() error {
-		var err error
-
-		defer func() {
-			if r := recover(); r != nil {
-				b.Config.Logger.Error("No key/value DB access !!", r)
-				b.edbAccessible = false
-			}
-		}()
-
-		// Update panics instead of returning an error if the DB isn't there
-		return b.EmbDB.Update(func(tx *bolt.Tx) error {
-			_, err = tx.CreateBucketIfNotExists([]byte("urlsCache"))
-			if err != nil {
-				b.Config.Logger.Error("couldn't create url caching bucket: %s", err)
-			} else {
-				b.Config.Logger.Info("Created/Read urls caching bucket")
-			}
-			return nil
-		})
 	},
 }
 
@@ -101,7 +96,7 @@ func lookupPageTitle(message string) string {
 
 	url := xurls.Strict().FindString(message)
 
-	if b.edbAccessible {
+	if b.EmbDB != nil {
 		err := b.EmbDB.View(func(tx *bolt.Tx) error {
 			urlBucket := tx.Bucket([]byte("urlsCache"))
 			cached = urlBucket.Get([]byte(url))
@@ -119,7 +114,7 @@ func lookupPageTitle(message string) string {
 
 			if lessThanAWeek(cachedTime) {
 				b.Config.Logger.Info("Got a cached title")
-				return fmt.Sprintf("REEEEEEEEpost(%s): %s", cachedTime, cachedTitle)
+				return fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
 			}
 		}
 	}
@@ -130,7 +125,7 @@ func lookupPageTitle(message string) string {
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		if b.edbAccessible {
+		if b.EmbDB != nil {
 			err := b.EmbDB.Update(func(tx *bolt.Tx) error {
 				urlBucket := tx.Bucket([]byte("urlsCache"))
 				err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
