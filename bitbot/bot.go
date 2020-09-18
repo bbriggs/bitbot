@@ -23,12 +23,13 @@ type Bot struct {
 	Random *rand.Rand // Initialized PRNG
 	Config Config
 
-	triggers     map[string]NamedTrigger // For "registered" triggers
-	triggerMutex *sync.RWMutex
-	counters     map[string]*prometheus.CounterVec
-	gauges       map[string]*prometheus.GaugeVec
-	mChain       *gomarkov.Chain // Initialized Markov chain. Accessed and updated by markov triggers.
-	markovMutex  *sync.RWMutex
+	triggers      map[string]NamedTrigger // For "registered" triggers
+	triggerMutex  *sync.RWMutex
+	counters      map[string]*prometheus.CounterVec
+	gauges        map[string]*prometheus.GaugeVec
+	mChain        *gomarkov.Chain // Initialized Markov chain. Accessed and updated by markov triggers.
+	markovMutex   *sync.RWMutex
+	edbAccessible bool
 }
 
 type Config struct {
@@ -125,6 +126,7 @@ func Run(config Config) {
 	defer edb.Close() //nolint:errcheck
 
 	b.EmbDB = edb
+	b.edbAccessible = true
 
 	config.Logger.Info("Connecting to postgres...")
 

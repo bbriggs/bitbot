@@ -37,6 +37,15 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	},
 	Init: func() error {
 		var err error
+
+		defer func() {
+			if r := recover(); r != nil {
+				b.Config.Logger.Error("No key/value DB access !!", r)
+				b.edbAccessible = false
+			}
+		}()
+
+		// Update panics instead of returning an error if the DB isn't there
 		return b.EmbDB.Update(func(tx *bolt.Tx) error {
 			_, err = tx.CreateBucketIfNotExists([]byte("urlsCache"))
 			if err != nil {
@@ -92,24 +101,26 @@ func lookupPageTitle(message string) string {
 
 	url := xurls.Strict().FindString(message)
 
-	err := b.EmbDB.View(func(tx *bolt.Tx) error {
-		urlBucket := tx.Bucket([]byte("urlsCache"))
-		cached = urlBucket.Get([]byte(url))
+	if b.edbAccessible {
+		err := b.EmbDB.View(func(tx *bolt.Tx) error {
+			urlBucket := tx.Bucket([]byte("urlsCache"))
+			cached = urlBucket.Get([]byte(url))
 
-		return nil
-	})
-	if err != nil {
-		b.Config.Logger.Warn("Couldn't access Embedded DB")
-	}
+			return nil
+		})
+		if err != nil {
+			b.Config.Logger.Warn("Couldn't access Embedded DB")
+		}
 
-	if cached != nil { // We already saw that url
-		t := strings.SplitAfterN(string(cached), "|", 3)
+		if cached != nil { // We already saw that url
+			t := strings.SplitAfterN(string(cached), "|", 3)
 
-		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
+			cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
 
-		if lessThanAWeek(cachedTime) {
-			b.Config.Logger.Info("Got a cached title")
-			return fmt.Sprintf("REEEEEEEEpost(%s): %s", cachedTime, cachedTitle)
+			if lessThanAWeek(cachedTime) {
+				b.Config.Logger.Info("Got a cached title")
+				return fmt.Sprintf("REEEEEEEEpost(%s): %s", cachedTime, cachedTitle)
+			}
 		}
 	}
 
@@ -119,20 +130,22 @@ func lookupPageTitle(message string) string {
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		err := b.EmbDB.Update(func(tx *bolt.Tx) error {
-			urlBucket := tx.Bucket([]byte("urlsCache"))
-			err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
-				time.Now().Format(time.UnixDate),
-				title)))
+		if b.edbAccessible {
+			err := b.EmbDB.Update(func(tx *bolt.Tx) error {
+				urlBucket := tx.Bucket([]byte("urlsCache"))
+				err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
+					time.Now().Format(time.UnixDate),
+					title)))
 
-			if err2 != nil {
+				if err2 != nil {
+					b.Config.Logger.Warn("Couldn't access Embedded DB")
+				}
+
+				return nil
+			})
+			if err != nil {
 				b.Config.Logger.Warn("Couldn't access Embedded DB")
 			}
-
-			return nil
-		})
-		if err != nil {
-			b.Config.Logger.Warn("Couldn't access Embedded DB")
 		}
 
 		return (title)
