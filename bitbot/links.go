@@ -109,7 +109,7 @@ func lookupPageTitle(message string) string {
 
 		if lessThanAWeek(cachedTime) {
 			b.Config.Logger.Info("Got a cached title")
-			return fmt.Sprintf("REEEEEEEEpost(%s): %s", cachedTime, cachedTitle)
+			return fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
 		}
 	}
 
