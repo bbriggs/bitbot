@@ -103,28 +103,37 @@ func lookupPageTitle(message string) string {
 		return ""
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
+
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		err := b.EmbDB.Update(func(tx *bolt.Tx) error {
-			urlBucket := tx.Bucket([]byte("urlsCache"))
-			err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
-				time.Now().Format(time.UnixDate),
-				title)))
+		go updateURLCache(url, title)
+		return title
+	} else {
+		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
+		return ""
+	}
+}
 
-			if err2 != nil {
-				b.Config.Logger.Warn("Couldn't access Embedded DB")
-			}
+func updateURLCache(url, title string) bool {
+	err := b.EmbDB.Update(func(tx *bolt.Tx) error {
+		urlBucket := tx.Bucket([]byte("urlsCache"))
+		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
+			time.Now().Format(time.UnixDate),
+			title)))
 
-			return nil
-		})
-		if err != nil {
+		if err2 != nil {
 			b.Config.Logger.Warn("Couldn't access Embedded DB")
 		}
 
-		return (title)
-	} else {
-		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
-		return ("")
+		return nil
+	})
+
+	if err != nil { // unhappy path
+		b.Config.Logger.Warn("Couldn't access Embedded DB")
+		return false
 	}
+
+	// happy path
+	return true
 }
 
 func urlIsCached(url string) (bool, string) {
