@@ -195,3 +195,8 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 	}
 	return title, ok
 }
+
+func isTwitterURL(url string) bool {
+	match, _ := regexp.MatchString("^https://twitter.com/.+/status/[0-9]+", url)
+	return match
+}
