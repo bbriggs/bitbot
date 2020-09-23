@@ -88,33 +88,14 @@ func isURL(message string) bool {
 }
 
 func lookupPageTitle(message string) string {
-	var cached []byte
-
 	url := xurls.Strict().FindString(message)
 
 	if isTwitterURL(url) {
 		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
 	}
 
-	err := b.EmbDB.View(func(tx *bolt.Tx) error {
-		urlBucket := tx.Bucket([]byte("urlsCache"))
-		cached = urlBucket.Get([]byte(url))
-
-		return nil
-	})
-	if err != nil {
-		b.Config.Logger.Warn("Couldn't access Embedded DB")
-	}
-
-	if cached != nil { // We already saw that url
-		t := strings.SplitAfterN(string(cached), "|", 3)
-
-		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
-
-		if lessThanAWeek(cachedTime) {
-			b.Config.Logger.Info("Got a cached title")
-			return fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
-		}
+	if ok, msg := urlIsCached(url); ok == true {
+		return msg
 	}
 
 	resp, err := http.Get(url)
@@ -144,6 +125,33 @@ func lookupPageTitle(message string) string {
 		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
 		return ("")
 	}
+}
+
+func urlIsCached(url string) (bool, string) {
+	var cached []byte
+
+	err := b.EmbDB.View(func(tx *bolt.Tx) error {
+		urlBucket := tx.Bucket([]byte("urlsCache"))
+		cached = urlBucket.Get([]byte(url))
+
+		return nil
+	})
+	if err != nil {
+		b.Config.Logger.Warn("Couldn't access Embedded DB")
+	}
+
+	if cached != nil { // We already saw that url
+		t := strings.SplitAfterN(string(cached), "|", 3)
+
+		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
+
+		if lessThanAWeek(cachedTime) {
+			b.Config.Logger.Info("Got a cached title")
+			return true, fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
+		}
+	}
+
+	return false, ""
 }
 
 func lessThanAWeek(t string) bool {
