@@ -92,6 +92,10 @@ func lookupPageTitle(message string) string {
 
 	url := xurls.Strict().FindString(message)
 
+	if isTwitterURL(url) {
+		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
+	}
+
 	err := b.EmbDB.View(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
 		cached = urlBucket.Get([]byte(url))
