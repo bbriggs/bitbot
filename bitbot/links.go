@@ -88,6 +88,8 @@ func isURL(message string) bool {
 }
 
 func lookupPageTitle(message string) string {
+	var ok error
+
 	url := xurls.Strict().FindString(message)
 
 	if isTwitterURL(url) {
