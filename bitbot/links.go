@@ -94,23 +94,25 @@ func lookupPageTitle(message string) string {
 		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
 	}
 
-	if ok, msg := urlIsCached(url); ok == true {
+	if ok, msg := urlIsCached(url); ok {
 		return msg
 	}
 
-	resp, err := http.Get(url)
+	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
 		return ""
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
 
+	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		go updateURLCache(url, title)
 		return title
-	} else {
-		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
-		return ""
 	}
+
+	// sadboi path
+	b.Config.Logger.Warn("Unable to lookup page", "error", ok)
+	return ""
 }
 
 func updateURLCache(url, title string) bool {
