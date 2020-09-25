@@ -6,7 +6,6 @@ import (
 
 	"github.com/justinian/dice"
 	"github.com/whyrusleeping/hellabot"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 const DICE_USAGE = "Usage: [num dice]d[sides](+/-num) (opt: if fudging)"
@@ -35,7 +34,6 @@ var RollTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 func roll(r string) string {
 	res, _, err := dice.Roll(r)
 	if err != nil {
-		log.Error(err.Error())
 		return DICE_USAGE
 	}
 	return fmt.Sprintf("%v", res.Int())

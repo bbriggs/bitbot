@@ -21,38 +21,40 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"github.com/bbriggs/bitbot/bitbot"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 const VERSION = ""
 
 // nolint:gochecknoglobals
 var (
-	cfgFile   string
-	server    string
-	channels  []string
-	nick      string
-	ssl       bool
-	nickserv  string
-	operUser  string
-	operPass  string
-	promAddr  string
-	prom      bool
-	dbUser    string
-	dbPass    string
-	dbHost    string
-	dbPort    string
-	dbName    string
-	dbSSLMode string
+	cfgFile      string
+	server       string
+	channels     []string
+	nick         string
+	ssl          bool
+	nickserv     string
+	operUser     string
+	operPass     string
+	promAddr     string
+	prom         bool
+	dbUser       string
+	dbPass       string
+	dbHost       string
+	dbPort       string
+	dbName       string
+	dbSSLMode    string
+	embeddedPath string
+	logger       log.Logger
 )
 
 var pluginMap = map[string]bitbot.NamedTrigger{
+	"ignore":         bitbot.IgnoreTrigger,
 	"invite":         bitbot.InviteTrigger,
 	"part":           bitbot.PartTrigger,
 	"skip":           bitbot.SkipTrigger,
@@ -75,6 +77,9 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"ipinfo":         bitbot.IPinfoTrigger,
 	"paste":          bitbot.PasteTrigger,
 	"urbd":           bitbot.UrbanDictionaryTrigger,
+	"reminder":       bitbot.ReminderTrigger,
+	"lennyface":      bitbot.LennyTrigger,
+	"DamnWeebs":      bitbot.WeebTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
@@ -111,9 +116,12 @@ var rootCmd = &cobra.Command{
 			Admins: bitbot.ACL{
 				Permitted: viper.GetStringSlice("admins"),
 			},
-			Plugins: plugins,
+			Ignored:      viper.GetStringSlice("ignored"),
+			Plugins:      plugins,
+			EmbeddedPath: viper.GetString("embedded-db"),
+			Logger:       logger,
 		}
-		log.Println("Starting bitbot...")
+		logger.Info("Starting bitbot...")
 		bitbot.Run(config)
 	},
 }
@@ -121,10 +129,20 @@ var rootCmd = &cobra.Command{
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	logger = createLogger()
+
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		logger.Error(err.Error())
 		os.Exit(1)
 	}
+}
+
+// Creates a logger to be used in all of the package.
+func createLogger() log.Logger {
+	l := log.New()
+	l.SetHandler(log.StreamHandler(os.Stderr, log.JsonFormat()))
+
+	return l
 }
 
 func init() {
@@ -149,6 +167,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&dbPort, "dbPort", "", dbPort, "Postgresql port")
 	rootCmd.PersistentFlags().StringVarP(&dbName, "dbName", "", dbName, "Postgresql database name")
 	rootCmd.PersistentFlags().StringVarP(&dbSSLMode, "dbSSLMode", "", dbSSLMode, "Postgresql SSL Mode")
+	rootCmd.PersistentFlags().StringVarP(&embeddedPath, "embedded-db", "", embeddedPath, "The path to the embedded DB")
 
 	viper.BindPFlag("server", rootCmd.PersistentFlags().Lookup("server"))
 	viper.BindPFlag("nickserv", rootCmd.PersistentFlags().Lookup("nickserv"))
@@ -164,6 +183,7 @@ func init() {
 	viper.BindPFlag("dbPort", rootCmd.PersistentFlags().Lookup("dbPort"))
 	viper.BindPFlag("dbName", rootCmd.PersistentFlags().Lookup("dbName"))
 	viper.BindPFlag("dbSSLMode", rootCmd.PersistentFlags().Lookup("dbSSLMode"))
+	viper.BindPFlag("embedded-db", rootCmd.PersistentFlags().Lookup("embedded-db"))
 
 	// All plugins enabled by default
 	var defaultPlugins []string
@@ -178,6 +198,8 @@ func init() {
 	viper.SetDefault("dbHost", "127.0.0.1")
 	viper.SetDefault("dbName", "bitbot")
 	viper.SetDefault("dbPort", "5432")
+	viper.SetDefault("ignored", []string{})
+	viper.SetDefault("embedded-db", "/tmp/bitbot-embedded.db")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -194,6 +216,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		logger.Info("Reading config", "config file", viper.ConfigFileUsed())
 	}
 }

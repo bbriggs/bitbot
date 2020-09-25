@@ -2,15 +2,18 @@ package bitbot
 
 import (
 	"fmt"
-	"github.com/whyrusleeping/hellabot"
-	"golang.org/x/net/html"
 	"io"
 	"io/ioutil"
-	"log"
-	"mvdan.cc/xurls/v2"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
+	"time"
+
+	"github.com/whyrusleeping/hellabot"
+	bolt "go.etcd.io/bbolt"
+	"golang.org/x/net/html"
+	"mvdan.cc/xurls/v2"
 )
 
 var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -20,18 +23,45 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		resp := lookupPageTitle(m.Content)
-		if resp != "" {
-			title := lookupPageTitle(m.Content)
+		title := lookupPageTitle(m.Content)
+		if title != "" {
 			if len(m.Content) > 70 {
 				short := shortenURL(m.Content)
 				short = strings.TrimRight(short, "\n") //triming
 				title = fmt.Sprintf("%s %s", short, title)
 			}
+			title = cleanTitle(title)
 			irc.Reply(m, title)
 		}
 		return true
 	},
+	Init: func() error {
+		var err error
+		return b.EmbDB.Update(func(tx *bolt.Tx) error {
+			_, err = tx.CreateBucketIfNotExists([]byte("urlsCache"))
+			if err != nil {
+				b.Config.Logger.Error("couldn't create url caching bucket: %s", err)
+			} else {
+				b.Config.Logger.Info("Created/Read urls caching bucket")
+			}
+			return nil
+		})
+	},
+}
+
+func cleanTitle(title string) string {
+	maxLength := 70
+
+	re := regexp.MustCompile(`[ \t\r\n]+`)
+
+	title = strings.Trim(title, " \t\r\n")
+
+	title = re.ReplaceAllString(title, " ")
+
+	if len(title) > maxLength {
+		title = fmt.Sprintf("%s...", title[0:67])
+	}
+	return title
 }
 
 func shortenURL(uri string) string {
@@ -41,12 +71,12 @@ func shortenURL(uri string) string {
 	/* We are using 0x0.st */
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
-		log.Println("Coudln't shorten url : ", err)
+		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println("Coudln't shorten url : ", err)
+		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
 
 	short := string(body)
@@ -58,19 +88,96 @@ func isURL(message string) bool {
 }
 
 func lookupPageTitle(message string) string {
+	var ok error
+
 	url := xurls.Strict().FindString(message)
-	resp, err := http.Get(url)
+
+	if isTwitterURL(url) {
+		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
+	}
+
+	if ok, msg := urlIsCached(url); ok {
+		return msg
+	}
+
+	resp, err := http.Get(url) //nolint:gosec
 	if err != nil {
 		return ""
 	}
 	defer resp.Body.Close() //nolint:errcheck,gosec
-	log.Println("Unable to lookup page")
+
+	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		return (title)
-	} else {
-		log.Println("Unable to lookup page")
-		return ("")
+		go updateURLCache(url, title)
+		return title
 	}
+
+	// sadboi path
+	b.Config.Logger.Warn("Unable to lookup page", "error", ok)
+	return ""
+}
+
+func updateURLCache(url, title string) bool {
+	err := b.EmbDB.Update(func(tx *bolt.Tx) error {
+		urlBucket := tx.Bucket([]byte("urlsCache"))
+		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
+			time.Now().Format(time.UnixDate),
+			title)))
+
+		if err2 != nil {
+			b.Config.Logger.Warn("Couldn't access Embedded DB")
+		}
+
+		return nil
+	})
+
+	if err != nil { // unhappy path
+		b.Config.Logger.Warn("Couldn't access Embedded DB")
+		return false
+	}
+
+	// happy path
+	return true
+}
+
+func urlIsCached(url string) (bool, string) {
+	var cached []byte
+
+	err := b.EmbDB.View(func(tx *bolt.Tx) error {
+		urlBucket := tx.Bucket([]byte("urlsCache"))
+		cached = urlBucket.Get([]byte(url))
+
+		return nil
+	})
+	if err != nil {
+		b.Config.Logger.Warn("Couldn't access Embedded DB")
+	}
+
+	if cached != nil { // We already saw that url
+		t := strings.SplitAfterN(string(cached), "|", 3)
+
+		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
+
+		if lessThanAWeek(cachedTime) {
+			b.Config.Logger.Info("Got a cached title")
+			return true, fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
+		}
+	}
+
+	return false, ""
+}
+
+func lessThanAWeek(t string) bool {
+	tt, err := time.Parse(time.UnixDate, t)
+	if err != nil {
+		b.Config.Logger.Warn("Unable to parse time in embedded DB, it might be corrupted")
+		return false
+	}
+
+	hoursInAWeek := 168.0
+	lessThanAWeekAgo := time.Since(tt).Hours() < hoursInAWeek
+
+	return lessThanAWeekAgo
 }
 
 func isTitleElement(n *html.Node) bool {
@@ -112,4 +219,9 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 		return " ", false
 	}
 	return title, ok
+}
+
+func isTwitterURL(url string) bool {
+	match, _ := regexp.MatchString("^https://twitter.com/.+/status/[0-9]+", url)
+	return match
 }

@@ -10,17 +10,14 @@ import (
 func TestBeefDetection(t *testing.T) {
 	m := &hbot.Message{
 		&irc.Message{
-			&irc.Prefix{
-				"",
-				"",
-				"",
-			},
+			irc.
+				ParsePrefix("testServ | testNick [ '!' usr ] [ '@' zbeul ]"),
 			"PRIVMSG",
 			[]string{},
 			":beefy",
 			true,
 		},
-		"",
+		":beefy",
 		time.Now(),
 		"",
 		"",

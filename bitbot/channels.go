@@ -2,6 +2,7 @@ package bitbot
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
@@ -14,7 +15,16 @@ var InviteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "INVITE"
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		irc.Join(m.Content)
+		// In the rfc1459 and 2812, irc invites have the channel in parameters
+		// of the message, but putting it in the trailing part of the message
+		// seems very popular, as at least UnrealIRCD and freenode's ircd-seven
+		// do it this way.
+		// However, oragono ircd follows rfc 1459 correctly, the only way we will implement.
+		// Here, we have two parameters to an invite, the name of the bot in first, and
+		// The name of the channel in second.
+		channel := m.Params[1]
+		b.Config.Logger.Info("Got an invite message", "channel", channel)
+		irc.Join(channel)
 		return true
 	},
 }
@@ -23,7 +33,12 @@ var PartTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "part",
 	Help: "Command the bot to leave the channel. Usage: [bot nick] part [channel]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, irc.Nick+" part")
+		isPartMessage, err := regexp.MatchString("^"+irc.Nick+".*part",
+			m.Content)
+		if err != nil {
+			b.Config.Logger.Error(err.Error())
+		}
+		return m.Command == "PRIVMSG" && isPartMessage
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		splitMsg := strings.Split(m.Content, " ")

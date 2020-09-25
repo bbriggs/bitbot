@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -30,7 +29,7 @@ func urbanDefinition(message string) string {
 	term := strings.SplitAfterN(message, " ", 2)[1] // Strip trigger word
 	res, err := urbanDictQuery(term)
 	if err != nil {
-		log.Println(err)
+		b.Config.Logger.Warn("Couldn't query urbandictionary", "error", err)
 		return "The search failed"
 	}
 

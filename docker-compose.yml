@@ -15,8 +15,10 @@ services:
       DBHOST: "db"
       DBPORT: "5432"
       DBSSLMODE: "disable"
+    ports:
+      - "127.0.0.1:8080:8080"
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus 
     command:
       - '--config.file=/tmp/prometheus.yml'
     volumes:

@@ -9,6 +9,33 @@ resources to make it easier to get your contribution accepted.
 - Read the README.md for build instructions.
 - Play with the project, submit bugs, submit patches!
 
+## Bitbot's structure
+Bitbot uses `NamedTriggers` as a basic type. `NamedTriggers` are located in the /bitbot directory, and belong to the `bitbot` package.
+They have 4 main components, and are declared as shown below:
+```go
+var NewVarTrigger = NamedTrigger{ // This has to be an exported variable.
+	ID: "NewVar", // Used to access the trigger.
+	Help: "This trigger is here solely for demonstration purpose", // What the bot answers when "!help NewVar" is sent.
+	Init: func() error {
+		// This is _optional_. If the error returned is not nil, the trigger isn't registered.
+		// Use this to do setup actions and one-time steps for triggers, such as database migrations.
+		// Since multiple copies of a trigger may be instantiated, it is strongly suggested that init actions be idempotent
+		return nil
+	}
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		return true // If this function returns true, the Action is executed.
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		irc.Reply(m.Name) // For example purpose, look at the [hellabot documentation](https://pkg.go.dev/github.com/whyrusleeping/hellabot?tab=doc) for more.
+		return true // The message is consumed, it is not passed to other triggers.
+	},
+}
+```
+
+If you do some complex string modifications, having a `makeNewVarMessage(...) string` function might be useful for testing purpose.
+
+Also, the epeen and 8ball triggers are simple and good real life example.
+
 ## Contribution flow
 
 This is a rough outline of what a contributor's workflow looks like:

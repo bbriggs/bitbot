@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
@@ -43,15 +42,15 @@ var IPinfoTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	},
 }
 
-func decodeJSON(b []byte) string {
+func decodeJSON(encodedJSON []byte) string {
 	var (
 		ipinfo GeoData
 		reply  string
 	)
 
-	err := json.Unmarshal(b, &ipinfo)
+	err := json.Unmarshal(encodedJSON, &ipinfo)
 	if err != nil {
-		log.Println(err)
+		b.Config.Logger.Warn("IPinfo trigger, couldn't decode JSON", "error", err)
 	}
 
 	if ipinfo.IP == "" {
@@ -75,12 +74,11 @@ func query(ip string) string {
 	url := "http://ipinfo.io/" + ip
 	res, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		b.Config.Logger.Warn("IPinfo trigger, couldn't query ipinfo.io", "error", err)
 	}
-
 	jsonData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		b.Config.Logger.Warn("IPinfo trigger, couldn't read ipinfo.io answer", "error", err)
 	}
 
 	res.Body.Close() //nolint:errcheck,gosec
