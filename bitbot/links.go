@@ -88,9 +88,60 @@ func isURL(message string) bool {
 }
 
 func lookupPageTitle(message string) string {
-	var cached []byte
+	var ok error
 
 	url := xurls.Strict().FindString(message)
+
+	if isTwitterURL(url) {
+		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
+	}
+
+	if ok, msg := urlIsCached(url); ok {
+		return msg
+	}
+
+	resp, err := http.Get(url) //nolint:gosec
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close() //nolint:errcheck,gosec
+
+	// happy path
+	if title, ok := GetHtmlTitle(resp.Body); ok {
+		go updateURLCache(url, title)
+		return title
+	}
+
+	// sadboi path
+	b.Config.Logger.Warn("Unable to lookup page", "error", ok)
+	return ""
+}
+
+func updateURLCache(url, title string) bool {
+	err := b.EmbDB.Update(func(tx *bolt.Tx) error {
+		urlBucket := tx.Bucket([]byte("urlsCache"))
+		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
+			time.Now().Format(time.UnixDate),
+			title)))
+
+		if err2 != nil {
+			b.Config.Logger.Warn("Couldn't access Embedded DB")
+		}
+
+		return nil
+	})
+
+	if err != nil { // unhappy path
+		b.Config.Logger.Warn("Couldn't access Embedded DB")
+		return false
+	}
+
+	// happy path
+	return true
+}
+
+func urlIsCached(url string) (bool, string) {
+	var cached []byte
 
 	err := b.EmbDB.View(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
@@ -109,37 +160,11 @@ func lookupPageTitle(message string) string {
 
 		if lessThanAWeek(cachedTime) {
 			b.Config.Logger.Info("Got a cached title")
-			return fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
+			return true, fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
 		}
 	}
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return ""
-	}
-	defer resp.Body.Close() //nolint:errcheck,gosec
-	if title, ok := GetHtmlTitle(resp.Body); ok {
-		err := b.EmbDB.Update(func(tx *bolt.Tx) error {
-			urlBucket := tx.Bucket([]byte("urlsCache"))
-			err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
-				time.Now().Format(time.UnixDate),
-				title)))
-
-			if err2 != nil {
-				b.Config.Logger.Warn("Couldn't access Embedded DB")
-			}
-
-			return nil
-		})
-		if err != nil {
-			b.Config.Logger.Warn("Couldn't access Embedded DB")
-		}
-
-		return (title)
-	} else {
-		b.Config.Logger.Warn("Unable to lookup page", "error", ok)
-		return ("")
-	}
+	return false, ""
 }
 
 func lessThanAWeek(t string) bool {
@@ -194,4 +219,9 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 		return " ", false
 	}
 	return title, ok
+}
+
+func isTwitterURL(url string) bool {
+	match, _ := regexp.MatchString("^https://twitter.com/.+/status/[0-9]+", url)
+	return match
 }
