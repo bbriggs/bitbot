@@ -15,8 +15,6 @@ func TestCleanTitle(t *testing.T) {
 	tests["  aa  "] = "aa"
 	tests["a  a"] = "a a"
 	tests["	a	a"] = "a a"
-	tests["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] =
-		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..."
 
 	for original, awaited := range tests {
 		answered = cleanTitle(original)
