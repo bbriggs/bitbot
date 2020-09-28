@@ -30,6 +30,6 @@ var TrollLauncherTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 				rand.Intn(20), damage_type[rand.Intn(12)])
 			irc.Reply(m, reply)
 		}
-		return true
+		return false
 	},
 }
