@@ -90,3 +90,4 @@ See our [contributing guide](CONTRIBUTING.md)
 ### License
 
 Bitbot is available under the [MIT License](LICENSE)
+

@@ -6,7 +6,7 @@ services:
     environment:
       SERVER: "irc.example.com:6697"
       CHANNELS: "#bots"
-      NICK: "bitbot-fraq"
+      NICK: "bitbot-test"
       SSL: "true"
       PROM: "true"
       PROMADDR: "0.0.0.0:8080"

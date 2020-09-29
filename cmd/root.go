@@ -75,6 +75,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"markovTrainer":  bitbot.MarkovTrainerTrigger,
 	"epeen":          bitbot.EpeenTrigger,
 	"ipinfo":         bitbot.IPinfoTrigger,
+	"paste":          bitbot.PasteTrigger,
 	"urbd":           bitbot.UrbanDictionaryTrigger,
 	"reminder":       bitbot.ReminderTrigger,
 	"lennyface":      bitbot.LennyTrigger,
