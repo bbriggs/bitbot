@@ -96,6 +96,11 @@ func lookupPageTitle(message string) string {
 		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
 	}
 
+	if isYoutubeURL(url) {
+		url = strings.ReplaceAll(url, "youtu.be/", "youtube.com/watch?v=")
+		url = strings.ReplaceAll(url, "/watch?v=", "/embed/")
+	}
+
 	if ok, msg := urlIsCached(url); ok {
 		return msg
 	}
@@ -224,4 +229,9 @@ func GetHtmlTitle(r io.Reader) (string, bool) {
 func isTwitterURL(url string) bool {
 	match, _ := regexp.MatchString("^https://twitter.com/.+/status/[0-9]+", url)
 	return match
+}
+
+func isYoutubeURL(url string) bool {
+  match, _ := regexp.MatchString("((youtu\\.be)|(www\\.youtube\\.com))", url)
+  return match
 }
