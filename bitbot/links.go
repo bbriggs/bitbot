@@ -232,6 +232,6 @@ func isTwitterURL(url string) bool {
 }
 
 func isYoutubeURL(url string) bool {
-  match, _ := regexp.MatchString("((youtu\\.be)|(www\\.youtube\\.com))", url)
-  return match
+	match, _ := regexp.MatchString("((youtu\\.be)|(www\\.youtube\\.com))", url)
+	return match
 }
