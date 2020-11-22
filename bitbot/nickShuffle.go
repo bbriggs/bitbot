@@ -107,5 +107,22 @@ func getRandomNick() (string, error) {
 }
 
 func dropNickFromDB(m *hbot.Message) (string, error) {
-	return "can't delete yet, boss", nil
+	// split message, error out if too short
+	splitMsg := strings.Split(m.Content, " ")
+
+	if len(splitMsg) < 3 {
+		return "", errors.New("Not enough arguments. See !help nickShuffle")
+	}
+
+	// grab nick, error out if invalid
+	nick := NickList{
+		Nick: splitMsg[2],
+	}
+	// insert into database
+	res := b.DB.Delete(&nick)
+	if res.Error != nil {
+		return "", res.Error
+	}
+
+	return fmt.Sprintf("%s removed %s from my rotation", m.From, nick.Nick), nil
 }
