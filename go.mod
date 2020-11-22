@@ -9,6 +9,7 @@ require (
 	github.com/justinian/dice v0.0.0-20170728002755-6a18b51d929c
 	github.com/leanovate/gopter v0.2.4
 	github.com/mb-14/gomarkov v0.0.0-20190125094512-044dd0dcb5e7
+	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.2.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
