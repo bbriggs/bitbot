@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/pkg/errors"
 	"github.com/whyrusleeping/hellabot"
 )
 
@@ -38,7 +39,7 @@ func nickShuffleDispatcher(irc *hbot.Bot, m *hbot.Message) (string, error) {
 	// split message, error out if too short
 	splitMsg := strings.Split(m.Content, " ")
 	if len(splitMsg) < 2 {
-		return "", fmt.Errorf("Not enough arguments. See !help nickShuffle")
+		return "", errors.New("Not enough arguments. See !help nickShuffle")
 	}
 
 	switch splitMsg[1] {
@@ -49,10 +50,10 @@ func nickShuffleDispatcher(irc *hbot.Bot, m *hbot.Message) (string, error) {
 	case "drop":
 		return dropNickFromDB(m)
 	default:
-		return "", fmt.Errorf("Invalid argument. See !help nickShuffle")
+		return "", errors.New("Invalid argument. See !help nickShuffle")
 	}
 
-	return "", fmt.Errorf("Switch statement failed somehow")
+	return "", errors.New("Switch statement failed somehow")
 }
 
 func addNickToDB(m *hbot.Message) (string, error) {
@@ -60,7 +61,7 @@ func addNickToDB(m *hbot.Message) (string, error) {
 	splitMsg := strings.Split(m.Content, " ")
 
 	if len(splitMsg) < 3 {
-		return "", fmt.Errorf("Not enough arguments. See !help nickShuffle")
+		return "", errors.New("Not enough arguments. See !help nickShuffle")
 	}
 
 	// grab nick, error out if invalid
@@ -71,6 +72,7 @@ func addNickToDB(m *hbot.Message) (string, error) {
 
 	// insert into database
 	b.DB.NewRecord(newNick)
+
 	if res := b.DB.Create(&newNick); res.Error != nil {
 		return "", res.Error
 	}
