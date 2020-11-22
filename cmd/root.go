@@ -79,6 +79,7 @@ var pluginMap = map[string]bitbot.NamedTrigger{
 	"reminder":       bitbot.ReminderTrigger,
 	"lennyface":      bitbot.LennyTrigger,
 	"DamnWeebs":      bitbot.WeebTrigger,
+	"nickShuffle":    bitbot.NickShuffleTrigger,
 }
 
 // rootCmd represents the base command when called without any subcommands
