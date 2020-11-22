@@ -8,7 +8,7 @@ import (
 
 var NickTakenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "nick",
-	Help: "Avoids nick collisions by renaming the bot if the nick is already taken.",
+	Help: "Avoids nick collisions by renaming the bot if the nick is already taken. Not recommended to use with nickRandomizer.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		/* get the host's name by cutting the port number, and making sure that the message comes from host */
 		var comesFromHost = (m.From == strings.Split(irc.Host, ":")[0])
@@ -44,6 +44,24 @@ var ManualNickRecoverTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		tryNickRecovery(irc)
+		return false
+	},
+}
+
+var NickRandomizerTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
+	ID:   "nickRandomizer",
+	Help: "Avoids nick collisions by renaming the bot to a random nick from the database if the nick is already taken. Not recommended to use with NickTakenTrigger.",
+	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
+		/* get the host's name by cutting the port number, and making sure that the message comes from host */
+		var comesFromHost = (m.From == strings.Split(irc.Host, ":")[0])
+
+		var nickTaken = strings.Contains(m.Content, "Nickname is already in use")
+
+		return comesFromHost && nickTaken
+	},
+	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
+		nick, err :=
+			irc.SetNick(irc.Nick + "_")
 		return false
 	},
 }
