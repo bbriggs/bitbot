@@ -98,6 +98,10 @@ func getRandomNick() (string, error) {
 		return "", res.Error
 	}
 
+	if len(nicks) < 1 {
+		return "", errors.New("No nicks in database")
+	}
+
 	// embrace the nest
 	return nicks[b.Random.Intn(len(nicks))].Nick, nil
 }
