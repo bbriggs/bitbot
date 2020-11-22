@@ -7,7 +7,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-// ReminderEvent : The Gorm struct that represents an event in the DB.
+// NickList : The Gorm struct that represents a nickname row in the database
 type NickList struct {
 	ID   int    `gorm:"unique;AUTO_INCREMENT;PRIMARY_KEY"` // Primary Key
 	Nick string `gorm:"unique"`                            // Nickname to use
@@ -45,7 +45,7 @@ func nickShuffleDispatcher(irc *hbot.Bot, m *hbot.Message) (string, error) {
 	case "add":
 		return addNickToDB(m)
 	case "shuffle":
-		return shuffleNickFromDB(irc, m)
+		return shuffleNickFromDB(irc)
 	case "drop":
 		return dropNickFromDB(m)
 	default:
@@ -73,14 +73,12 @@ func addNickToDB(m *hbot.Message) (string, error) {
 	b.DB.NewRecord(newNick)
 	if res := b.DB.Create(&newNick); res.Error != nil {
 		return "", res.Error
-	} else {
-		fmt.Println(res.Value)
 	}
 
 	return fmt.Sprintf("%s added %s to my rotation", newNick.From, newNick.Nick), nil
 }
 
-func shuffleNickFromDB(irc *hbot.Bot, m *hbot.Message) (string, error) {
+func shuffleNickFromDB(irc *hbot.Bot) (string, error) {
 
 	nick, err := getRandomNick()
 	if err != nil {
