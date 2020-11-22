@@ -82,7 +82,7 @@ func shuffleNickFromDB(irc *hbot.Bot) (string, error) {
 
 	nick, err := getRandomNick()
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	irc.SetNick(nick)
