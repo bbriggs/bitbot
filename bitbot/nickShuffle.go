@@ -52,8 +52,6 @@ func nickShuffleDispatcher(irc *hbot.Bot, m *hbot.Message) (string, error) {
 	default:
 		return "", errors.New("Invalid argument. See !help nickShuffle")
 	}
-
-	return "", errors.New("Switch statement failed somehow")
 }
 
 func addNickToDB(m *hbot.Message) (string, error) {
