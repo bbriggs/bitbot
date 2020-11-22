@@ -60,8 +60,13 @@ var NickRandomizerTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return comesFromHost && nickTaken
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		nick, err :=
+		nick, err := getRandomNick()
+		if err != nil {
+			b.Config.Logger.Error("nickRandomizer: Unable to get a new nickname")
+			b.Config.Logger.Error("nickRandomizer: Falling back to underscore behavior")
 			irc.SetNick(irc.Nick + "_")
+		}
+		irc.SetNick(nick)
 		return false
 	},
 }
