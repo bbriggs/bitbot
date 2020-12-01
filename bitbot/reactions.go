@@ -50,6 +50,6 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		adj := adjectives[b.Random.Intn(len(adjectives))]
 		reply := m.Name + `, you ` + adj + ` weeb!`
 		irc.Reply(m, reply)
-		return true
+		return false
 	},
 }
