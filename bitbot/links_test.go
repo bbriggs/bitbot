@@ -97,7 +97,7 @@ func TestUrlShortening(t *testing.T) {
 
 func TestYoutubeLinks(t *testing.T) {
 	go func() {
-		title := lookupPageTitle("https://www.youtube.com/watch?v=gBnalcSi138")
+		title := lookupPageTitle("https://www.youtube.com/watch?v=gBnalcSi138", "m242")
 		if !strings.Contains(title, "Forty") {
 			t.Log("Didn't retrieve the correct URL")
 			t.Fail()
