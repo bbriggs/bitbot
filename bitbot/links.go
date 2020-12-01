@@ -23,7 +23,7 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		title := lookupPageTitle(m.Content, m.From)
+		title := lookupPageTitle(m.Content)
 		if title != "" {
 			if len(m.Content) > 70 {
 				short := shortenURL(m.Content)
@@ -87,7 +87,7 @@ func isURL(message string) bool {
 	return xurls.Strict().MatchString(message)
 }
 
-func lookupPageTitle(message, nick string) string {
+func lookupPageTitle(message string) string {
 	var ok error
 
 	url := xurls.Strict().FindString(message)
@@ -113,7 +113,7 @@ func lookupPageTitle(message, nick string) string {
 
 	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		go updateURLCache(url, title, nick)
+		go updateURLCache(url, title)
 		return title
 	}
 
@@ -122,13 +122,12 @@ func lookupPageTitle(message, nick string) string {
 	return ""
 }
 
-func updateURLCache(url, title, nick string) bool {
+func updateURLCache(url, title string) bool {
 	err := b.EmbDB.Update(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
-		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s|%s",
+		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
 			time.Now().Format(time.UnixDate),
-			title,
-			nick)))
+			title)))
 
 		if err2 != nil {
 			b.Config.Logger.Warn("Couldn't access Embedded DB")
@@ -162,11 +161,11 @@ func urlIsCached(url string) (bool, string) {
 	if cached != nil { // We already saw that url
 		t := strings.SplitAfterN(string(cached), "|", 3)
 
-		cachedTime, cachedTitle, cachedNick:= strings.Trim(t[0], "|"), t[1], t[2]
+		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
 
 		if lessThanAWeek(cachedTime) {
 			b.Config.Logger.Info("Got a cached title")
-			return true, fmt.Sprintf("REEEEEEEEpost (%s@%s): %s", cachedNick, cachedTime, cachedTitle)
+			return true, fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
 		}
 	}
 
