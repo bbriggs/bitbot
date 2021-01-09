@@ -37,6 +37,7 @@ type Config struct {
 	OperPass     string         // Password for server oper
 	Channels     []string       // slice of channels to connect to (must include #)
 	Nick         string         // nick to use
+	Realname     string         // realname to use
 	Server       string         // server:port for connections
 	SSL          bool           // Enable SSL for the connection
 	Admins       ACL            // slice of masks representing administrators
@@ -100,6 +101,9 @@ func Run(config Config) {
 	config.Logger.Info("Initializing bitbot...")
 	config.Logger.Info("Setting up IRC connection...")
 	// Initialize connection
+	realname := func(bot *hbot.Bot) {
+		bot.Realname = b.Config.Realname
+	}
 	chans := func(bot *hbot.Bot) {
 		bot.Channels = b.Config.Channels
 	}
@@ -107,7 +111,7 @@ func Run(config Config) {
 		bot.SSL = b.Config.SSL
 	}
 	b.Config = config
-	irc, err := hbot.NewBot(b.Config.Server, b.Config.Nick, chans, sslOptions)
+	irc, err := hbot.NewBot(b.Config.Server, b.Config.Nick, realname, chans, sslOptions)
 	if err != nil {
 		config.Logger.Error(err.Error())
 		os.Exit(1)

@@ -37,6 +37,7 @@ var (
 	server       string
 	channels     []string
 	nick         string
+	realname     string
 	ssl          bool
 	nickserv     string
 	operUser     string
@@ -108,6 +109,7 @@ var rootCmd = &cobra.Command{
 			OperPass:     viper.GetString("operPass"),
 			Channels:     viper.GetStringSlice("channels"),
 			Nick:         viper.GetString("nick"),
+			Realname:     viper.GetString("realname")
 			Server:       viper.GetString("server"),
 			SSL:          viper.GetBool("ssl"),
 			Prometheus:   viper.GetBool("prom"),
@@ -158,6 +160,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&nickserv, "nickserv", "", nickserv, "nickserv password")
 	rootCmd.PersistentFlags().StringSliceVarP(&channels, "channels", "c", channels, "channels to join")
 	rootCmd.PersistentFlags().StringVarP(&nick, "nick", "n", nick, "nickname")
+	rootCmd.PersistentFlags().StringVarP(&realname, "realname", "r", realname, "realnamename")
 	rootCmd.PersistentFlags().BoolVarP(&ssl, "ssl", "", ssl, "enable ssl")
 	rootCmd.PersistentFlags().BoolVarP(&prom, "prom", "", prom, "enable prometheus")
 	rootCmd.PersistentFlags().StringVarP(&promAddr, "promAddr", "", promAddr, "Prometheus metrics address and port")
@@ -175,6 +178,7 @@ func init() {
 	viper.BindPFlag("operPass", rootCmd.PersistentFlags().Lookup("operPass"))
 	viper.BindPFlag("channels", rootCmd.PersistentFlags().Lookup("channels"))
 	viper.BindPFlag("nick", rootCmd.PersistentFlags().Lookup("nick"))
+	viper.BindPFlag("realname", rootCmd.PersistentFlags().Lookup("realname"))
 	viper.BindPFlag("ssl", rootCmd.PersistentFlags().Lookup("ssl"))
 	viper.BindPFlag("promAddr", rootCmd.PersistentFlags().Lookup("promAddr"))
 	viper.BindPFlag("dbUser", rootCmd.PersistentFlags().Lookup("dbUser"))
@@ -191,6 +195,7 @@ func init() {
 		defaultPlugins = append(defaultPlugins, plugin)
 	}
 	viper.SetDefault("nick", "bitbot")
+	viper.SetDefault("realname", "realname")
 	viper.SetDefault("prom", false)
 	viper.SetDefault("promAddr", "127.0.0.1:8080")
 	viper.SetDefault("plugins", defaultPlugins)
