@@ -50,6 +50,7 @@ func lookup(arg string) string {
 			b.Config.Logger.Warn(fmt.Sprintf("Couldn't look up %s", arg))
 			return "IP or domain not found"
 		}
+
 		IP = ips[0]
 	}
 
@@ -59,8 +60,8 @@ func lookup(arg string) string {
 func ipLookup(ip string) string {
 	b.Config.Logger.Info(fmt.Sprintf("Looking up %s", ip))
 
-	url := "http://ipinfo.io/" + ip
-	res, err := http.Get(url)
+	res, err := http.Get(fmt.Sprintf("https://ipinfo.io/%s", ip))
+
 	if err != nil {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't query ipinfo.io", "error", err)
 	}
