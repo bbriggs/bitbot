@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
 )
 
-type GeoData struct {
+type geoData struct {
 	IP       string
-	Hostname string
 	City     string
 	Region   string
 	Country  string
@@ -20,12 +20,11 @@ type GeoData struct {
 	Org      string
 	Postal   string
 	Timezone string
-	Readme   string
 }
 
 var IPinfoTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "ipinfo",
-	Help: "!ipinfo <valid IP>",
+	Help: "!ipinfo <valid IP/domain name>",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!ipinfo")
 	},
@@ -33,44 +32,33 @@ var IPinfoTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		var resp string
 		cmd := strings.Split(m.Content, " ")
 		if len(cmd) > 1 {
-			resp = query(cmd[1])
+			resp = lookup(cmd[1])
 		} else {
-			resp = "please provide an ip...ya twatsicle"
+			resp = "please provide an argument...ya twatsicle"
 		}
 		irc.Reply(m, resp)
 		return true
 	},
 }
 
-func decodeJSON(encodedJSON []byte) string {
-	var (
-		ipinfo GeoData
-		reply  string
-	)
+func lookup(arg string) string {
+	IP := net.ParseIP(arg)
 
-	err := json.Unmarshal(encodedJSON, &ipinfo)
-	if err != nil {
-		b.Config.Logger.Warn("IPinfo trigger, couldn't decode JSON", "error", err)
+	if IP == nil { // what is provided isn't an IP
+		ips, err := net.LookupIP(arg)
+		if err != nil {
+			b.Config.Logger.Warn(fmt.Sprintf("Couldn't look up %s", arg))
+			return "IP or domain not found"
+		}
+		IP = ips[0]
 	}
 
-	if ipinfo.IP == "" {
-		reply = "either the IP was not valid or we are being rate limited"
-	} else {
-		reply = fmt.Sprintf("ip: %s\nhostname: %s\ncity: %s\nregion: %s\ncountry: %s\ncoords: %s\norg: %s\npostal: %s\ntimezone: %s",
-			ipinfo.IP,
-			ipinfo.Hostname,
-			ipinfo.City,
-			ipinfo.Region,
-			ipinfo.Country,
-			ipinfo.Loc,
-			ipinfo.Org,
-			ipinfo.Postal,
-			ipinfo.Timezone)
-	}
-	return reply
+	return ipLookup(IP.String())
 }
 
-func query(ip string) string {
+func ipLookup(ip string) string {
+	b.Config.Logger.Info(fmt.Sprintf("Looking up %s", ip))
+
 	url := "http://ipinfo.io/" + ip
 	res, err := http.Get(url)
 	if err != nil {
@@ -83,4 +71,31 @@ func query(ip string) string {
 
 	res.Body.Close() //nolint:errcheck,gosec
 	return decodeJSON(jsonData)
+}
+
+func decodeJSON(encodedJSON []byte) string {
+	var (
+		ipinfo geoData
+		reply  string
+	)
+
+	err := json.Unmarshal(encodedJSON, &ipinfo)
+	if err != nil {
+		b.Config.Logger.Warn("IPinfo trigger, couldn't decode JSON", "error", err)
+	}
+
+	if ipinfo.IP == "" {
+		reply = "We are being rate limited, try again later or use ipinfo.io yourself."
+	} else {
+		reply = fmt.Sprintf("\u000312\u001f%s\u000f (%s): in %s, %s, %s (\u000312%s\u000f) postal code: %s, TZ: %s",
+			ipinfo.IP,
+			ipinfo.Org,
+			ipinfo.City,
+			ipinfo.Region,
+			ipinfo.Country,
+			ipinfo.Loc,
+			ipinfo.Postal,
+			ipinfo.Timezone)
+	}
+	return reply
 }
