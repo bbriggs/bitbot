@@ -60,12 +60,14 @@ func lookup(arg string) string {
 func ipLookup(ip string) string {
 	b.Config.Logger.Info(fmt.Sprintf("Looking up %s", ip))
 
-	res, err := http.Get(fmt.Sprintf("https://ipinfo.io/%s", ip))
+	res, err := http.Get(fmt.Sprintf("https://ipinfo.io/%s", ip)) //nolint:noctx
 
 	if err != nil {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't query ipinfo.io", "error", err)
 	}
+
 	jsonData, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't read ipinfo.io answer", "error", err)
 	}
