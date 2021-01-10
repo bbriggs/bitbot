@@ -17,11 +17,12 @@ import (
 )
 
 type Bot struct {
-	Bot    *hbot.Bot
-	DB     *gorm.DB
-	EmbDB  *bolt.DB
-	Random *rand.Rand // Initialized PRNG
-	Config Config
+	Bot        *hbot.Bot
+	DB         *gorm.DB
+	EmbDB      *bolt.DB
+	Random     *rand.Rand   // Initialized PRNG
+	HTTPClient *http.Client // HTTP client
+	Config     Config
 
 	triggers     map[string]NamedTrigger // For "registered" triggers
 	triggerMutex *sync.RWMutex
@@ -137,6 +138,9 @@ func Run(config Config) {
 	b.DB = db
 
 	b.Random = rand.New(rand.NewSource(time.Now().UnixNano()))
+	b.HTTPClient = &http.Client{
+		Timeout: 5 * time.Second,
+	}
 	b.triggerMutex = &sync.RWMutex{}
 	b.markovMutex = &sync.RWMutex{}
 	b.triggers = make(map[string]NamedTrigger)
