@@ -60,7 +60,7 @@ func lookup(arg string) string {
 func ipLookup(ip string) string {
 	b.Config.Logger.Info(fmt.Sprintf("Looking up %s", ip))
 
-	req, _ := http.NewRequest("GET", fmt.Sprintf("https://ipinfo.io/%s", ip), nil)
+	req, _ := http.NewRequest("GET", fmt.Sprintf("https://ipinfo.io/%s", ip), nil) //nolint:noctx
 	res, err := b.HTTPClient.Do(req)
 
 	if err != nil {
