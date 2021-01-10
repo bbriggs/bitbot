@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
-	"net/http"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
@@ -60,7 +59,7 @@ func lookup(arg string) string {
 func ipLookup(ip string) string {
 	b.Config.Logger.Info(fmt.Sprintf("Looking up %s", ip))
 
-	res, err := http.Get(fmt.Sprintf("https://ipinfo.io/%s", ip)) //nolint:noctx
+	res, err := b.HTTPClient.Get(fmt.Sprintf("https://ipinfo.io/%s", ip))
 
 	if err != nil {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't query ipinfo.io", "error", err)
