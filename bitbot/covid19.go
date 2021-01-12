@@ -87,6 +87,7 @@ func getCovidCountryStats(stats []covidData, country string) string {
 func getCovidData() ([]covidData, error) {
 	// TODO take care of fields not always filled (recovered and tested)
 	var d []covidData
+
 	req, _ := http.NewRequest("GET",
 		"https://api.apify.com/v2/key-value-stores/tVaYRsPHLjNdNBu7S/records/LATEST?disableRedirect=true",
 		nil) //nolint:goctx
