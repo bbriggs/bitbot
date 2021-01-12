@@ -88,9 +88,9 @@ func getCovidData() ([]covidData, error) {
 	// TODO take care of fields not always filled (recovered and tested)
 	var d []covidData
 
-	req, _ := http.NewRequest("GET",
+	req, _ := http.NewRequest("GET", //nolint:goctx
 		"https://api.apify.com/v2/key-value-stores/tVaYRsPHLjNdNBu7S/records/LATEST?disableRedirect=true",
-		nil) //nolint:goctx
+		nil)
 	r, err := b.HTTPClient.Do(req)
 	if err != nil {
 		b.Config.Logger.Info("covid19: Couldn't fetch data", "err", err)
