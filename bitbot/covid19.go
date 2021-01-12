@@ -3,153 +3,100 @@ package bitbot
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
 )
 
-type Covid19Data struct {
-	Confirmed Confirmed `json:"confirmed"`
-	Deaths    Deaths    `json:"deaths"`
-	Latest    Latest    `json:"latest"`
-	Recovered Recovered `json:"recovered"`
-	UpdatedAt string    `json:"updatedAt"`
+type covidData struct {
+	Country  string
+	Infected int
+	Deceased int
 }
 
-type Coordinates struct {
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
-}
-
-type Locations struct {
-	Coordinates Coordinates `json:"coordinates"`
-	Country     string      `json:"country"`
-	CountryCode string      `json:"country_code"`
-	Latest      int         `json:"latest"`
-	Province    string      `json:"province"`
-}
-
-type Confirmed struct {
-	Latest    int         `json:"latest"`
-	Locations []Locations `json:"locations"`
-}
-
-type Deaths struct {
-	Latest    int         `json:"latest"`
-	Locations []Locations `json:"locations"`
-}
-
-type Latest struct {
-	Confirmed int `json:"confirmed"`
-	Deaths    int `json:"deaths"`
-	Recovered int `json:"recovered"`
-}
-
-type Recovered struct {
-	Latest    int         `json:"latest"`
-	Locations []Locations `json:"locations"`
-}
-
-var Covid19Trigger = NamedTrigger{ //nolint:gochecknoglobals,golint
+var Covid19Trigger = NamedTrigger{
 	ID:   "covid19",
-	Help: "Fetch stats on Coronavirus by region",
+	Help: "!covid19 [<Country Name>]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!covid")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!covid19")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		data, ok := getCovid19Data()
-		if !ok {
-			irc.Reply(m, "Unable to get data at this time")
-			return true
+		data, _ := getCovidData()
+		cs := strings.Split(m.Content, " ")
+		if len(cs) == 1 {
+			irc.Reply(m, getCovidGlobalStats(data))
 		}
-		resp := parseCovid19Trigger(strings.Split(m.Trailing, " "), &data)
-		irc.Reply(m, resp)
+		if len(cs) >= 2 {
+			countryName := strings.Join(cs[1:], " ")
+			irc.Reply(m, getCovidCountryStats(data, countryName))
+		}
 		return true
 	},
 }
 
-func parseCovid19Trigger(args []string, data *Covid19Data) string {
-	// WIP
-	var resp string
-	switch len(args) {
-	case 0:
-		resp = "Error: empty request"
-	case 1:
-		resp = fmt.Sprintf("Total confirmed: %d | Total deaths: %d", data.Confirmed.Latest, data.Deaths.Latest)
-	case 2:
-		country, confirmed, dead := covid19StatsByCountryCode(strings.ToUpper(args[1]), data)
-		resp = fmt.Sprintf("Stats for %s || Confirmed: %d | Deaths %d", country, confirmed, dead)
-	default:
-		province, country, confirmed, dead := covid19StatsOfProvince(strings.ToUpper(args[1]), args[2:], data)
-		resp = fmt.Sprintf("Stats for %s, %s || Confirmed: %d | Deaths: %d", province, country, confirmed, dead)
-	}
-	return resp
+func (c *covidData) Add(c2 covidData) {
+	c.Infected += c2.Infected
+	c.Deceased += c2.Deceased
 }
 
-func covid19StatsOfProvince(cc string, prov []string, data *Covid19Data) (string, string, int, int) {
-	var (
-		confirmed int
-		deaths    int
-		country   string
-		province  string
+func (c *covidData) String() string {
+	percent := 0
+	if c.Infected > 0 {
+		percent = c.Deceased * 100 / c.Infected
+	}
+	return fmt.Sprintf("\x02\x1f%s covid stats today:\x0f \x0304%d dead\x0f out of \x0303%d infected\x0f (\x1f%d%%\x0f mortality)",
+		c.Country,
+		c.Deceased,
+		c.Infected,
+		percent,
 	)
-	province = strings.Title(strings.Join(prov[:], " "))
-
-	for _, v := range data.Confirmed.Locations {
-		if v.Province == province {
-			country = v.Country
-			confirmed = v.Latest
-			break
-		}
-	}
-
-	for _, v := range data.Deaths.Locations {
-		if v.Province == province {
-			deaths = v.Latest
-			break
-		}
-	}
-
-	return province, country, confirmed, deaths
 }
 
-func covid19StatsByCountryCode(cc string, data *Covid19Data) (string, int, int) {
-	var (
-		confirmed int
-		deaths    int
-		country   string
-	)
-
-	for _, v := range data.Confirmed.Locations {
-		if v.CountryCode == cc {
-			country = v.Country   // Yes I am aware this write the country var every time. Sue me.
-			confirmed += v.Latest // Sum all the provinces because a "nan" field isn't guaranteed
-		}
+func getCovidGlobalStats(stats []covidData) string {
+	g := covidData{
+		Country:  "World",
+		Infected: 0,
+		Deceased: 0,
 	}
 
-	for _, v := range data.Deaths.Locations {
-		if v.CountryCode == cc {
-			deaths += v.Latest
-		}
+	for _, c := range stats {
+		g.Add(c)
 	}
-	return country, confirmed, deaths
+
+	return g.String()
 }
 
-func getCovid19Data() (Covid19Data, bool) {
-	var resp Covid19Data
+func getCovidCountryStats(stats []covidData, country string) string {
+	for _, c := range stats {
+		if c.Country == country {
+			return c.String()
+		}
+	}
 
-	r, err := http.Get("https://covid19api.herokuapp.com/")
+	return "No data on this country. Data source: https://apify.com/covid-19"
+}
+
+func getCovidData() ([]covidData, error) {
+	//TODO take care of fields not always filled (recovered and tested)
+	var d []covidData
+	req, err := http.NewRequest("GET",
+		"https://api.apify.com/v2/key-value-stores/tVaYRsPHLjNdNBu7S/records/LATEST?disableRedirect=true",
+		nil) //nolint:goctx
+	r, err := b.HTTPClient.Do(req)
 	if err != nil {
-		log.Println(err.Error())
-		return resp, false
+		b.Config.Logger.Info("covid19: Couldn't fetch data", "err", err)
+		return d, err
 	}
-	defer r.Body.Close() //nolint:errcheck,gosec
-	err = json.NewDecoder(r.Body).Decode(&resp)
+	defer r.Body.Close()
+
+	a, err := ioutil.ReadAll(r.Body)
+	err = json.Unmarshal(a, &d)
 	if err != nil {
-		log.Println(err)
-		return resp, false
+		b.Config.Logger.Info("covid19: Couldn't parse data", "err", err)
+		return nil, err
 	}
-	return resp, true
+
+	return d, err
 }
