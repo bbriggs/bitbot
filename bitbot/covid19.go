@@ -77,7 +77,7 @@ func getCovidGlobalStats(stats []covidData) string {
 func getCovidCountryStats(stats []covidData, country string) string {
 	// countryCodes is a map[string]string country code -> country name.
 	// It's defined in bitbot/util.go
-	countryCodeLookup := countryCodes[country]
+	countryCodeLookup := countryCodes[strings.ToUpper(country)]
 	if countryCodeLookup != "" {
 		country = countryCodeLookup
 	}
