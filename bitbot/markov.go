@@ -88,7 +88,7 @@ func markovInit(chain *gomarkov.Chain) bool {
 		"https://gist.githubusercontent.com/parsec/2f4d4edf55336c0a2994cfcf951a8ea7/raw/4b66c99f1879b927ebc2b2ffb8fdd39dc9a4f7d2/SnwCrsh"}
 
 	for _, link := range sources {
-		req, _ := http.NewRequest("GET", link, nil)
+		req, _ := http.NewRequest("GET", link, nil) //noling:noctx
 		resp, err := b.HTTPClient.Do(req)
 		if err != nil {
 			b.Config.Logger.Warn("Markov init, couldn't get sources", "error", err)

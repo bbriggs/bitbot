@@ -73,6 +73,7 @@ func shortenURL(uri string) string {
 	if err != nil {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
+	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
