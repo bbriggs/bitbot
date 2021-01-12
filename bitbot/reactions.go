@@ -34,8 +34,8 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "DamnWeebs",
 	Help: "Usage: mention uwu",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-
-		match, _ := regexp.MatchString(`(?i)uwu|owo`, m.Content)
+		// thanks d4 for the regex help!
+		match, _ := regexp.MatchString(`(?i)(.)w(\1)`, m.Content)
 		return m.Command == "PRIVMSG" && match
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
@@ -46,6 +46,7 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			"incurable",
 			"disgusting",
 			"wonderful",
+			"utter",
 		}
 		adj := adjectives[b.Random.Intn(len(adjectives))]
 		reply := m.Name + `, you ` + adj + ` weeb!`
