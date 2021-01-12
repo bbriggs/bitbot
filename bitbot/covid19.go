@@ -16,6 +16,7 @@ type covidData struct {
 	Deceased int
 }
 
+// Covid19Trigger This trigger reads data from https://apify.com/covid-19 and formats it.
 var Covid19Trigger = NamedTrigger{
 	ID:   "covid19",
 	Help: "!covid19 [<Country Name>]",
@@ -23,7 +24,11 @@ var Covid19Trigger = NamedTrigger{
 		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!covid19")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		data, _ := getCovidData()
+		data, err := getCovidData()
+		if err != nil {
+			irc.Reply(m, "Couldn't get data")
+		}
+
 		cs := strings.Split(m.Content, " ")
 		if len(cs) == 1 {
 			irc.Reply(m, getCovidGlobalStats(data))
@@ -46,7 +51,8 @@ func (c *covidData) String() string {
 	if c.Infected > 0 {
 		percent = c.Deceased * 100 / c.Infected
 	}
-	return fmt.Sprintf("\x02\x1f%s covid stats today:\x0f \x0304%d dead\x0f out of \x0303%d infected\x0f (\x1f%d%%\x0f mortality)",
+	return fmt.Sprintf(
+		"\x02\x1f%s covid stats today:\x0f \x0304%d dead\x0f out of \x0303%d infected\x0f (\x1f%d%%\x0f mortality)",
 		c.Country,
 		c.Deceased,
 		c.Infected,
@@ -79,9 +85,9 @@ func getCovidCountryStats(stats []covidData, country string) string {
 }
 
 func getCovidData() ([]covidData, error) {
-	//TODO take care of fields not always filled (recovered and tested)
+	// TODO take care of fields not always filled (recovered and tested)
 	var d []covidData
-	req, err := http.NewRequest("GET",
+	req, _ := http.NewRequest("GET",
 		"https://api.apify.com/v2/key-value-stores/tVaYRsPHLjNdNBu7S/records/LATEST?disableRedirect=true",
 		nil) //nolint:goctx
 	r, err := b.HTTPClient.Do(req)
@@ -89,9 +95,9 @@ func getCovidData() ([]covidData, error) {
 		b.Config.Logger.Info("covid19: Couldn't fetch data", "err", err)
 		return d, err
 	}
-	defer r.Body.Close()
+	defer r.Body.Close() //nolint:errcheck
 
-	a, err := ioutil.ReadAll(r.Body)
+	a, _ := ioutil.ReadAll(r.Body)
 	err = json.Unmarshal(a, &d)
 	if err != nil {
 		b.Config.Logger.Info("covid19: Couldn't parse data", "err", err)
