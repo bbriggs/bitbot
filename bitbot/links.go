@@ -69,7 +69,7 @@ func shortenURL(uri string) string {
 	uri = xurls.Strict().FindString(uri)
 
 	/* We are using 0x0.st */
-	resp, err := b.HTTPClient.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
+	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
