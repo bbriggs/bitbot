@@ -22,6 +22,11 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"!markov init":                MarkovInitTrigger,
 		"!epeen":                      EpeenTrigger,
 		"!ipinfo":                     IPinfoTrigger,
+		"owo":                         WeebTrigger,
+		"uwu":                         WeebTrigger,
+		"oWo":                         WeebTrigger,
+		"UWU":                         WeebTrigger,
+		"gUwUtinne":                   WeebTrigger,
 	}
 	b := makeMockBot("bitbot")
 
