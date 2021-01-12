@@ -161,7 +161,7 @@ func hellaLogFormat() log.Format {
 }
 
 // mapping of country code to country name
-var countryCodes = map[string]string{
+var countryCodes = map[string]string{ //nolint:gochecknoglobals
 	"BD": "Bangladesh",
 	"BE": "Belgium",
 	"BF": "Burkina Faso",
