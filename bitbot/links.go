@@ -105,7 +105,7 @@ func lookupPageTitle(message string) string {
 		return msg
 	}
 
-	req, err := http.NewRequest("GET", url, nil) //nolint:noctx
+	req, _ := http.NewRequest("GET", url, nil) //nolint:noctx
 	resp, err := b.HTTPClient.Do(req)
 	if err != nil {
 		return ""

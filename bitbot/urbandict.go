@@ -66,7 +66,7 @@ type result struct {
 
 func urbanDictQuery(searchTerm string) (*searchResult, error) {
 	const baseURL = "http://api.urbandictionary.com/v0/define?term="
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s%s", baseURL, url.QueryEscape(searchTerm)), nil) //nolint:noctx
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s%s", baseURL, url.QueryEscape(searchTerm)), nil) //nolint:noctx
 	resp, err := b.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
