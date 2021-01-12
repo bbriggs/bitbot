@@ -69,6 +69,7 @@ func shortenURL(uri string) string {
 	uri = xurls.Strict().FindString(uri)
 
 	/* We are using 0x0.st */
+	//TODO use HTTPClient
 	resp, err := http.PostForm("https://0x0.st", url.Values{"shorten": {uri}})
 	if err != nil {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
@@ -105,7 +106,8 @@ func lookupPageTitle(message string) string {
 		return msg
 	}
 
-	resp, err := http.Get(url) //nolint:gosec
+	req, err := http.NewRequest("GET", url, nil) //nolint:noctx
+	resp, err := b.HTTPClient.Do(req)
 	if err != nil {
 		return ""
 	}

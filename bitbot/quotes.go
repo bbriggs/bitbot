@@ -25,7 +25,8 @@ var RaiderQuoteTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 func getQuote(endpoint string) (model.Response, bool) {
 	var resp model.Response
-	r, err := http.Get(fmt.Sprintf("https://quotes.fraq.io%s", endpoint))
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://quotes.fraq.io%s", endpoint), nil) //nolint:noctx
+	r, err := b.HTTPClient.Do(req)
 	if err != nil {
 		b.Config.Logger.Warn("Quote trigger, couldn't get page", "error", err.Error())
 		return resp, false
