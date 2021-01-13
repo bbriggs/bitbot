@@ -70,14 +70,10 @@ func containsOwOLike(message string) bool {
 			if (w[0] == w[2]) && (w[1] == 87 || w[1] == 119) {
 				return true
 			}
-
-			break
 		default:
 			if owoInWord(w) {
 				return true
 			}
-
-			break
 		}
 	}
 	return false
