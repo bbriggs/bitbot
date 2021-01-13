@@ -1,6 +1,7 @@
 package bitbot
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -34,11 +35,14 @@ func TestBasicNamedTriggers(t *testing.T) {
 
 	// Batch test all the easy triggers
 	for content, trigger := range triggerTests {
-		m := makeMockMessage("foo", content)
-		ok := trigger.Condition(b, m)
-		if !ok {
-			t.Errorf("Trigger %s did not activate. Expected true when given m.Content of %s", trigger.ID, m.Content)
-		}
+		testname := fmt.Sprintf("Trigger %s activation test: %s", trigger.ID, content)
+		t.Run(testname, func(t *testing.T) {
+			m := makeMockMessage("foo", content)
+			ok := trigger.Condition(b, m)
+			if !ok {
+				t.Errorf("Trigger %s did not activate. Expected true when given m.Content of %s", trigger.ID, m.Content)
+			}
+		})
 	}
 }
 
@@ -53,10 +57,13 @@ func TestBasicNamedTriggersFalsePositives(t *testing.T) {
 
 	// Batch test all the easy triggers
 	for content, trigger := range triggerTests {
-		m := makeMockMessage("foo", content)
-		ok := trigger.Condition(b, m)
-		if ok {
-			t.Errorf("Trigger %s activate when it shouldn't have. (m.Content of %s)", trigger.ID, m.Content)
-		}
+		testname := fmt.Sprintf("Trigger %s false positive test: %s", trigger.ID, content)
+		t.Run(testname, func(t *testing.T) {
+			m := makeMockMessage("foo", content)
+			ok := trigger.Condition(b, m)
+			if ok {
+				t.Errorf("Trigger %s activate when it shouldn't have. (m.Content of %s)", trigger.ID, m.Content)
+			}
+		})
 	}
 }
