@@ -44,7 +44,7 @@ func TestBasicNamedTriggers(t *testing.T) {
 
 // False positive testing
 func TestBasicNamedTriggersFalsePositives(t *testing.T) {
-	triggerTests := map[string]NamedTrigger{ //nolint:gochecknoglobals,golint
+	triggerTests := map[string]NamedTrigger{ //nolint:golint
 		"away":     WeebTrigger,
 		"coworker": WeebTrigger,
 		"wow, my guwutinne really needs some polishing": WeebTrigger,

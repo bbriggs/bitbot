@@ -1,14 +1,9 @@
 package bitbot
 
 import (
-	"regexp"
 	"strings"
 
 	"github.com/whyrusleeping/hellabot"
-)
-
-var (
-	owoRegex *regexp.Regexp
 )
 
 var ShrugTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -38,11 +33,6 @@ var LennyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "DamnWeebs",
 	Help: "Usage: mention uwu",
-	Init: func() error {
-		var err error
-		owoRegex, err = regexp.Compile("(^|.).(w|W).($|.)")
-		return err
-	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		// Thanks d4 for the help!
 		return m.Command == "PRIVMSG" && containsOwOLike(m.Content)
@@ -75,17 +65,18 @@ func containsOwOLike(message string) bool {
 	words := strings.Split(message, " ")
 	for _, w := range words {
 		switch len(w) {
-		case 1, 2:
-			break
-		case 3:
+		case 1, 2: //nolint:gomnd
+		case 3: //nolint:gomnd
 			if (w[0] == w[2]) && (w[1] == 87 || w[1] == 119) {
 				return true
 			}
+
 			break
 		default:
 			if owoInWord(w) {
 				return true
 			}
+
 			break
 		}
 	}
