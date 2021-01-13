@@ -27,6 +27,8 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"oWo":                         WeebTrigger,
 		"UWU":                         WeebTrigger,
 		"gUwUtinne":                   WeebTrigger,
+		"guWutinne":                   WeebTrigger,
+		"wow, it's gUwUtinne time":    WeebTrigger,
 	}
 	b := makeMockBot("bitbot")
 
@@ -36,6 +38,25 @@ func TestBasicNamedTriggers(t *testing.T) {
 		ok := trigger.Condition(b, m)
 		if !ok {
 			t.Errorf("Trigger %s did not activate. Expected true when given m.Content of %s", trigger.ID, m.Content)
+		}
+	}
+}
+
+// False positive testing
+func TestBasicNamedTriggersFalsePositives(t *testing.T) {
+	triggerTests := map[string]NamedTrigger{ //nolint:gochecknoglobals,golint
+		"away":     WeebTrigger,
+		"coworker": WeebTrigger,
+		"wow, my guwutinne really needs some polishing": WeebTrigger,
+	}
+	b := makeMockBot("bitbot")
+
+	// Batch test all the easy triggers
+	for content, trigger := range triggerTests {
+		m := makeMockMessage("foo", content)
+		ok := trigger.Condition(b, m)
+		if ok {
+			t.Errorf("Trigger %s activate when it shouldn't have. (m.Content of %s)", trigger.ID, m.Content)
 		}
 	}
 }
