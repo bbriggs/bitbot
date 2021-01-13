@@ -1,8 +1,14 @@
 package bitbot
 
 import (
-	"github.com/whyrusleeping/hellabot"
+	"regexp"
 	"strings"
+
+	"github.com/whyrusleeping/hellabot"
+)
+
+var (
+	owoRegex *regexp.Regexp
 )
 
 var ShrugTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -32,6 +38,11 @@ var LennyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "DamnWeebs",
 	Help: "Usage: mention uwu",
+	Init: func() error {
+		var err error
+		owoRegex, err = regexp.Compile("(^|.).(w|W).($|.)")
+		return err
+	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
 		// Thanks d4 for the help!
 		return m.Command == "PRIVMSG" && containsOwOLike(m.Content)
@@ -59,10 +70,34 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 // adding a dependency wrapping PCRE simply to shame weebs, furries, and similar
 // creatures.
 // [0] https://github.com/google/re2
+// Go suxx, brainfuck rewrite when
 func containsOwOLike(message string) bool {
-	ws := strings.Split(message, "")
-	for x := 0; x < len(ws)-2; x++ {
-		if ws[x] == ws[x+2] && (ws[x+1] == "W" || ws[x+1] == "w") {
+	words := strings.Split(message, " ")
+	for _, w := range words {
+		switch len(w) {
+		case 1, 2:
+			break
+		case 3:
+			if (w[0] == w[2]) && (w[1] == 87 || w[1] == 119) {
+				return true
+			}
+			break
+		default:
+			if owoInWord(w) {
+				return true
+			}
+			break
+		}
+	}
+	return false
+}
+
+func owoInWord(word string) bool { // The word contains a [^A-Z]W[^A-Z] or a [A-Z]w[A-Z]
+	ws := strings.Split(word, "")
+	for x := 1; x < len(word)-1; x++ {
+		if ws[x] == "w" && word[x-1] > 64 && word[x-1] < 88 && ws[x-1] == ws[x+1] {
+			return true
+		} else if ws[x] == "W" && (word[x-1] < 65 || word[x-1] > 87) {
 			return true
 		}
 	}
