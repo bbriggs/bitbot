@@ -29,7 +29,7 @@ func TestBasicNamedTriggers(t *testing.T) {
 		"UWU":                         WeebTrigger,
 		"gUwUtinne":                   WeebTrigger,
 		"guWutinne":                   WeebTrigger,
-		"wow, it's gUwUtinne time":    WeebTrigger,
+		"aaa ( ･ω･)ﾉ utf8 owo":        WeebTrigger,
 	}
 	b := makeMockBot("bitbot")
 
