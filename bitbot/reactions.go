@@ -82,18 +82,17 @@ func containsOwOLike(message string) bool {
 	return false
 }
 
-
 func owoInWord(word string) bool { // The word contains a [^A-Z]W[^A-Z] or a [A-Z]w[A-Z]
-		ws := strings.Split(word, "")
-		for x := 1; x < len(word)-1; x++ {
-			if word[x] > unicode.MaxASCII{
-				return false
-			}
-			if ws[x] == "w" && word[x-1] > 64 && word[x-1] < 88 && ws[x-1] == ws[x+1] {
-				return true
-			} else if ws[x] == "W" && (word[x-1] < 65 || word[x-1] > 87) {
-				return true
-			}
+	ws := strings.Split(word, "")
+	for x := 1; x < len(word)-1; x++ {
+		if word[x] > unicode.MaxASCII {
+			return false
 		}
+		if ws[x] == "w" && word[x-1] > 64 && word[x-1] < 88 && ws[x-1] == ws[x+1] {
+			return true
+		} else if ws[x] == "W" && (word[x-1] < 65 || word[x-1] > 87) {
+			return true
+		}
+	}
 	return false
 }
