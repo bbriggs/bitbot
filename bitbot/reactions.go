@@ -1,7 +1,6 @@
 package bitbot
 
 import (
-	//"fmt"
 	"strings"
 	"unicode"
 
