@@ -63,7 +63,6 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 // [0] https://github.com/google/re2
 // Go suxx, brainfuck rewrite when
 func containsOwOLike(message string) bool {
-	//TODO input sanatizing
 	words := strings.Split(message, " ")
 	for _, w := range words {
 		switch len(w) {
