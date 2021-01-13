@@ -47,7 +47,7 @@ func TestBasicNamedTriggers(t *testing.T) {
 }
 
 // False positive testing
-func TestBasicNamedTriggersFalsePositivesParallel(t *testing.T) {
+func TestBasicNamedTriggersFalsePositives(t *testing.T) {
 	triggerTests := map[string]NamedTrigger{
 		"away":     WeebTrigger,
 		"coworker": WeebTrigger,
