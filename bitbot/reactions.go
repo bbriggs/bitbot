@@ -1,8 +1,10 @@
 package bitbot
 
 import (
-	"github.com/whyrusleeping/hellabot"
 	"strings"
+	"unicode"
+
+	"github.com/whyrusleeping/hellabot"
 )
 
 var ShrugTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -59,10 +61,34 @@ var WeebTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 // adding a dependency wrapping PCRE simply to shame weebs, furries, and similar
 // creatures.
 // [0] https://github.com/google/re2
+// Go suxx, brainfuck rewrite when
 func containsOwOLike(message string) bool {
-	ws := strings.Split(message, "")
-	for x := 0; x < len(ws)-2; x++ {
-		if ws[x] == ws[x+2] && (ws[x+1] == "W" || ws[x+1] == "w") {
+	words := strings.Split(message, " ")
+	for _, w := range words {
+		switch len(w) {
+		case 1, 2: //nolint:gomnd
+		case 3: //nolint:gomnd
+			if (w[0] == w[2]) && (w[1] == 87 || w[1] == 119) {
+				return true
+			}
+		default:
+			if owoInWord(w) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func owoInWord(word string) bool { // The word contains a [^A-Z]W[^A-Z] or a [A-Z]w[A-Z]
+	ws := strings.Split(word, "")
+	for x := 1; x < len(word)-1; x++ {
+		if word[x] > unicode.MaxASCII {
+			return false
+		}
+		if ws[x] == "w" && word[x-1] > 64 && word[x-1] < 88 && ws[x-1] == ws[x+1] {
+			return true
+		} else if ws[x] == "W" && (word[x-1] < 65 || word[x-1] > 87) {
 			return true
 		}
 	}
