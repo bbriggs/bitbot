@@ -31,10 +31,15 @@ func getQuote(endpoint string) (model.Response, bool) {
 		b.Config.Logger.Warn("Quote trigger, couldn't get page", "error", err.Error())
 		return resp, false
 	}
-	defer r.Body.Close() //nolint:errcheck,gosec
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		b.Config.Logger.Warn("Quote trigger, couldn't decode page", "error", err.Error())
 	}
+
+	err = r.Body.Close()
+	if err != nil {
+		b.Config.Logger.Warn("Quote trigger, couldn't close request body", "error", err)
+	}
+
 	return resp, false
 }

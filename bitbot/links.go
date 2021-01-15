@@ -73,11 +73,15 @@ func shortenURL(uri string) string {
 	if err != nil {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
-	defer resp.Body.Close() //nolint:errcheck
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
+	}
+
+	err = resp.Body.Close()
+	if err != nil {
+		b.Config.Logger.Warn("request to 0x0.st wasn't properly closed", "error", err)
 	}
 
 	short := string(body)
@@ -111,11 +115,16 @@ func lookupPageTitle(message string) string {
 	if err != nil {
 		return ""
 	}
-	defer resp.Body.Close() //nolint:errcheck,gosec
 
 	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		go updateURLCache(url, title)
+
+		err = resp.Body.Close()
+		if err != nil {
+			b.Config.Logger.Warn("Couldn't close request body", "error", err)
+		}
+
 		return title
 	}
 

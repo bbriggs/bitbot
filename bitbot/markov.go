@@ -94,12 +94,21 @@ func markovInit(chain *gomarkov.Chain) bool {
 			b.Config.Logger.Warn("Markov init, couldn't get sources", "error", err)
 			return false
 		}
-		defer resp.Body.Close() //nolint:errcheck,gosec
+
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			b.Config.Logger.Warn("Markov init, couldn't read sources", "error", err)
 			return false
 		}
+
+		err = resp.Body.Close()
+		if err != nil {
+			b.Config.Logger.Warn(
+				"Markov init request for resources improperly closed",
+				"err",
+				err)
+		}
+
 		bodyString := string(body)
 		markovAdd(bodyString, chain)
 	}
