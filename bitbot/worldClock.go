@@ -1,30 +1,31 @@
 package bitbot
 
 import (
-	"errors"
-	"github.com/whyrusleeping/hellabot"
-	"math/rand"
+	"fmt"
 	"strings"
+	"time"
+
+	"github.com/whyrusleeping/hellabot"
 )
 
 var WorldClockTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "worldClock",
 	Help: "Returns the local time in a given time zone from the IANA Time Zone database. Usage: !time [TZ]. Returns time in UTC when used with no args.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content) == "!time"
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Content, "!time")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		tz := "UTC"
-		if strings.Split(m.Content) > 1 {
-			tz = strings.Split(m.Content)[1]
+		if len(strings.Split(m.Content, " ")) > 1 {
+			tz = strings.Split(m.Content, " ")[1]
 		}
 
 		t, err := getLocalTime(tz)
 		if err != nil {
-			irc.Reply("Unknown TZ. Please use a time zone from the IANA Time Zone Database: https://gist.github.com/aviflax/a4093965be1cd008f172")
+			irc.Reply(m, "Unknown TZ. Please use a time zone from the IANA Time Zone Database: https://gist.github.com/aviflax/a4093965be1cd008f172")
 		}
 
-		irc.Reply(fmt.Sprintf("Time: %s", t.Format("02 Jan 06 15:04 MST")))
+		irc.Reply(m, fmt.Sprintf("Time: %s", t.Format("02 Jan 06 15:04 MST")))
 		return true
 	},
 }
