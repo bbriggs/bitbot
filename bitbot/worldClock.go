@@ -24,7 +24,7 @@ var WorldClockTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		t, err := getLocalTime(tz)
 		if err != nil {
 			irc.Reply(m,
-			"Unknown TZ, assuming UTC. Please use a time zone from the IANA Time Zone Database: https://gist.github.com/aviflax/a4093965be1cd008f172")
+				"Unknown TZ, assuming UTC. Please use a time zone from the IANA Time Zone Database: https://gist.github.com/aviflax/a4093965be1cd008f172")
 		}
 
 		irc.Reply(m, fmt.Sprintf("Time: %s", t.Format("02 Jan 06 15:04 MST")))
