@@ -3,7 +3,9 @@ package bitbot
 import (
 	"github.com/whyrusleeping/hellabot"
 	"math/rand"
+    "hash/crc64"
 	"strings"
+    "time"
 )
 
 var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
@@ -21,7 +23,8 @@ var EpeenTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 func makeEpeenAnswer(nick string) string {
 	peepeeSize := 20
-
-	peepee := "8" + strings.Repeat("=", rand.Intn(peepeeSize)) + "D"
+	peepeeCrc := crc64.Checksum([]byte(nick+time.Now().Format("2006-01-02")),crc64.MakeTable(crc64.ECMA))
+	peepeeRnd := rand.New(rand.NewSource(int64(peepeeCrc)))
+	peepee := "8" + strings.Repeat("=", peepeeRnd.Intn(peepeeSize)) + "D"
 	return nick + "'s peepee: " + peepee
 }
