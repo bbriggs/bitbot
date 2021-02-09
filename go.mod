@@ -21,3 +21,5 @@ require (
 	gopkg.in/sorcix/irc.v2 v2.0.0-20200812151606-3f15758ea8c7
 	mvdan.cc/xurls/v2 v2.1.0
 )
+
+exclude github.com/whyrusleeping/hellabot v0.0.0-20200524171630-1ea75c7dc208
