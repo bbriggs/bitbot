@@ -22,7 +22,7 @@ var NickShuffleTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return b.DB.AutoMigrate(&NickList{}).Error
 	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!nick")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!nick")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		msg, err := nickShuffleDispatcher(irc, m)

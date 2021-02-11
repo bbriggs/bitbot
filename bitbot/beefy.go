@@ -13,7 +13,7 @@ var BeefyTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "beefy",
 	Help: "It's big. It's beefy. It triggers any time someone says \"beefy\" in a message.",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		match, _ := regexp.MatchString(`(?i)beefy`, m.Trailing)
+		match, _ := regexp.MatchString(`(?i)beefy`, m.Trailing())
 
 		return m.Command == "PRIVMSG" && match
 	},

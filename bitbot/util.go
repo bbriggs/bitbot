@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/whyrusleeping/hellabot"
-	"gopkg.in/sorcix/irc.v1"
+	"gopkg.in/sorcix/irc.v2"
 	"time"
 
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -103,15 +103,13 @@ func fmtDuration(d time.Duration) string {
 func makeMockMessage(nick, message string) *hbot.Message {
 	return &hbot.Message{
 		&irc.Message{
-			&irc.Prefix{
-				nick,
-				"",
-				"",
+			Prefix: &irc.Prefix{
+				Name: nick,
+				User: "",
+				Host: "",
 			},
-			"PRIVMSG",
-			[]string{},
-			message,
-			true,
+			Command: "PRIVMSG",
+			Params: []string{":", message},
 		},
 		message,
 		time.Now(),
