@@ -109,7 +109,7 @@ func makeMockMessage(nick, message string) *hbot.Message {
 				Host: "",
 			},
 			Command: "PRIVMSG",
-			Params: []string{":", message},
+			Params:  []string{":", message},
 		},
 		message,
 		time.Now(),
