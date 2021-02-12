@@ -55,7 +55,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return b.DB.AutoMigrate(&ReminderEvent{}).Error
 	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!remind")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!remind")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		timeFormat = "2006-01-02 15:04"
