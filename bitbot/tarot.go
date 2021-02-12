@@ -34,7 +34,7 @@ var TarotTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 			irc.Reply(m, answers[n])
 		}
 
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!tarot")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!tarot")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		if len(m.Content) < 7 {
