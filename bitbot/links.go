@@ -166,7 +166,7 @@ func urlIsCached(url string) (bool, string) {
 
 		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
 		if len(t) == 3 {
-			cachedNick = t[2]
+			cachedNick = strings.Trim(t[2], "|")
 		}
 
 		if len(t) == 3 {
@@ -178,7 +178,7 @@ func urlIsCached(url string) (bool, string) {
 
 			// New format
 			if cachedNick != "" {
-				return true, fmt.Sprintf("REEEEEEEEpost (%s): %s (%s)", cachedTime, cachedTitle, cachedNick)
+				return true, fmt.Sprintf("REEEEEEEEpost! %s shared %s on %s", cachedNick, cachedTitle, cachedTime)
 			}
 
 			// Legacy cache format
