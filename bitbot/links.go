@@ -147,7 +147,6 @@ func updateURLCache(url, title, from string) bool {
 
 func urlIsCached(url string) (bool, string) {
 	var cached []byte
-
 	var cachedNick string
 
 	err := b.EmbDB.View(func(tx *bolt.Tx) error {
@@ -164,6 +163,9 @@ func urlIsCached(url string) (bool, string) {
 		t := strings.SplitAfterN(string(cached), "|", 3)
 
 		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
+		if len(t) == 3 {
+			cachedNick = strings.Trim(t[2], "|")
+		}
 
 		if len(t) == 3 {
 			cachedNick = t[2]
@@ -174,7 +176,7 @@ func urlIsCached(url string) (bool, string) {
 
 			// New format
 			if cachedNick != "" {
-				return true, fmt.Sprintf("REEEEEEEEpost (%s): %s (%s)", cachedTime, cachedTitle, cachedNick)
+				return true, fmt.Sprintf("REEEEEEEEpost! %s shared %s on %s", cachedNick, cachedTitle, cachedTime)
 			}
 
 			// Legacy cache format
