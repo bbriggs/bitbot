@@ -149,8 +149,6 @@ func urlIsCached(url string) (bool, string) {
 	var cached []byte
 	var cachedNick string
 
-	var cachedNick string
-
 	err := b.EmbDB.View(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
 		cached = urlBucket.Get([]byte(url))
