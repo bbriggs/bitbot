@@ -23,7 +23,7 @@ var URLReaderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return m.Command == "PRIVMSG" && isURL(m.Content)
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		title := lookupPageTitle(m.Content)
+		title := lookupPageTitle(m)
 		if title != "" {
 			if len(m.Content) > 70 {
 				short := shortenURL(m.Content)
@@ -87,10 +87,10 @@ func isURL(message string) bool {
 	return xurls.Strict().MatchString(message)
 }
 
-func lookupPageTitle(message string) string {
+func lookupPageTitle(message *hbot.Message) string {
 	var ok error
 
-	url := xurls.Strict().FindString(message)
+	url := xurls.Strict().FindString(message.Content)
 
 	if isTwitterURL(url) {
 		url = strings.ReplaceAll(url, "twitter.com", "nitter.net")
@@ -113,7 +113,7 @@ func lookupPageTitle(message string) string {
 
 	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		go updateURLCache(url, title)
+		go updateURLCache(url, title, message.From)
 		return title
 	}
 
@@ -122,12 +122,12 @@ func lookupPageTitle(message string) string {
 	return ""
 }
 
-func updateURLCache(url, title string) bool {
+func updateURLCache(url, title, from string) bool {
 	err := b.EmbDB.Update(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
-		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s",
+		err2 := urlBucket.Put([]byte(url), []byte(fmt.Sprintf("%s|%s|%s",
 			time.Now().Format(time.UnixDate),
-			title)))
+			title, from)))
 
 		if err2 != nil {
 			b.Config.Logger.Warn("Couldn't access Embedded DB")
@@ -148,6 +148,8 @@ func updateURLCache(url, title string) bool {
 func urlIsCached(url string) (bool, string) {
 	var cached []byte
 
+	var cachedNick string
+
 	err := b.EmbDB.View(func(tx *bolt.Tx) error {
 		urlBucket := tx.Bucket([]byte("urlsCache"))
 		cached = urlBucket.Get([]byte(url))
@@ -163,8 +165,19 @@ func urlIsCached(url string) (bool, string) {
 
 		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
 
+		if len(t) == 3 {
+			cachedNick = t[2]
+		}
+
 		if lessThanAWeek(cachedTime) {
 			b.Config.Logger.Info("Got a cached title")
+
+			// New format
+			if cachedNick != "" {
+				return true, fmt.Sprintf("REEEEEEEEpost (%s): %s (%s)", cachedTime, cachedTitle, cachedNick)
+			}
+
+			// Legacy cache format
 			return true, fmt.Sprintf("REEEEEEEEpost (%s): %s", cachedTime, cachedTitle)
 		}
 	}

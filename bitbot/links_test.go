@@ -4,6 +4,8 @@ import (
 	"io"
 	"strings"
 	"testing"
+
+	"github.com/whyrusleeping/hellabot"
 )
 
 func TestCleanTitle(t *testing.T) {
@@ -97,7 +99,11 @@ func TestUrlShortening(t *testing.T) {
 
 func TestYoutubeLinks(t *testing.T) {
 	go func() {
-		title := lookupPageTitle("https://www.youtube.com/watch?v=gBnalcSi138")
+		mockMsg := &hbot.Message{
+			Content: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+			From:    "bitbot",
+		}
+		title := lookupPageTitle(mockMsg)
 		if !strings.Contains(title, "Forty") {
 			t.Log("Didn't retrieve the correct URL")
 			t.Fail()
