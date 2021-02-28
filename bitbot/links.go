@@ -147,6 +147,7 @@ func updateURLCache(url, title, from string) bool {
 
 func urlIsCached(url string) (bool, string) {
 	var cached []byte
+	var cachedNick string
 
 	var cachedNick string
 
@@ -164,6 +165,9 @@ func urlIsCached(url string) (bool, string) {
 		t := strings.SplitAfterN(string(cached), "|", 3)
 
 		cachedTime, cachedTitle := strings.Trim(t[0], "|"), t[1]
+		if len(t) == 3 {
+			cachedNick = t[2]
+		}
 
 		if len(t) == 3 {
 			cachedNick = t[2]
