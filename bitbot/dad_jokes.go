@@ -7,7 +7,7 @@ import (
 	"github.com/whyrusleeping/hellabot"
 )
 
-var DadJokeTrigger = NamedTrigger{
+var DadJokeTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "dadjoke",
 	Help: "get a icanhazdadjoke.com joke.",
 	Condition: func(itc *hbot.Bot, m *hbot.Message) bool {
