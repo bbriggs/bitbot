@@ -73,7 +73,10 @@ func ipLookup(ip string) string {
 		b.Config.Logger.Warn("IPinfo trigger, couldn't read ipinfo.io answer", "error", err)
 	}
 
-	res.Body.Close() //nolint:errcheck,gosec
+	err = res.Body.Close()
+	if err != nil {
+		b.Config.Logger.Warn("IPInfo trigger, request's body was closed improperly", "error", err)
+	}
 	return decodeJSON(jsonData)
 }
 

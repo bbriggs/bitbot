@@ -79,6 +79,11 @@ func shortenURL(uri string) string {
 		b.Config.Logger.Warn("Coudln't shorten url", "error", err)
 	}
 
+	err = resp.Body.Close()
+	if err != nil {
+		b.Config.Logger.Warn("request to 0x0.st wasn't properly closed", "error", err)
+	}
+
 	short := string(body)
 	return short
 }
@@ -105,15 +110,21 @@ func lookupPageTitle(message *hbot.Message) string {
 		return msg
 	}
 
-	resp, err := http.Get(url) //nolint:gosec
+	req, _ := http.NewRequest("GET", url, nil) //nolint:noctx
+	resp, err := b.HTTPClient.Do(req)
 	if err != nil {
 		return ""
 	}
-	defer resp.Body.Close() //nolint:errcheck,gosec
 
 	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
 		go updateURLCache(url, title, message.From)
+
+		err = resp.Body.Close()
+		if err != nil {
+			b.Config.Logger.Warn("Couldn't close request body", "error", err)
+		}
+
 		return title
 	}
 

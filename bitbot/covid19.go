@@ -100,16 +100,22 @@ func getCovidData() ([]covidData, error) {
 		nil)
 	r, err := b.HTTPClient.Do(req)
 	if err != nil {
-		b.Config.Logger.Info("covid19: Couldn't fetch data", "err", err)
+		b.Config.Logger.Warn("covid19: Couldn't fetch data", "err", err)
 		return d, err
 	}
-	defer r.Body.Close() //nolint:errcheck
 
 	a, _ := ioutil.ReadAll(r.Body)
 	err = json.Unmarshal(a, &d)
 	if err != nil {
-		b.Config.Logger.Info("covid19: Couldn't parse data", "err", err)
+		b.Config.Logger.Warn("covid19: Couldn't parse data", "err", err)
 		return nil, err
+	}
+
+	err = r.Body.Close()
+	if err != nil {
+		b.Config.Logger.Warn("Covid19: data fetching request closed improperly",
+			"err",
+			err)
 	}
 
 	return d, err

@@ -88,17 +88,27 @@ func markovInit(chain *gomarkov.Chain) bool {
 		"https://gist.githubusercontent.com/parsec/2f4d4edf55336c0a2994cfcf951a8ea7/raw/4b66c99f1879b927ebc2b2ffb8fdd39dc9a4f7d2/SnwCrsh"}
 
 	for _, link := range sources {
-		resp, err := http.Get(link)
+		req, _ := http.NewRequest("GET", link, nil) //nolint:noctx
+		resp, err := b.HTTPClient.Do(req)
 		if err != nil {
 			b.Config.Logger.Warn("Markov init, couldn't get sources", "error", err)
 			return false
 		}
-		defer resp.Body.Close() //nolint:errcheck,gosec
+
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			b.Config.Logger.Warn("Markov init, couldn't read sources", "error", err)
 			return false
 		}
+
+		err = resp.Body.Close()
+		if err != nil {
+			b.Config.Logger.Warn(
+				"Markov init request for resources improperly closed",
+				"err",
+				err)
+		}
+
 		bodyString := string(body)
 		markovAdd(bodyString, chain)
 	}
