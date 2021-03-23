@@ -118,13 +118,12 @@ func lookupPageTitle(message *hbot.Message) string {
 
 	// happy path
 	if title, ok := GetHtmlTitle(resp.Body); ok {
-		go updateURLCache(url, title)
+		go updateURLCache(url, title, message.From)
 
 		err = resp.Body.Close()
 		if err != nil {
 			b.Config.Logger.Warn("Couldn't close request body", "error", err)
 		}
-
 
 		return title
 	}
