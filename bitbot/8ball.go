@@ -10,7 +10,7 @@ var Magic8BallTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "8ball",
 	Help: "Beseech the magic 8ball. Usage: !8ball [question]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!8ball")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!8ball")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		irc.Reply(m, make8BallAnswer())

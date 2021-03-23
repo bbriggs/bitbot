@@ -38,9 +38,11 @@ func noAccessDBMessage() string {
 	return "Something went wrong, no access to database"
 }
 
+// ReminderTrigger allows one to create and join events that will be reminded at
+// the appropriate time.
 var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "reminder",
-	Help: "Set up events and remind them to concerned people. Usage: !remind list|time|add|remove|join|part",
+	Help: "Set up events and remind them to concerned people. Usage: !remind list|add|remove|join|part",
 	Init: func() error {
 		var err error
 
@@ -53,7 +55,7 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		return b.DB.AutoMigrate(&ReminderEvent{}).Error
 	},
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!remind")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!remind")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		timeFormat = "2006-01-02 15:04"
@@ -65,8 +67,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		}
 
 		switch splitMSG[1] {
-		case "time":
-			irc.Reply(m, getTime())
 		case "add":
 			irc.Reply(m, addEvent(m, irc))
 		case "remove":
@@ -82,11 +82,6 @@ var ReminderTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 		}
 		return true
 	},
-}
-
-// Get the time in UTC, formatted in the expected way.
-func getTime() string {
-	return fmt.Sprintf("%s UTC", time.Now().In(location).Format(timeFormat))
 }
 
 // Parses an event adding message and adds the event

@@ -21,7 +21,7 @@ var Covid19Trigger = NamedTrigger{
 	ID:   "covid19",
 	Help: "!covid19 [<Country Name>]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!covid19")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!covid19")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		data, err := getCovidData()

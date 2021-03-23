@@ -16,7 +16,7 @@ var UrbanDictionaryTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 	ID:   "urbandict",
 	Help: "Get an urban dictionary issued definition. Usage: !urbd [term]",
 	Condition: func(irc *hbot.Bot, m *hbot.Message) bool {
-		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing, "!ud")
+		return m.Command == "PRIVMSG" && strings.HasPrefix(m.Trailing(), "!ud")
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
 		resp := urbanDefinition(m.Content)

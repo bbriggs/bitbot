@@ -13,7 +13,7 @@ var HelpTrigger = NamedTrigger{ //nolint:gochecknoglobals,golint
 
 	},
 	Action: func(irc *hbot.Bot, m *hbot.Message) bool {
-		splitMsg := strings.Split(m.Trailing, " ")
+		splitMsg := strings.Split(m.Trailing(), " ")
 		triggers := b.ListTriggers()
 		if len(splitMsg) < 2 {
 			irc.Reply(m, "Currently loaded plugins: "+strings.Join(triggers, ", "))
