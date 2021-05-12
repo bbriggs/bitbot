@@ -32,7 +32,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
-          ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-
       -
         name: Set current epoch time as env variable
         run: echo "NOW=$(date +%s)" >> $GITHUB_ENV
