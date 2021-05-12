@@ -26,14 +26,23 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
+        name: Set current epoch time as env variable
+        run: echo "NOW::$(date +%s)" >> $GITHUB_ENV
+      -
+        name: Echo current date
+        run: echo $NOW
+
+      -
         name: Docker meta
         id: meta
         uses: crazy-max/ghaction-docker-meta@v2
         with:
           images: dkr.fraq.dev/fraq/bitbot
           tags: |
+            type=edge
             type=ref,event=branch
             type=ref,event=pr
+            type=sha,prefix=sha-,suffix=-${NOW},format=short
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       -
