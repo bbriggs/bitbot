@@ -25,8 +25,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/whyrusleeping/hellabot v0.0.0-20200821141615-1382ae598342
 	go.etcd.io/bbolt v1.3.5
-	golang.org/x/net v0.0.0-20210119194325-5f4716e94777
-	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/net v0.7.0
 	gopkg.in/inconshreveable/log15.v2 v2.0.0-20200109203555-b30bc20e4fd1
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/sorcix/irc.v1 v1.1.4
